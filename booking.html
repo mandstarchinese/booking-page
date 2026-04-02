@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MandStar Chinese — レッスン予約</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --p900:#1a0835; --p800:#2d1260; --p700:#4c1d95; --p600:#6d28d9;
+  --p500:#7c3aed; --p400:#a78bfa; --p300:#c4b5fd; --p200:#ddd6fe;
+  --p150:#ede9fe; --p100:#f0ebff; --p50:#faf8ff;
+  --ink:#0f0520; --ink2:#3b1f6b; --ink3:#7c6a9e; --ink4:#b8aed4;
+  --bg:#faf8ff; --white:#ffffff;
+  --ok:#059669; --okbg:#ecfdf5; --okbdr:#a7f3d0;
+  --err:#dc2626; --errbg:#fef2f2;
+  --r:8px; --rlg:16px; --rxl:24px;
+  --sh:0 2px 8px rgba(76,29,149,.07),0 8px 32px rgba(76,29,149,.05);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 50% at 5% 0%,rgba(109,40,217,.08),transparent 55%),
+             radial-gradient(ellipse 50% 70% at 95% 100%,rgba(124,58,237,.06),transparent 55%)}
+
+/* ── Header ── */
+.site-header {
+  position:relative; z-index:10;
+  background:rgba(250,248,255,.9); backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(196,181,253,.25);
+  padding:0 24px;
+}
+.header-inner {
+  max-width:900px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  height:56px;
+}
+.header-logo {
+  display:flex; align-items:center; gap:10px;
+  font-family:'Noto Serif JP',serif; font-size:15px; font-weight:700; color:var(--p700);
+}
+.header-logo-dot {
+  width:28px; height:28px; border-radius:50%;
+  background:linear-gradient(135deg,var(--p700),var(--p400));
+  display:flex; align-items:center; justify-content:center;
+  color:var(--white); font-size:12px; font-weight:700;
+}
+.header-tag {
+  font-size:11px; color:var(--ink3); font-family:'Noto Sans JP',sans-serif;
+  font-weight:300; letter-spacing:.04em;
+}
+.cfg-btn {
+  width:34px; height:34px; border-radius:50%;
+  background:transparent; border:1px solid var(--p200);
+  cursor:pointer; color:var(--ink3); font-size:15px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .2s; position:relative; z-index:100;
+}
+.cfg-btn:hover{border-color:var(--p400);color:var(--p500);background:var(--p100)}
+
+/* ── Main layout ── */
+.main {
+  position:relative; z-index:1;
+  max-width:900px; margin:0 auto;
+  padding:32px 20px 80px;
+  display:grid; grid-template-columns:1fr 340px; gap:24px;
+  align-items:start;
+}
+@media(max-width:768px){.main{grid-template-columns:1fr}}
+
+/* ── Cards ── */
+.card {
+  background:var(--white); border:1px solid rgba(196,181,253,.3);
+  border-radius:var(--rxl); box-shadow:var(--sh); overflow:hidden;
+}
+.card-topbar { height:3px; background:linear-gradient(90deg,var(--p700),var(--p400)); }
+.card-body { padding:28px 32px 32px; }
+
+/* ── Student info card (sidebar) ── */
+.info-card { position:sticky; top:76px; }
+.info-title {
+  font-family:'Noto Serif JP',serif; font-size:15px; font-weight:700;
+  color:var(--p800); margin-bottom:16px;
+  display:flex; align-items:center; gap:8px;
+}
+.info-title::before{content:''; width:3px; height:16px; background:var(--p500); border-radius:2px}
+.info-row {
+  display:flex; gap:8px; padding:9px 0;
+  border-bottom:1px solid var(--p100); font-size:13px;
+}
+.info-row:last-child{border-bottom:none}
+.info-lbl { color:var(--ink3); min-width:64px; flex-shrink:0; }
+.info-val { color:var(--ink2); font-weight:500; word-break:break-all; }
+.info-edit {
+  font-size:11px; color:var(--p500); text-decoration:underline;
+  cursor:pointer; margin-top:14px; display:inline-block; background:none; border:none;
+  font-family:'Noto Sans JP',sans-serif;
+}
+.info-edit:hover{color:var(--p700)}
+
+/* ── Booking header ── */
+.booking-header {
+  display:flex; align-items:center; gap:14px;
+  margin-bottom:22px; padding-bottom:20px;
+  border-bottom:1px solid var(--p100);
+}
+.teacher-avatar {
+  width:48px; height:48px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,var(--p600),var(--p400));
+  color:var(--white); display:flex; align-items:center; justify-content:center;
+  font-family:'Noto Serif JP',serif; font-size:18px; font-weight:700;
+}
+.teacher-name { font-family:'Noto Serif JP',serif; font-size:18px; font-weight:700; color:var(--p900); }
+.teacher-sub  { font-size:12px; color:var(--ink3); margin-top:2px; }
+
+/* ── Timezone notice ── */
+.tz-notice {
+  display:flex; align-items:flex-start; gap:10px;
+  background:var(--p100); border:1px solid var(--p200);
+  border-radius:var(--r); padding:12px 14px; margin-bottom:20px;
+  font-size:13px; color:var(--p700); line-height:1.6;
+}
+.tz-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+.tz-text strong { font-weight:500; }
+.tz-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  background:var(--p600); color:var(--white);
+  border-radius:100px; padding:2px 9px; font-size:11px; font-weight:500;
+  margin-left:4px;
+}
+
+/* ── Week nav ── */
+.week-nav {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:16px;
+}
+.week-label { font-family:'Noto Serif JP',serif; font-size:14px; font-weight:700; color:var(--p900); }
+.nav-btn {
+  width:30px; height:30px; border-radius:50%;
+  border:1px solid var(--p200); background:transparent;
+  cursor:pointer; color:var(--ink3); font-size:14px;
+  display:flex; align-items:center; justify-content:center; transition:all .2s;
+}
+.nav-btn:hover{border-color:var(--p400);color:var(--p600);background:var(--p100)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* ── Calendar grid ── */
+.cal-grid {
+  display:grid; grid-template-columns:repeat(7,1fr); gap:4px;
+  margin-bottom:16px;
+}
+.cal-col { display:flex; flex-direction:column; gap:4px; }
+.cal-day-head { text-align:center; font-size:10px; font-weight:500; letter-spacing:.06em; color:var(--ink3); padding:4px 0; }
+.cal-day-date { text-align:center; font-size:12px; font-weight:500; color:var(--ink3); padding:2px 0 6px; }
+.cal-day-date.today { color:var(--p500); }
+.slot-btn {
+  display:block; width:100%; padding:7px 2px; text-align:center;
+  border:1px solid var(--p200); border-radius:6px; background:var(--p50);
+  font-family:'Noto Sans JP',sans-serif; font-size:11px; color:var(--ink3);
+  cursor:pointer; transition:all .18s; line-height:1.3;
+}
+.slot-btn:hover{border-color:var(--p500);color:var(--p700);background:var(--p150)}
+.slot-btn.sel{border-color:var(--p600);background:var(--p600);color:var(--white);font-weight:500}
+.slot-btn.past{opacity:.3;cursor:not-allowed;pointer-events:none}
+.no-slot{font-size:10px;color:var(--ink4);text-align:center;padding:8px 2px}
+
+/* ── Loading / error ── */
+.ld{text-align:center;padding:32px 0;color:var(--ink3);font-size:13px}
+.sp{width:18px;height:18px;border:2px solid var(--p200);border-top-color:var(--p500);
+    border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cal-err{text-align:center;padding:22px 16px;font-size:13px;color:var(--err);
+         background:var(--errbg);border-radius:var(--r);border:1px solid rgba(220,38,38,.18);line-height:1.7}
+.cal-err small{font-size:11px;color:var(--ink3);display:block;margin-top:4px}
+
+/* ── Selected slot info ── */
+.sel-info{
+  background:var(--p150); border:1px solid var(--p200);
+  border-radius:var(--r); padding:12px 14px; margin-bottom:16px; display:none;
+}
+.sel-info.show{display:block}
+.sel-info-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--p800)}
+.sel-info-row strong{font-size:15px;font-weight:700;font-family:'Noto Serif JP',serif}
+
+/* ── Confirm button ── */
+.confirm-btn {
+  width:100%; padding:14px;
+  background:linear-gradient(135deg,var(--p700),var(--p500));
+  color:var(--white); border:none; border-radius:var(--r);
+  font-family:'Noto Sans JP',sans-serif; font-size:14px; font-weight:500;
+  cursor:pointer; transition:all .2s; box-shadow:0 4px 16px rgba(109,40,217,.25);
+  letter-spacing:.04em;
+}
+.confirm-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(109,40,217,.35)}
+.confirm-btn:disabled{background:var(--ink4);box-shadow:none;cursor:not-allowed;transform:none}
+.duration-note{text-align:center;font-size:12px;color:var(--ink3);margin-bottom:12px}
+
+/* ── Success page ── */
+.success-page{display:none;position:relative;z-index:1}
+.success-inner{max-width:600px;margin:40px auto;padding:0 20px}
+.success-card{background:var(--white);border:1px solid rgba(196,181,253,.3);border-radius:var(--rxl);box-shadow:var(--sh);overflow:hidden}
+.success-top{background:linear-gradient(135deg,var(--p900),var(--p700));padding:40px 32px;text-align:center}
+.success-check{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);
+               display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+               font-size:28px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0);opacity:0}}
+.success-title{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;color:var(--white);margin-bottom:8px}
+.success-sub{font-size:13px;color:var(--p300);line-height:1.7}
+.success-body{padding:28px 32px}
+.sum-title{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p800);margin-bottom:14px}
+.sum-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--p100);font-size:13px}
+.sum-row:last-child{border-bottom:none}
+.sum-lbl{color:var(--ink3);min-width:72px;flex-shrink:0}
+.sum-val{color:var(--ink2);font-weight:500;word-break:break-all}
+.success-email-note{
+  background:var(--okbg);border:1px solid var(--okbdr);border-radius:var(--r);
+  padding:12px 14px;font-size:12px;color:var(--ok);line-height:1.6;margin-top:16px;
+}
+.btn-top{display:block;text-align:center;margin-top:20px;padding:11px 24px;
+         border:1.5px solid var(--p200);border-radius:var(--r);font-size:13px;color:var(--p600);
+         cursor:pointer;background:transparent;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
+.btn-top:hover{background:var(--p100);border-color:var(--p400)}
+
+/* ── Overlay (settings) ── */
+.ovl{position:fixed;inset:0;background:rgba(10,2,25,.65);backdrop-filter:blur(6px);
+     display:none;align-items:center;justify-content:center;z-index:200}
+.ovl.show{display:flex}
+.obox{background:var(--white);border-radius:var(--rxl);padding:28px 30px;
+      max-width:440px;width:92%;max-height:88vh;overflow-y:auto;
+      box-shadow:0 8px 40px rgba(60,10,120,.2);animation:fu .3s ease}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.otitle{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--p900);margin-bottom:4px}
+.osub{font-size:12px;color:var(--ink3);margin-bottom:18px;line-height:1.6}
+.fr{margin-bottom:14px}
+.fl{display:block;font-size:11px;font-weight:500;letter-spacing:.07em;color:var(--ink2);margin-bottom:5px}
+.fi{width:100%;padding:10px 12px;border:1.5px solid var(--p200);border-radius:var(--r);
+    background:var(--p50);font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink);
+    outline:none;transition:border-color .2s,box-shadow .2s;appearance:none}
+.fi:focus{border-color:var(--p500);box-shadow:0 0 0 3px rgba(109,40,217,.1);background:var(--white)}
+.fe{font-size:11px;color:var(--err);margin-top:4px}
+.tent{display:grid;grid-template-columns:1fr 1fr auto;gap:5px;margin-bottom:6px;align-items:start}
+.tent .fi{font-size:11px;padding:7px 9px}
+.tcalid{grid-column:1/3;font-size:11px!important;padding:6px 9px!important}
+.rmbtn{width:28px;height:28px;border-radius:var(--r);border:1px solid var(--p200);background:transparent;
+       cursor:pointer;color:var(--ink3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
+.rmbtn:hover{border-color:#fca5a5;color:var(--err);background:#fef2f2}
+.addlnk{font-size:12px;color:var(--p500);background:none;border:none;cursor:pointer;
+        text-decoration:underline;padding:0;font-family:'Noto Sans JP',sans-serif;display:block;margin-top:4px}
+.nbox{border-radius:var(--r);padding:9px 12px;font-size:12px;line-height:1.65;margin-bottom:14px}
+.nbox.warn{background:#fffbeb;border:1px solid #fbbf24;color:#78350f}
+.nbox.info{background:var(--p100);border:1px solid var(--p200);color:var(--p800)}
+.save-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--p700),var(--p500));
+          color:var(--white);border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;
+          font-size:14px;font-weight:500;cursor:pointer;transition:all .2s}
+.save-btn:hover{opacity:.9}
+</style>
+</head>
+<body>
+
+<!-- ══ CONFIG OVERLAY ══ -->
+<div class="ovl" id="ovl">
+  <div class="obox">
+    <div class="card-topbar" style="margin:-28px -30px 20px;border-radius:24px 24px 0 0"></div>
+    <div class="otitle">管理者設定</div>
+    <div class="osub">API 認証情報と担当講師を設定してください。</div>
+    <div class="nbox warn">⚠️ Google Cloud Console で Calendar API を有効化してください。</div>
+    <div class="fr">
+      <label class="fl">OAuth クライアント ID</label>
+      <input type="text" class="fi" id="cfgCid" placeholder="xxxx.apps.googleusercontent.com">
+      <div class="fe" id="eCid"></div>
+    </div>
+    <div class="fr">
+      <label class="fl">API キー</label>
+      <input type="text" class="fi" id="cfgKey" placeholder="AIzaSy...">
+      <div class="fe" id="eKey"></div>
+    </div>
+    <div class="fr">
+      <label class="fl">担当講師</label>
+      <div id="tlist"></div>
+      <button class="addlnk" onclick="addRow()">＋ 講師を追加</button>
+      <div class="fe" id="eTch"></div>
+    </div>
+    <div class="nbox info">ℹ️ カレンダーID は Google カレンダー → 設定 → 「カレンダーの統合」で確認できます。</div>
+    <button class="save-btn" onclick="saveCfg()">設定を保存して開始</button>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-logo">
+      <div class="header-logo-dot">M</div>
+      MandStar Chinese
+      <span class="header-tag">予約システム</span>
+    </div>
+    <button class="cfg-btn" onclick="openCfg()" title="管理者設定">⚙</button>
+  </div>
+</header>
+
+<!-- ══ MAIN BOOKING ══ -->
+<div class="main" id="mainContent">
+
+  <!-- LEFT: booking card -->
+  <div class="card" id="bookingCard">
+    <div class="card-topbar"></div>
+    <div class="card-body">
+
+      <!-- teacher header -->
+      <div class="booking-header">
+        <div class="teacher-avatar" id="tAvatar">—</div>
+        <div>
+          <div class="teacher-name" id="tName">担当講師</div>
+          <div class="teacher-sub">ご希望の日時を選択してください（50分レッスン）</div>
+        </div>
+      </div>
+
+      <!-- timezone notice -->
+      <div class="tz-notice">
+        <div class="tz-icon">🌍</div>
+        <div class="tz-text">
+          <strong>表示される時間はあなたの現在地のタイムゾーン（<span id="tzDisplay">—</span>）に合わせています。</strong>
+          講師のカレンダーは日本時間（JST）で設定されていますが、自動で変換して表示されます。ご確認の上、ご予約ください。
+        </div>
+      </div>
+
+      <!-- week nav -->
+      <div class="week-nav">
+        <button class="nav-btn" id="prevBtn" onclick="shiftWeek(-1)">‹</button>
+        <div class="week-label" id="weekLabel">—</div>
+        <button class="nav-btn" onclick="shiftWeek(1)">›</button>
+      </div>
+
+      <!-- calendar -->
+      <div id="calArea"><div class="ld"><span class="sp"></span>カレンダーを読み込み中…</div></div>
+
+      <!-- duration note -->
+      <div class="duration-note">各枠は1時間単位です。レッスン実際の時間（50分）は講師との調整で決まります。</div>
+
+      <!-- selected slot -->
+      <div class="sel-info" id="selInfo">
+        <div class="sel-info-row">
+          <span>📅</span>
+          <strong id="selInfoText">—</strong>
+        </div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:4px;padding-left:22px">
+          この時間帯を選択しました。下のボタンで予約を確定してください。
+        </div>
+      </div>
+
+      <button class="confirm-btn" id="confBtn" style="opacity:.4;pointer-events:none" onclick="doBook()">
+        予約を確定する →
+      </button>
+    </div>
+  </div>
+
+  <!-- RIGHT: student info sidebar -->
+  <div class="card info-card" id="infoCard">
+    <div class="card-topbar"></div>
+    <div class="card-body">
+      <div class="info-title">ご入力済みの情報</div>
+      <div class="info-row"><span class="info-lbl">お名前</span><span class="info-val" id="si-name">—</span></div>
+      <div class="info-row"><span class="info-lbl">メール</span><span class="info-val" id="si-email">—</span></div>
+      <div class="info-row"><span class="info-lbl">担当講師</span><span class="info-val" id="si-teacher">—</span></div>
+      <div class="info-row"><span class="info-lbl">レベル</span><span class="info-val" id="si-level">—</span></div>
+      <div class="info-row"><span class="info-lbl">ペース</span><span class="info-val" id="si-pace">—</span></div>
+      <div class="info-row"><span class="info-lbl">目的</span><span class="info-val" id="si-purpose" style="font-size:12px;color:var(--ink3)">—</span></div>
+      <button class="info-edit" onclick="history.back()">← フォームに戻る</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ SUCCESS PAGE ══ -->
+<div class="success-page" id="successPage">
+  <div class="success-inner">
+    <div class="success-card">
+      <div class="success-top">
+        <div class="success-check">✓</div>
+        <div class="success-title">ご予約が完了しました</div>
+        <div class="success-sub">確認メールをお送りしました。<br>講師からのご連絡をお待ちください。</div>
+      </div>
+      <div class="success-body">
+        <div class="sum-title">予約内容の確認</div>
+        <div id="sumContent"></div>
+        <div class="success-email-note">
+          ✉️ ご登録のメールアドレスに確認メールをお送りしました。<br>
+          迷惑メールフォルダもご確認ください。
+        </div>
+        <button class="btn-top" onclick="location.href='index.html'">← トップページへ戻る</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  ★ STEP 1: 講師情報をここに記入 ★
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const TEACHERS = [
+  // { name: 'Vita先生', email: 'vita@gmail.com', calendarId: 'vita@gmail.com' },
+  // { name: 'Tong先生', email: 'tong@gmail.com', calendarId: 'tong@gmail.com' },
+];
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  ★ STEP 2: API 認証情報 ★
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const HC = {
+  clientId: '',
+  apiKey:   '',
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  SLOT DURATION: 1 hour = 60 minutes
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const SLOT_MINUTES = 60;
+
+// ── State ─────────────────────────────────────────────────────
+let CFG = { clientId:'', apiKey:'', teachers:[] };
+let gapiOk=false, gsiOk=false, tokenClient=null, token=null;
+let formData = {};
+let S = { ti:null, slot:null, weekOffset:0 };
+
+// ── Timezone ──────────────────────────────────────────────────
+const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+document.getElementById('tzDisplay').textContent = userTz;
+
+// ── Boot ──────────────────────────────────────────────────────
+function boot() {
+  // Load form data from questionnaire
+  const raw = sessionStorage.getItem('mandstar_form');
+  if (raw) {
+    try { formData = JSON.parse(raw); } catch(e) {}
+  }
+
+  // Load config
+  if (HC.clientId && HC.apiKey && TEACHERS.length) {
+    CFG = { clientId: HC.clientId, apiKey: HC.apiKey,
+            teachers: TEACHERS.map(t => ({ name:t.name, email:t.email, calId:t.calendarId||t.email })) };
+  } else {
+    const s = localStorage.getItem('mandstar_bk_cfg');
+    if (s) try { CFG = JSON.parse(s); } catch(e) {}
+  }
+
+  // Populate student info sidebar
+  populateSidebar();
+
+  if (CFG.clientId && CFG.apiKey && CFG.teachers.length) {
+    // Auto-select teacher from form data
+    autoSelectTeacher();
+    loadAPIs();
+  } else {
+    openCfg();
+  }
+}
+
+function populateSidebar() {
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val||'—'; };
+  set('si-name',    formData.name);
+  set('si-email',   formData.email);
+  set('si-teacher', formData.teacher);
+  set('si-level',   formData.level);
+  set('si-pace',    formData.pace);
+  set('si-purpose', formData.purpose);
+}
+
+function autoSelectTeacher() {
+  const formTeacher = formData.teacher || '';
+  // Find matching teacher index
+  const idx = CFG.teachers.findIndex(t =>
+    t.name === formTeacher ||
+    formTeacher.includes(t.name.replace('先生','')) ||
+    t.name.includes(formTeacher.replace('先生',''))
+  );
+  S.ti = idx >= 0 ? idx : 0;
+  const t = CFG.teachers[S.ti];
+  if (t) {
+    const initials = t.name.replace(/\s+/g,'').replace('先生','').slice(0,1);
+    document.getElementById('tAvatar').textContent = initials;
+    document.getElementById('tName').textContent = t.name;
+  }
+}
+
+// ── Config overlay ────────────────────────────────────────────
+function openCfg() {
+  document.getElementById('cfgCid').value = CFG.clientId || '';
+  document.getElementById('cfgKey').value = CFG.apiKey   || '';
+  const tl = document.getElementById('tlist'); tl.innerHTML='';
+  const ts = CFG.teachers.length ? CFG.teachers : [{name:'',email:'',calId:''}];
+  ts.forEach(t => addRow(t.name, t.email, t.calId));
+  document.getElementById('ovl').classList.add('show');
+}
+function addRow(n='',e='',c='') {
+  const d=document.createElement('div'); d.className='tent';
+  d.innerHTML=`<input type="text" placeholder="氏名" class="fi tn" value="${n}">
+               <input type="email" placeholder="メール" class="fi te" value="${e}">
+               <button class="rmbtn" onclick="if(document.querySelectorAll('.tent').length>1)this.closest('.tent').remove()">✕</button>
+               <input type="text" placeholder="カレンダー ID" class="fi tcalid" value="${c}">
+               <div></div><div></div>`;
+  document.getElementById('tlist').appendChild(d);
+}
+function saveCfg() {
+  const cid=document.getElementById('cfgCid').value.trim();
+  const key=document.getElementById('cfgKey').value.trim();
+  const rows=document.querySelectorAll('.tent'); const ts=[];
+  rows.forEach(r=>{
+    const n=r.querySelector('.tn').value.trim();
+    const e=r.querySelector('.te').value.trim();
+    const c=r.querySelector('.tcalid').value.trim();
+    if(n&&e) ts.push({name:n,email:e,calId:c||e});
+  });
+  ['eCid','eKey','eTch'].forEach(id=>document.getElementById(id).textContent='');
+  let ok=true;
+  if(!cid){document.getElementById('eCid').textContent='クライアント ID を入力してください';ok=false}
+  if(!key){document.getElementById('eKey').textContent='API キーを入力してください';ok=false}
+  if(!ts.length){document.getElementById('eTch').textContent='講師を登録してください';ok=false}
+  if(!ok) return;
+  CFG={clientId:cid,apiKey:key,teachers:ts};
+  localStorage.setItem('mandstar_bk_cfg',JSON.stringify(CFG));
+  document.getElementById('ovl').classList.remove('show');
+  gapiOk=false; gsiOk=false; token=null; tokenClient=null;
+  autoSelectTeacher(); loadAPIs();
+}
+
+// ── Google APIs ───────────────────────────────────────────────
+function loadAPIs() {
+  if (!document.getElementById('_gapi')) {
+    const s=document.createElement('script'); s.id='_gapi';
+    s.src='https://apis.google.com/js/api.js';
+    s.onload=()=>{ gapi.load('client',async()=>{
+      await gapi.client.init({apiKey:CFG.apiKey,
+        discoveryDocs:['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']});
+      gapiOk=true;
+    });};
+    document.head.appendChild(s);
+  }
+  if (!document.getElementById('_gsi')) {
+    const s=document.createElement('script'); s.id='_gsi';
+    s.src='https://accounts.google.com/gsi/client';
+    s.onload=()=>{
+      tokenClient=google.accounts.oauth2.initTokenClient({
+        client_id:CFG.clientId,
+        scope:'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly',
+        callback:(r)=>{
+          if(r.error){showCalErr('OAuth 認証に失敗しました',r.error);return;}
+          token=r.access_token; gapi.client.setToken({access_token:token}); gsiOk=true; fetchSlots();
+        }
+      }); gsiOk=true;
+    };
+    document.head.appendChild(s);
+  }
+  requestAuth();
+}
+function requestAuth() {
+  if(token){fetchSlots();return;}
+  const w=setInterval(()=>{if(gapiOk&&gsiOk&&tokenClient){clearInterval(w);tokenClient.requestAccessToken({prompt:''});}},150);
+  setTimeout(()=>clearInterval(w),12000);
+}
+
+// ── Week ──────────────────────────────────────────────────────
+function getWeek() {
+  const t=new Date(); t.setHours(0,0,0,0);
+  const mon=new Date(t); mon.setDate(t.getDate()-((t.getDay()+6)%7)+S.weekOffset*7);
+  const sun=new Date(mon); sun.setDate(mon.getDate()+6); sun.setHours(23,59,59,999);
+  return {start:mon,end:sun};
+}
+function updWeek() {
+  const {start:s,end:e}=getWeek();
+  const f=d=>`${d.getMonth()+1}/${d.getDate()}`;
+  document.getElementById('weekLabel').textContent=`${s.getFullYear()}年 ${f(s)}（月）〜 ${f(e)}（日）`;
+  document.getElementById('prevBtn').disabled=S.weekOffset<=0;
+}
+function shiftWeek(d) {
+  if(d<0&&S.weekOffset<=0) return;
+  S.weekOffset+=d; S.slot=null;
+  document.getElementById('selInfo').classList.remove('show');
+  document.getElementById('confBtn').style.cssText='opacity:.4;pointer-events:none';
+  updWeek(); fetchSlots();
+}
+function pad(n){return String(n).padStart(2,'0')}
+
+// ── Fetch & split into 1-hour slots ──────────────────────────
+async function fetchSlots() {
+  if(!gapiOk||!token){
+    document.getElementById('calArea').innerHTML='<div class="ld"><span class="sp"></span>読み込み中…</div>';
+    return;
+  }
+  document.getElementById('calArea').innerHTML='<div class="ld"><span class="sp"></span>予約可能時間を取得中…</div>';
+  const t=CFG.teachers[S.ti];
+  if(!t){document.getElementById('calArea').innerHTML='<div class="cal-err">講師が設定されていません。</div>';return;}
+  const calId=t.calId||t.email;
+  const {start,end}=getWeek();
+  try {
+    const resp=await gapi.client.calendar.events.list({
+      calendarId:calId, timeMin:start.toISOString(), timeMax:end.toISOString(),
+      singleEvents:true, orderBy:'startTime', maxResults:500, showDeleted:false
+    });
+    const all=resp.result.items||[];
+    // Filter valid datetime events
+    const valid=all.filter(ev=>{
+      if(ev.status==='cancelled') return false;
+      if(!ev.start||!ev.start.dateTime) return false;
+      const booked=(ev.attendees||[]).filter(a=>a.email!==calId&&a.email!==t.email&&a.organizer!==true);
+      if(booked.length>0&&booked.every(a=>a.responseStatus==='accepted'||a.responseStatus==='tentative')) return false;
+      return true;
+    });
+    // Split each event into SLOT_MINUTES-sized slots
+    const slots = splitIntoSlots(valid, SLOT_MINUTES);
+    renderCal(slots, start);
+  } catch(err) {
+    console.error(err);
+    let msg='カレンダーの取得に失敗しました', hint='';
+    if(err.status===403){msg='アクセス権限がありません（403）';hint='カレンダーが公開または共有されているか確認してください。';}
+    else if(err.status===404){msg='カレンダーが見つかりません（404）';hint='カレンダーID「'+calId+'」を確認してください。';}
+    else if(err.status===401){msg='認証の有効期限が切れました';hint='ページを再読み込みして再認証してください。';token=null;}
+    else hint=err.message||JSON.stringify(err);
+    showCalErr(msg,hint);
+  }
+}
+
+// ── Core: split long events into 1-hour chunks ───────────────
+function splitIntoSlots(events, durationMin) {
+  const slotMs = durationMin * 60 * 1000;
+  const slots = [];
+  events.forEach(ev => {
+    const evStart = new Date(ev.start.dateTime);
+    const evEnd   = new Date(ev.end.dateTime);
+    const totalMs = evEnd - evStart;
+    if (totalMs <= 0) return;
+    // If event is exactly or shorter than slot duration, keep as-is
+    if (totalMs <= slotMs) {
+      slots.push({ ...ev, _slotStart: evStart, _slotEnd: evEnd });
+      return;
+    }
+    // Split into consecutive non-overlapping slots
+    let cursor = new Date(evStart);
+    while (cursor < evEnd) {
+      const slotEnd = new Date(cursor.getTime() + slotMs);
+      if (slotEnd > evEnd) break; // discard partial last slot
+      slots.push({
+        ...ev,
+        id: ev.id + '_' + cursor.getTime(),
+        _slotStart: new Date(cursor),
+        _slotEnd: new Date(slotEnd),
+      });
+      cursor = slotEnd;
+    }
+  });
+  // Sort by start time
+  slots.sort((a,b) => a._slotStart - b._slotStart);
+  return slots;
+}
+
+function showCalErr(msg, hint) {
+  document.getElementById('calArea').innerHTML=
+    `<div class="cal-err"><strong>${msg}</strong><small>${hint}</small>
+     <br><button style="margin-top:10px;padding:7px 14px;border:1px solid #fca5a5;border-radius:6px;background:transparent;cursor:pointer;font-size:12px;color:var(--err)" onclick="fetchSlots()">再試行</button></div>`;
+}
+
+// ── Render calendar grid ──────────────────────────────────────
+function renderCal(slots, weekStart) {
+  const days=['月','火','水','木','金','土','日'];
+  const now=new Date();
+  // Format time in user's local timezone
+  const fmtTime = dt => dt.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:userTz});
+  const fmtDate = dt => dt.toLocaleDateString('ja-JP',{timeZone:userTz});
+  let h='<div class="cal-grid">';
+  for(let d=0;d<7;d++){
+    const day=new Date(weekStart); day.setDate(weekStart.getDate()+d);
+    const isToday=day.toDateString()===now.toDateString();
+    const isPast=day<now&&!isToday;
+    // Match slots to this day (in user's local timezone)
+    const ds=slots.filter(sl=>{
+      const slDay=new Date(sl._slotStart.toLocaleString('en-US',{timeZone:userTz}));
+      const refDay=new Date(day.toLocaleString('en-US',{timeZone:userTz}));
+      return slDay.toDateString()===refDay.toDateString();
+    });
+    h+=`<div class="cal-col">
+      <div class="cal-day-head">${days[d]}</div>
+      <div class="cal-day-date${isToday?' today':''}">${day.getDate()}</div>`;
+    if(isPast&&!ds.length){ h+='<div class="no-slot">—</div>'; }
+    else if(!ds.length){ h+='<div class="no-slot">空き<br>なし</div>'; }
+    else ds.forEach(sl=>{
+      const ts=fmtTime(sl._slotStart);
+      const te=fmtTime(sl._slotEnd);
+      const m=sl._slotStart.getMonth()+1;
+      const dd=sl._slotStart.getDate();
+      const past=sl._slotEnd<now;
+      const slotId=sl.id.replace(/[^a-zA-Z0-9_]/g,'_');
+      h+=`<button class="slot-btn${past?' past':''}" id="sb_${slotId}"
+        data-id="${sl.id}"
+        data-s="${sl._slotStart.toISOString()}"
+        data-e="${sl._slotEnd.toISOString()}"
+        data-ts="${ts}" data-te="${te}" data-m="${m}" data-d="${dd}"
+        onclick="pickSlot(this)">${ts}<br><span style="font-size:9px;opacity:.75">${te}</span></button>`;
+    });
+    h+='</div>';
+  }
+  h+='</div>';
+  document.getElementById('calArea').innerHTML=h;
+}
+
+function pickSlot(btn) {
+  document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  S.slot={id:btn.dataset.id,start:btn.dataset.s,end:btn.dataset.e};
+  const si=document.getElementById('selInfo'); si.classList.add('show');
+  document.getElementById('selInfoText').textContent=
+    `${btn.dataset.m}月${btn.dataset.d}日  ${btn.dataset.ts} 〜 ${btn.dataset.te}（${userTz}）`;
+  document.getElementById('confBtn').style.cssText='opacity:1;pointer-events:auto';
+}
+
+// ── Book ──────────────────────────────────────────────────────
+async function doBook() {
+  if(!S.slot) return;
+  const btn=document.getElementById('confBtn');
+  btn.disabled=true; btn.textContent='予約処理中…';
+  const t=CFG.teachers[S.ti];
+  const calId=t.calId||t.email;
+  const tz=userTz;
+  const st=new Date(S.slot.start), en=new Date(S.slot.end);
+
+  // Build description from questionnaire
+  const desc = [
+    `【お申し込みフォーム 回答内容】`,
+    `お名前：${formData.name||'—'}`,
+    `メール：${formData.email||'—'}`,
+    `性別：${formData.gender||'—'} / 年齢：${formData.age||'—'}`,
+    `レベル：${formData.level||'—'}`,
+    `学習歴：${formData.history||'—'}`,
+    `強化スキル：${formData.skill||'—'}`,
+    `目的：${formData.purpose||'—'}`,
+    `ゴール：${formData.goal||'—'}`,
+    `学習ペース：${formData.pace||'—'}`,
+    `講師への期待：${formData.expect||'—'}`,
+    `レッスン言語スタイル：${formData.lang||'—'}`,
+    `---`,
+    `予約時タイムゾーン：${tz}`,
+  ].join('\n');
+
+  const ev = {
+    summary:`【体験レッスン予約】${formData.name||'お客様'} 様`,
+    description:desc,
+    start:{dateTime:S.slot.start,timeZone:tz},
+    end:{dateTime:S.slot.end,timeZone:tz},
+    attendees:[
+      {email:formData.email||'',displayName:formData.name||'',responseStatus:'accepted'},
+      {email:t.email,displayName:t.name,organizer:true}
+    ],
+    reminders:{useDefault:false,overrides:[{method:'email',minutes:60},{method:'popup',minutes:15}]}
+  };
+
+  try {
+    await gapi.client.calendar.events.insert({
+      calendarId:calId, resource:ev,
+      sendUpdates:'all', sendNotifications:true
+    });
+    showSuccess(t, st, en);
+  } catch(err) {
+    console.error(err);
+    let msg='予約に失敗しました。';
+    if(err.status===403) msg='書き込み権限がありません（403）。';
+    if(err.status===409) msg='この時間帯はすでに予約済みです。別の時間を選択してください。';
+    alert(msg); btn.disabled=false; btn.textContent='予約を確定する →';
+  }
+}
+
+function showSuccess(t, st, en) {
+  const fDate = dt => dt.toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',timeZone:userTz});
+  const fTime = dt => dt.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:userTz});
+  document.getElementById('mainContent').style.display='none';
+  const sp = document.getElementById('successPage');
+  sp.style.display='block';
+  document.getElementById('sumContent').innerHTML=`
+    <div class="sum-row"><span class="sum-lbl">お名前</span><span class="sum-val">${formData.name||'—'}</span></div>
+    <div class="sum-row"><span class="sum-lbl">メール</span><span class="sum-val">${formData.email||'—'}</span></div>
+    <div class="sum-row"><span class="sum-lbl">担当講師</span><span class="sum-val">${t.name}</span></div>
+    <div class="sum-row"><span class="sum-lbl">日付</span><span class="sum-val">${fDate(st)}</span></div>
+    <div class="sum-row"><span class="sum-lbl">時間</span><span class="sum-val">${fTime(st)} 〜 ${fTime(en)}（${userTz}）</span></div>
+    <div class="sum-row"><span class="sum-lbl">レベル</span><span class="sum-val">${formData.level||'—'}</span></div>
+    ${formData.purpose?`<div class="sum-row"><span class="sum-lbl">目的</span><span class="sum-val" style="font-size:12px;color:var(--ink3)">${formData.purpose}</span></div>`:''}
+  `;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Init ──────────────────────────────────────────────────────
+updWeek();
+boot();
+</script>
+</body>
+</html>
