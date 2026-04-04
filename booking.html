@@ -3,810 +3,709 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MandStar Chinese — お申し込みフォーム</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<title>MandStar Chinese — レッスン予約</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --p950:#0f0520; --p900:#1a0835; --p800:#2d1260; --p700:#4c1d95;
-  --p600:#6d28d9; --p500:#7c3aed; --p400:#a78bfa; --p300:#c4b5fd;
-  --p200:#ddd6fe; --p150:#ede9fe; --p100:#f0ebff; --p50:#faf8ff;
-  --ink:#0f0520; --ink2:#3b1f6b; --ink3:#7c6a9e; --ink4:#b8aed4;
-  --white:#ffffff; --bg:#faf8ff;
-  --ok:#059669; --okbg:#ecfdf5;
-  --r:8px; --rlg:16px; --rxl:24px;
-  --sh:0 2px 8px rgba(76,29,149,.08),0 8px 32px rgba(76,29,149,.06);
-  --shb:0 4px 20px rgba(76,29,149,.15),0 16px 48px rgba(76,29,149,.1);
+:root{
+  --p900:#1a0835;--p800:#2d1260;--p700:#4c1d95;--p600:#6d28d9;
+  --p500:#7c3aed;--p400:#a78bfa;--p300:#c4b5fd;--p200:#ddd6fe;
+  --p150:#ede9fe;--p100:#f0ebff;--p50:#faf8ff;
+  --ink:#0f0520;--ink2:#3b1f6b;--ink3:#7c6a9e;--ink4:#b8aed4;
+  --bg:#faf8ff;--white:#fff;
+  --ok:#059669;--okbg:#ecfdf5;--okbdr:#a7f3d0;
+  --err:#dc2626;--errbg:#fef2f2;
+  --r:8px;--rlg:14px;--rxl:20px;
+  --sh:0 1px 4px rgba(76,29,149,.07),0 4px 20px rgba(76,29,149,.05);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(109,40,217,.07),transparent 55%),
+             radial-gradient(ellipse 50% 60% at 100% 100%,rgba(124,58,237,.05),transparent 55%)}
 
-body {
-  font-family:'Noto Sans JP',sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  min-height:100vh;
-  overflow-x:hidden;
-}
+/* header */
+.hdr{position:relative;z-index:10;background:rgba(250,248,255,.92);backdrop-filter:blur(12px);
+     border-bottom:1px solid rgba(196,181,253,.25);padding:0 24px}
+.hdr-in{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:54px}
+.logo{display:flex;align-items:center;gap:9px;font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;color:var(--p700)}
+.logo-dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--p700),var(--p400));
+          display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+.cfg-btn{width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid var(--p200);
+         cursor:pointer;color:var(--ink3);font-size:15px;display:flex;align-items:center;justify-content:center;
+         transition:all .2s;z-index:100}
+.cfg-btn:hover{border-color:var(--p400);color:var(--p500);background:var(--p100)}
 
-/* ── Background decoration ── */
-body::before {
-  content:'';
-  position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:
-    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(109,40,217,.09) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 90% 100%, rgba(124,58,237,.07) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(196,181,253,.04) 0%, transparent 70%);
-}
+/* main layout */
+.main{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:28px 20px 80px;
+      display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
+@media(max-width:740px){.main{grid-template-columns:1fr}}
 
-/* ── Header / Hero ── */
-.hero {
-  position:relative; z-index:1;
-  text-align:center;
-  padding:64px 20px 48px;
-  max-width:720px;
-  margin:0 auto;
-}
-.hero-badge {
-  display:inline-flex; align-items:center; gap:8px;
-  background:var(--p150); border:1px solid var(--p300);
-  color:var(--p600); border-radius:100px;
-  padding:6px 18px; font-size:12px; font-weight:500;
-  letter-spacing:.08em; margin-bottom:24px;
-  animation:fadeDown .6s ease both;
-}
-.hero-title {
-  font-family:'Noto Serif JP',serif;
-  font-size:clamp(26px,5vw,40px); font-weight:700;
-  color:var(--p800); line-height:1.3;
-  margin-bottom:16px;
-  animation:fadeDown .6s .1s ease both;
-}
-.hero-title span { color:var(--p500); }
-.hero-desc {
-  font-size:14px; color:var(--ink3); line-height:1.9; font-weight:300;
-  max-width:560px; margin:0 auto 20px;
-  animation:fadeDown .6s .2s ease both;
-}
-.hero-meta {
-  display:flex; align-items:center; justify-content:center; gap:20px;
-  flex-wrap:wrap;
-  animation:fadeDown .6s .3s ease both;
-}
-.hero-meta-item {
-  display:flex; align-items:center; gap:6px;
-  font-size:12px; color:var(--ink3);
-}
-.hero-meta-dot { width:4px; height:4px; border-radius:50%; background:var(--p400); }
+/* card */
+.card{background:var(--white);border:1px solid rgba(196,181,253,.28);border-radius:var(--rxl);
+      box-shadow:var(--sh);overflow:hidden}
+.tb{height:3px;background:linear-gradient(90deg,var(--p700),var(--p400))}
+.cb{padding:26px 30px 30px}
 
-/* ── Progress bar ── */
-.progress-wrap {
-  position:sticky; top:0; z-index:50;
-  background:rgba(250,248,255,.85); backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(196,181,253,.25);
-  padding:12px 20px;
-}
-.progress-inner {
-  max-width:720px; margin:0 auto;
-  display:flex; align-items:center; gap:12px;
-}
-.progress-bar-bg {
-  flex:1; height:4px; border-radius:2px;
-  background:var(--p200); overflow:hidden;
-}
-.progress-bar-fill {
-  height:100%; border-radius:2px;
-  background:linear-gradient(90deg,var(--p600),var(--p400));
-  transition:width .5s cubic-bezier(.4,0,.2,1);
-}
-.progress-label { font-size:12px; color:var(--p500); font-weight:500; white-space:nowrap; }
-.progress-step-dots { display:flex; gap:6px; }
-.psd { width:8px; height:8px; border-radius:50%; background:var(--p200); transition:all .3s; }
-.psd.done { background:var(--p400); }
-.psd.active { background:var(--p600); transform:scale(1.25); }
+/* sidebar */
+.sbar{position:sticky;top:72px}
+.sbar-title{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p800);
+            margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.sbar-title::before{content:'';width:3px;height:14px;background:var(--p500);border-radius:2px}
+.srow{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--p100);font-size:13px}
+.srow:last-child{border-bottom:none}
+.slbl{color:var(--ink3);min-width:60px;flex-shrink:0;font-size:12px}
+.sval{color:var(--ink2);font-weight:500;word-break:break-all;font-size:13px}
+.back-btn{font-size:11px;color:var(--p500);text-decoration:underline;cursor:pointer;
+          margin-top:12px;display:inline-block;background:none;border:none;
+          font-family:'Noto Sans JP',sans-serif}
 
-/* ── Form wrap ── */
-.form-wrap {
-  position:relative; z-index:1;
-  max-width:720px; margin:0 auto;
-  padding:0 20px 80px;
-}
+/* booking */
+.bhd{display:flex;align-items:center;gap:13px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--p100)}
+.av{width:46px;height:46px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,var(--p600),var(--p400));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700}
+.tname{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700;color:var(--p900)}
+.tsub{font-size:12px;color:var(--ink3);margin-top:2px}
+.tz-box{display:flex;align-items:flex-start;gap:9px;background:var(--p100);border:1px solid var(--p200);
+        border-radius:var(--r);padding:11px 13px;margin-bottom:18px;font-size:12px;color:var(--p700);line-height:1.65}
 
-/* ── Section ── */
-.section {
-  background:var(--white); border:1px solid rgba(196,181,253,.3);
-  border-radius:var(--rxl); box-shadow:var(--sh);
-  padding:36px 40px; margin-bottom:20px;
-  display:none; animation:sectionIn .4s ease both;
-}
-.section.active { display:block; }
-@keyframes sectionIn {
-  from { opacity:0; transform:translateY(16px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-.section-header {
-  display:flex; align-items:center; gap:14px;
-  margin-bottom:28px; padding-bottom:20px;
-  border-bottom:1px solid var(--p100);
-}
-.section-num {
-  width:36px; height:36px; flex-shrink:0;
-  border-radius:50%; background:linear-gradient(135deg,var(--p600),var(--p400));
-  color:var(--white); display:flex; align-items:center; justify-content:center;
-  font-size:14px; font-weight:500; font-family:'Noto Serif JP',serif;
-}
-.section-title-group { flex:1; }
-.section-title {
-  font-family:'Noto Serif JP',serif;
-  font-size:18px; font-weight:700; color:var(--p800); line-height:1.3;
-}
-.section-sub { font-size:12px; color:var(--ink3); margin-top:3px; }
+/* calendar */
+.wnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.wlbl{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p900)}
+.nb{width:28px;height:28px;border-radius:50%;border:1px solid var(--p200);background:transparent;
+    cursor:pointer;color:var(--ink3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.nb:hover{border-color:var(--p400);color:var(--p600);background:var(--p100)}
+.nb:disabled{opacity:.3;cursor:not-allowed}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px}
+.ccol{display:flex;flex-direction:column;gap:3px}
+.cdh{text-align:center;font-size:10px;font-weight:500;color:var(--ink3);padding:3px 0;letter-spacing:.04em}
+.cdd{text-align:center;font-size:11px;font-weight:500;color:var(--ink3);padding:2px 0 5px}
+.cdd.today{color:var(--p500)}
+.slot{display:block;width:100%;padding:6px 2px;text-align:center;border:1px solid var(--p200);
+      border-radius:5px;background:var(--p50);font-family:'Noto Sans JP',sans-serif;
+      font-size:11px;color:var(--ink3);cursor:pointer;transition:all .17s;line-height:1.3}
+.slot:hover{border-color:var(--p500);color:var(--p700);background:var(--p150)}
+.slot.sel{border-color:var(--p600);background:var(--p600);color:#fff;font-weight:500}
+.slot.past{opacity:.3;cursor:not-allowed;pointer-events:none}
+.nos{font-size:10px;color:var(--ink4);text-align:center;padding:6px 1px}
+.ld{text-align:center;padding:28px 0;color:var(--ink3);font-size:13px}
+.sp{width:17px;height:17px;border:2px solid var(--p200);border-top-color:var(--p500);
+    border-radius:50%;animation:spin .7s linear infinite;display:inline-block;
+    margin-right:7px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.calerr{text-align:center;padding:20px 14px;font-size:13px;color:var(--err);
+        background:var(--errbg);border-radius:var(--r);border:1px solid rgba(220,38,38,.18);line-height:1.75}
+.durNote{text-align:center;font-size:11px;color:var(--ink4);margin-bottom:11px}
+.selinf{background:var(--p150);border:1px solid var(--p200);border-radius:var(--r);
+        padding:11px 13px;margin-bottom:14px;display:none}
+.selinf.show{display:block}
+.selinf-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--p800)}
+.selinf-row b{font-size:14px;font-weight:700;font-family:'Noto Serif JP',serif}
+.conf-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--p700),var(--p500));
+          color:#fff;border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;
+          font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;
+          box-shadow:0 4px 14px rgba(109,40,217,.22);letter-spacing:.03em}
+.conf-btn:hover{transform:translateY(-1px);box-shadow:0 7px 22px rgba(109,40,217,.32)}
+.conf-btn:disabled{background:var(--ink4);box-shadow:none;cursor:not-allowed;transform:none}
 
-/* ── Questions ── */
-.q-block { margin-bottom:28px; }
-.q-block:last-child { margin-bottom:0; }
-.q-label {
-  font-size:14px; font-weight:500; color:var(--ink2);
-  margin-bottom:10px; display:flex; align-items:flex-start; gap:6px; line-height:1.5;
-}
-.q-req { color:var(--p500); font-size:12px; flex-shrink:0; margin-top:2px; }
-.q-hint { font-size:12px; color:var(--ink3); margin-bottom:10px; font-weight:300; line-height:1.6; }
-.q-err { font-size:11px; color:#dc2626; margin-top:6px; display:none; }
-.q-err.show { display:block; }
+/* success */
+.succ{display:none;position:relative;z-index:1}
+.succ-in{max-width:560px;margin:36px auto;padding:0 20px}
+.succ-card{background:var(--white);border:1px solid rgba(196,181,253,.28);border-radius:var(--rxl);box-shadow:var(--sh);overflow:hidden}
+.succ-top{background:linear-gradient(135deg,var(--p900),var(--p700));padding:38px 32px;text-align:center}
+.succ-ico{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.16);
+          display:flex;align-items:center;justify-content:center;margin:0 auto 14px;
+          font-size:26px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0);opacity:0}}
+.succ-ttl{font-family:'Noto Serif JP',serif;font-size:21px;font-weight:700;color:#fff;margin-bottom:6px}
+.succ-sub{font-size:13px;color:var(--p300);line-height:1.7}
+.succ-body{padding:26px 30px}
+.sum-row{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid var(--p100);font-size:13px}
+.sum-row:last-child{border-bottom:none}
+.sum-lbl{color:var(--ink3);min-width:64px;flex-shrink:0;font-size:12px}
+.sum-val{color:var(--ink2);font-weight:500;word-break:break-all}
+.eml-note{background:var(--okbg);border:1px solid var(--okbdr);border-radius:var(--r);
+          padding:11px 13px;font-size:12px;color:var(--ok);line-height:1.65;margin-top:14px}
+.top-btn{display:block;text-align:center;margin-top:18px;padding:10px 22px;
+         border:1.5px solid var(--p200);border-radius:var(--r);font-size:13px;color:var(--p600);
+         cursor:pointer;background:transparent;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
+.top-btn:hover{background:var(--p100);border-color:var(--p400)}
 
-/* ── Text input / textarea ── */
-.q-input, .q-textarea {
-  width:100%; padding:12px 14px;
-  border:1.5px solid var(--p200); border-radius:var(--r);
-  background:var(--p50); font-family:'Noto Sans JP',sans-serif;
-  font-size:14px; color:var(--ink); outline:none;
-  transition:border-color .2s, box-shadow .2s, background .2s;
-  appearance:none;
-}
-.q-input:focus, .q-textarea:focus {
-  border-color:var(--p500); background:var(--white);
-  box-shadow:0 0 0 3px rgba(124,58,237,.1);
-}
-.q-input.err, .q-textarea.err { border-color:#dc2626; }
-.q-textarea { resize:vertical; min-height:88px; line-height:1.75; }
-
-/* ── Radio / checkbox options ── */
-.options-grid {
-  display:grid; gap:8px;
-  grid-template-columns:1fr;
-}
-.options-grid.cols2 { grid-template-columns:1fr 1fr; }
-.options-grid.cols3 { grid-template-columns:1fr 1fr 1fr; }
-
-.opt-label {
-  display:flex; align-items:center; gap:10px;
-  padding:11px 14px; border:1.5px solid var(--p200);
-  border-radius:var(--r); cursor:pointer;
-  background:var(--p50); transition:all .18s;
-  font-size:13px; color:var(--ink2); line-height:1.4;
-  position:relative; user-select:none;
-}
-.opt-label:hover { border-color:var(--p400); background:var(--p100); color:var(--p700); }
-.opt-label input[type=radio], .opt-label input[type=checkbox] {
-  position:absolute; opacity:0; width:0; height:0; pointer-events:none;
-}
-.opt-mark {
-  width:18px; height:18px; flex-shrink:0;
-  border:1.5px solid var(--p300); border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  transition:all .18s;
-}
-.opt-label.checkbox .opt-mark { border-radius:4px; }
-.opt-label.selected {
-  border-color:var(--p500); background:var(--p150); color:var(--p700);
-}
-.opt-label.selected .opt-mark {
-  background:var(--p500); border-color:var(--p500);
-}
-.opt-label.selected .opt-mark::after {
-  content:''; width:6px; height:6px;
-  border-radius:50%; background:var(--white);
-}
-.opt-label.checkbox.selected .opt-mark::after {
-  content:'✓'; font-size:11px; color:var(--white);
-  border-radius:0; width:auto; height:auto; background:none;
-}
-.opt-text { flex:1; }
-.opt-other-input {
-  display:none; width:100%; margin-top:8px;
-  padding:8px 10px; border:1px solid var(--p200);
-  border-radius:6px; font-family:'Noto Sans JP',sans-serif;
-  font-size:13px; color:var(--ink); background:var(--white); outline:none;
-}
-.opt-other-input:focus { border-color:var(--p500); box-shadow:0 0 0 2px rgba(124,58,237,.08); }
-.opt-label.selected .opt-other-input { display:block; }
-
-/* ── Teacher cards ── */
-.teacher-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.teacher-card {
-  border:1.5px solid var(--p200); border-radius:var(--rlg);
-  padding:20px; cursor:pointer; transition:all .2s;
-  background:var(--p50); position:relative; overflow:hidden;
-}
-.teacher-card::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:3px;
-  background:linear-gradient(90deg,var(--p600),var(--p400));
-  transform:scaleX(0); transition:transform .2s;
-}
-.teacher-card:hover { border-color:var(--p400); background:var(--p100); }
-.teacher-card:hover::before { transform:scaleX(1); }
-.teacher-card.selected { border-color:var(--p500); background:var(--p150); }
-.teacher-card.selected::before { transform:scaleX(1); }
-.teacher-card input[type=radio] { position:absolute; opacity:0; width:0; height:0; pointer-events:none; }
-.tc-avatar {
-  width:48px; height:48px; border-radius:50%;
-  background:linear-gradient(135deg,var(--p600),var(--p400));
-  color:var(--white); display:flex; align-items:center; justify-content:center;
-  font-family:'Noto Serif JP',serif; font-size:18px; font-weight:700;
-  margin-bottom:12px;
-}
-.tc-name {
-  font-family:'Noto Serif JP',serif;
-  font-size:16px; font-weight:700; color:var(--p800); margin-bottom:4px;
-}
-.tc-role { font-size:12px; color:var(--ink3); }
-.tc-check {
-  position:absolute; top:14px; right:14px;
-  width:22px; height:22px; border-radius:50%;
-  background:var(--p500); color:var(--white);
-  display:none; align-items:center; justify-content:center;
-  font-size:12px;
-}
-.teacher-card.selected .tc-check { display:flex; }
-
-/* ── Navigation buttons ── */
-.nav-row {
-  display:flex; justify-content:space-between; align-items:center;
-  margin-top:32px; padding-top:24px;
-  border-top:1px solid var(--p100);
-}
-.btn-back {
-  padding:10px 22px; border:1.5px solid var(--p200);
-  border-radius:var(--r); background:transparent;
-  font-family:'Noto Sans JP',sans-serif; font-size:13px; color:var(--ink3);
-  cursor:pointer; transition:all .2s;
-}
-.btn-back:hover { border-color:var(--p400); color:var(--p600); background:var(--p100); }
-.btn-next {
-  display:flex; align-items:center; gap:8px;
-  padding:12px 28px; border:none; border-radius:var(--r);
-  background:linear-gradient(135deg,var(--p700),var(--p500));
-  color:var(--white); font-family:'Noto Sans JP',sans-serif;
-  font-size:14px; font-weight:500; cursor:pointer;
-  transition:all .2s; box-shadow:0 4px 16px rgba(109,40,217,.25);
-  letter-spacing:.02em;
-}
-.btn-next:hover { transform:translateY(-1px); box-shadow:0 6px 24px rgba(109,40,217,.35); }
-.btn-next:active { transform:none; }
-.btn-next:disabled { background:var(--ink4); box-shadow:none; cursor:not-allowed; transform:none; }
-.btn-arrow { font-size:16px; transition:transform .2s; }
-.btn-next:hover .btn-arrow { transform:translateX(3px); }
-
-/* ── Submit button ── */
-.btn-submit {
-  width:100%; padding:16px;
-  border:none; border-radius:var(--r);
-  background:linear-gradient(135deg,var(--p700),var(--p500));
-  color:var(--white); font-family:'Noto Sans JP',sans-serif;
-  font-size:15px; font-weight:500; cursor:pointer;
-  transition:all .2s; box-shadow:0 4px 20px rgba(109,40,217,.3);
-  letter-spacing:.04em; margin-top:8px;
-}
-.btn-submit:hover { transform:translateY(-1px); box-shadow:0 8px 28px rgba(109,40,217,.4); }
-.btn-submit:disabled { background:var(--ink4); box-shadow:none; cursor:not-allowed; transform:none; }
-
-/* ── Animations ── */
-@keyframes fadeDown {
-  from { opacity:0; transform:translateY(-12px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-
-/* ── Responsive ── */
-@media (max-width:600px) {
-  .section { padding:24px 20px; }
-  .options-grid.cols2 { grid-template-columns:1fr; }
-  .options-grid.cols3 { grid-template-columns:1fr 1fr; }
-  .teacher-cards { grid-template-columns:1fr; }
-  .hero { padding:48px 20px 36px; }
-}
+/* overlay */
+.ovl{position:fixed;inset:0;background:rgba(10,2,25,.62);backdrop-filter:blur(5px);
+     display:none;align-items:center;justify-content:center;z-index:200}
+.ovl.show{display:flex}
+.obox{background:var(--white);border-radius:var(--rxl);padding:26px 28px;
+      max-width:440px;width:92%;max-height:88vh;overflow-y:auto;
+      box-shadow:0 8px 40px rgba(60,10,120,.2);animation:fu .28s ease}
+@keyframes fu{from{opacity:0;transform:translateY(11px)}to{opacity:1;transform:none}}
+.ottl{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--p900);margin-bottom:4px}
+.osub{font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6}
+.fr{margin-bottom:13px}
+.fl{display:block;font-size:11px;font-weight:500;letter-spacing:.07em;color:var(--ink2);margin-bottom:5px}
+.fi{width:100%;padding:9px 11px;border:1.5px solid var(--p200);border-radius:var(--r);
+    background:var(--p50);font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink);
+    outline:none;transition:border-color .2s,box-shadow .2s;appearance:none}
+.fi:focus{border-color:var(--p500);box-shadow:0 0 0 3px rgba(109,40,217,.1);background:#fff}
+.fe{font-size:11px;color:var(--err);margin-top:4px}
+.tent{display:grid;grid-template-columns:1fr auto;gap:5px;margin-bottom:6px;align-items:center}
+.tent .fi{font-size:12px;padding:7px 9px}
+.rmbtn{width:28px;height:28px;border-radius:var(--r);border:1px solid var(--p200);background:transparent;
+       cursor:pointer;color:var(--ink3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.rmbtn:hover{border-color:#fca5a5;color:var(--err);background:#fef2f2}
+.addlnk{font-size:12px;color:var(--p500);background:none;border:none;cursor:pointer;
+        text-decoration:underline;padding:0;font-family:'Noto Sans JP',sans-serif;display:block;margin-top:5px}
+.nbox{border-radius:var(--r);padding:9px 12px;font-size:12px;line-height:1.6;margin-bottom:13px}
+.nbox.warn{background:#fffbeb;border:1px solid #fbbf24;color:#78350f}
+.nbox.info{background:var(--p100);border:1px solid var(--p200);color:var(--p800)}
+.save-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--p700),var(--p500));
+          color:#fff;border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;
+          font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s}
+.save-btn:hover{opacity:.88}
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-badge">✦ MandStar Chinese</div>
-  <h1 class="hero-title">中国語レッスン<span>お申し込み</span>フォーム</h1>
-  <p class="hero-desc">
-    Mandstar Chineseの中国語レッスンにご興味をお持ちいただき、ありがとうございます。<br>
-    いただいたご回答をもとに、最適な学習プランをご提案いたします。
-  </p>
-  <div class="hero-meta">
-    <div class="hero-meta-item">⏱ 所要時間：約3分</div>
-    <div class="hero-meta-dot"></div>
-    <div class="hero-meta-item">🔒 個人情報は厳重に管理します</div>
-    <div class="hero-meta-dot"></div>
-    <div class="hero-meta-item">💬 無料体験レッスンあり</div>
+<!-- ⚙ button -->
+<button class="cfg-btn" onclick="openCfg()" title="設定"
+  style="position:fixed;bottom:18px;right:18px;z-index:100;box-shadow:var(--sh)">⚙</button>
+
+<!-- ══ CONFIG OVERLAY ══ -->
+<div class="ovl" id="ovl">
+  <div class="obox">
+    <div class="tb" style="margin:-26px -28px 20px;border-radius:20px 20px 0 0"></div>
+    <div class="ottl">管理者設定</div>
+    <div class="osub">Apps Script URLと担当講師を入力して保存してください。</div>
+    <div class="nbox warn">⚠️ 設定は管理者のみ変更してください。</div>
+    <div class="fr">
+      <label class="fl">Apps Script Web App URL <span style="color:var(--err)">*</span></label>
+      <input type="text" class="fi" id="cfgUrl"
+             placeholder="https://script.google.com/macros/s/.../exec">
+      <div class="fe" id="eUrl"></div>
+    </div>
+    <div class="fr">
+      <label class="fl">担当講師リスト <span style="color:var(--err)">*</span></label>
+      <div class="nbox info" style="margin-bottom:8px">
+        講師名は Code.gs の TEACHER_CALENDARS のキーと完全一致させてください。
+      </div>
+      <div id="tlist"></div>
+      <button class="addlnk" onclick="addTRow()">＋ 講師を追加</button>
+      <div class="fe" id="eTch"></div>
+    </div>
+    <button class="save-btn" onclick="saveCfg()">設定を保存</button>
   </div>
 </div>
 
-<!-- PROGRESS -->
-<div class="progress-wrap">
-  <div class="progress-inner">
-    <div class="progress-step-dots" id="stepDots"></div>
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
-    </div>
-    <div class="progress-label" id="progressLabel">1 / 3</div>
-  </div>
-</div>
-
-<!-- FORM -->
-<div class="form-wrap">
-
-  <!-- ══ SECTION 1: 基本情報 ══ -->
-  <div class="section active" id="sec1">
-    <div class="section-header">
-      <div class="section-num">1</div>
-      <div class="section-title-group">
-        <div class="section-title">基本情報</div>
-        <div class="section-sub">お名前とご連絡先をご入力ください</div>
-      </div>
-    </div>
-
-    <!-- 名前 -->
-    <div class="q-block">
-      <div class="q-label">お名前（ニックネーム可） <span class="q-req">*</span></div>
-      <div class="q-hint">読み方も一緒に教えていただけると助かります（例：田中花子 / タナカハナコ）</div>
-      <input type="text" class="q-input" id="q_name" placeholder="例：田中花子 / タナカハナコ">
-      <div class="q-err" id="err_name">お名前をご入力ください</div>
-    </div>
-
-    <!-- メール -->
-    <div class="q-block">
-      <div class="q-label">メールアドレス <span class="q-req">*</span></div>
-      <input type="email" class="q-input" id="q_email" placeholder="例：example@email.com">
-      <div class="q-err" id="err_email">有効なメールアドレスをご入力ください</div>
-    </div>
-
-    <!-- 性別 -->
-    <div class="q-block">
-      <div class="q-label">性別 <span class="q-req">*</span></div>
-      <div class="options-grid cols3">
-        <label class="opt-label">
-          <input type="radio" name="q_gender" value="女性">
-          <div class="opt-mark"></div>
-          <div class="opt-text">女性</div>
-        </label>
-        <label class="opt-label">
-          <input type="radio" name="q_gender" value="男性">
-          <div class="opt-mark"></div>
-          <div class="opt-text">男性</div>
-        </label>
-        <label class="opt-label">
-          <input type="radio" name="q_gender" value="回答しない">
-          <div class="opt-mark"></div>
-          <div class="opt-text">回答しない</div>
-        </label>
-      </div>
-      <div class="q-err" id="err_gender">性別を選択してください</div>
-    </div>
-
-    <!-- 年齢 -->
-    <div class="q-block">
-      <div class="q-label">年齢 <span class="q-req">*</span></div>
-      <div class="options-grid cols3">
-        <label class="opt-label"><input type="radio" name="q_age" value="20代"><div class="opt-mark"></div><div class="opt-text">20代</div></label>
-        <label class="opt-label"><input type="radio" name="q_age" value="30代"><div class="opt-mark"></div><div class="opt-text">30代</div></label>
-        <label class="opt-label"><input type="radio" name="q_age" value="40代"><div class="opt-mark"></div><div class="opt-text">40代</div></label>
-        <label class="opt-label"><input type="radio" name="q_age" value="50代"><div class="opt-mark"></div><div class="opt-text">50代</div></label>
-        <label class="opt-label"><input type="radio" name="q_age" value="60代"><div class="opt-mark"></div><div class="opt-text">60代</div></label>
-        <label class="opt-label"><input type="radio" name="q_age" value="70代"><div class="opt-mark"></div><div class="opt-text">70代</div></label>
-      </div>
-      <div class="q-err" id="err_age">年齢を選択してください</div>
-    </div>
-
-    <div class="nav-row">
-      <div></div>
-      <button class="btn-next" onclick="goNext(1)">次へ <span class="btn-arrow">→</span></button>
+<!-- ══ HEADER ══ -->
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="logo">
+      <div class="logo-dot">M</div>
+      MandStar Chinese
+      <span style="font-size:11px;color:var(--ink3);font-family:'Noto Sans JP',sans-serif;font-weight:300;">予約システム</span>
     </div>
   </div>
+</header>
 
-  <!-- ══ SECTION 2: 中国語レッスンについて ══ -->
-  <div class="section" id="sec2">
-    <div class="section-header">
-      <div class="section-num">2</div>
-      <div class="section-title-group">
-        <div class="section-title">中国語レッスンについて</div>
-        <div class="section-sub">現在のレベルと学習目標をお聞かせください</div>
+<!-- ══ MAIN ══ -->
+<div class="main" id="mainWrap">
+
+  <!-- LEFT -->
+  <div class="card">
+    <div class="tb"></div>
+    <div class="cb">
+      <div class="bhd">
+        <div class="av" id="tAv">—</div>
+        <div>
+          <div class="tname" id="tNm">担当講師</div>
+          <div class="tsub">ご希望の日時をお選びください（1時間単位）</div>
+        </div>
       </div>
-    </div>
 
-    <!-- HSK -->
-    <div class="q-block">
-      <div class="q-label">HSK 試験について</div>
-      <div class="q-hint">受験経験がある方は、取得級・合格時期など教えてください。初心者の方は「なし」とご記入ください。</div>
-      <input type="text" class="q-input" id="q_hsk" placeholder="例：HSK4級・2022年合格 / まだ受けていません">
-    </div>
-
-    <!-- レベル -->
-    <div class="q-block">
-      <div class="q-label">今の中国語レベル <span class="q-req">*</span></div>
-      <div class="options-grid">
-        <label class="opt-label"><input type="radio" name="q_level" value="完全初心者"><div class="opt-mark"></div><div class="opt-text">完全初心者</div></label>
-        <label class="opt-label"><input type="radio" name="q_level" value="少し勉強したことがある"><div class="opt-mark"></div><div class="opt-text">少し勉強したことがある</div></label>
-        <label class="opt-label"><input type="radio" name="q_level" value="日常会話が少しできる"><div class="opt-mark"></div><div class="opt-text">日常会話が少しできる</div></label>
-        <label class="opt-label"><input type="radio" name="q_level" value="仕事で簡単な会話ができる"><div class="opt-mark"></div><div class="opt-text">仕事で簡単な会話ができる</div></label>
-        <label class="opt-label"><input type="radio" name="q_level" value="会話はできるが自然さを改善したい"><div class="opt-mark"></div><div class="opt-text">会話はできるが自然さを改善したい</div></label>
-        <label class="opt-label"><input type="radio" name="q_level" value="上級"><div class="opt-mark"></div><div class="opt-text">上級</div></label>
+      <div class="tz-box">
+        🌍&ensp;<span>表示されている時刻は、あなたのタイムゾーン（<strong id="tzTxt">—</strong>）に合わせています。<br>
+        講師のカレンダーは日本時間（JST）で管理されていますが、自動変換して表示しています。</span>
       </div>
-      <div class="q-err" id="err_level">現在のレベルを選択してください</div>
-    </div>
 
-    <!-- 学習歴 -->
-    <div class="q-block">
-      <div class="q-label">これまでの学習歴 <span class="q-req">*</span></div>
-      <div class="options-grid cols2">
-        <label class="opt-label checkbox"><input type="checkbox" name="q_history" value="独学"><div class="opt-mark"></div><div class="opt-text">独学</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_history" value="アプリ学習"><div class="opt-mark"></div><div class="opt-text">アプリ学習</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_history" value="学校・大学"><div class="opt-mark"></div><div class="opt-text">学校・大学</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_history" value="オンラインレッスン"><div class="opt-mark"></div><div class="opt-text">オンラインレッスン</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_history" value="中国滞在経験あり"><div class="opt-mark"></div><div class="opt-text">中国滞在経験あり</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_history" value="初めて学ぶ"><div class="opt-mark"></div><div class="opt-text">初めて学ぶ</div></label>
+      <div class="wnav">
+        <button class="nb" id="prevBtn" onclick="shiftW(-1)">‹</button>
+        <div class="wlbl" id="wLbl">—</div>
+        <button class="nb" onclick="shiftW(1)">›</button>
       </div>
-      <div class="q-err" id="err_history">学習歴を選択してください</div>
-    </div>
 
-    <!-- スキル -->
-    <div class="q-block">
-      <div class="q-label">特に強化したいスキル <span class="q-req">*</span></div>
-      <div class="options-grid cols2">
-        <label class="opt-label checkbox"><input type="checkbox" name="q_skill" value="会話力"><div class="opt-mark"></div><div class="opt-text">会話力</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_skill" value="発音矯正"><div class="opt-mark"></div><div class="opt-text">発音矯正</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_skill" value="ビジネス中国語"><div class="opt-mark"></div><div class="opt-text">ビジネス中国語</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_skill" value="プレゼン・発表"><div class="opt-mark"></div><div class="opt-text">プレゼン・発表</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_skill" value="商談・交渉"><div class="opt-mark"></div><div class="opt-text">商談・交渉</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_skill" value="中国文化理解"><div class="opt-mark"></div><div class="opt-text">中国文化理解</div></label>
-        <label class="opt-label checkbox"><input type="checkbox" name="q_skill" value="SNS発信用中国語"><div class="opt-mark"></div><div class="opt-text">SNS発信用中国語</div></label>
-        <label class="opt-label checkbox has-other">
-          <input type="checkbox" name="q_skill" value="その他">
-          <div class="opt-mark"></div>
-          <div class="opt-text" style="flex:1">
-            その他
-            <input type="text" class="opt-other-input" id="skill_other" placeholder="具体的にご記入ください">
-          </div>
-        </label>
+      <div id="calArea"><div class="ld"><span class="sp"></span>カレンダーを読み込み中…</div></div>
+
+      <div class="durNote">各枠は1時間単位です。</div>
+
+      <div class="selinf" id="selInf">
+        <div class="selinf-row">📅&ensp;<b id="selTxt">—</b></div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:4px;padding-left:20px">
+          この時間帯を選択しました。「予約を確定する」で完了します。
+        </div>
       </div>
-      <div class="q-err" id="err_skill">強化したいスキルを選択してください</div>
-    </div>
 
-    <!-- 目的 -->
-    <div class="q-block">
-      <div class="q-label">中国語を学ぶ最大の目的は？ <span class="q-req">*</span></div>
-      <textarea class="q-textarea" id="q_purpose" placeholder="例：仕事で中国のパートナーと直接話せるようになりたい / 中国への旅行をもっと楽しみたい"></textarea>
-      <div class="q-err" id="err_purpose">目的をご記入ください</div>
-    </div>
-
-    <!-- ゴール -->
-    <div class="q-block">
-      <div class="q-label">理想のゴール <span class="q-req">*</span></div>
-      <div class="q-hint">3ヶ月後・半年後など、どんな状態になりたいか教えてください</div>
-      <textarea class="q-textarea" id="q_goal" placeholder="例：半年後にHSK4級に合格したい / 3ヶ月後に簡単な日常会話ができるようになりたい" style="min-height:72px"></textarea>
-      <div class="q-err" id="err_goal">ゴールをご記入ください</div>
-    </div>
-
-    <div class="nav-row">
-      <button class="btn-back" onclick="goBack(2)">← 戻る</button>
-      <button class="btn-next" onclick="goNext(2)">次へ <span class="btn-arrow">→</span></button>
-    </div>
-  </div>
-
-  <!-- ══ SECTION 3: 学習スタイル・希望 ══ -->
-  <div class="section" id="sec3">
-    <div class="section-header">
-      <div class="section-num">3</div>
-      <div class="section-title-group">
-        <div class="section-title">学習スタイル・ご希望</div>
-        <div class="section-sub">理想のレッスンスタイルを教えてください</div>
-      </div>
-    </div>
-
-    <!-- レッスン中の言語 -->
-    <div class="q-block">
-      <div class="q-label">レッスン中、どんな風に話すのがいいですか <span class="q-req">*</span></div>
-      <div class="options-grid">
-        <label class="opt-label"><input type="radio" name="q_lang" value="できるだけ中国語で！"><div class="opt-mark"></div><div class="opt-text">できるだけ中国語で！（分からなくてもチャレンジしたい）</div></label>
-        <label class="opt-label"><input type="radio" name="q_lang" value="中国語メイン、難しいところは日本語で"><div class="opt-mark"></div><div class="opt-text">中国語メインで、難しいところは日本語で説明してほしい</div></label>
-        <label class="opt-label"><input type="radio" name="q_lang" value="日本語メインで少しずつ中国語を"><div class="opt-mark"></div><div class="opt-text">日本語メインで、少しずつ中国語を混ぜてほしい</div></label>
-        <label class="opt-label has-other">
-          <input type="radio" name="q_lang" value="その他">
-          <div class="opt-mark"></div>
-          <div class="opt-text" style="flex:1">
-            その他
-            <input type="text" class="opt-other-input" id="lang_other" placeholder="具体的にご記入ください">
-          </div>
-        </label>
-      </div>
-      <div class="q-err" id="err_lang">選択してください</div>
-    </div>
-
-    <!-- 学習ペース -->
-    <div class="q-block">
-      <div class="q-label">希望学習ペース <span class="q-req">*</span></div>
-      <div class="options-grid cols2">
-        <label class="opt-label"><input type="radio" name="q_pace" value="週1回"><div class="opt-mark"></div><div class="opt-text">週1回</div></label>
-        <label class="opt-label"><input type="radio" name="q_pace" value="週2回"><div class="opt-mark"></div><div class="opt-text">週2回</div></label>
-        <label class="opt-label"><input type="radio" name="q_pace" value="集中短期"><div class="opt-mark"></div><div class="opt-text">集中短期（短期間で一気に）</div></label>
-        <label class="opt-label"><input type="radio" name="q_pace" value="相談したい"><div class="opt-mark"></div><div class="opt-text">相談したい</div></label>
-      </div>
-      <div class="q-err" id="err_pace">学習ペースを選択してください</div>
-    </div>
-
-    <!-- 担当講師 -->
-    <div class="q-block">
-      <div class="q-label">希望担当講師 <span class="q-req">*</span></div>
-      <div class="teacher-cards">
-        <label class="teacher-card">
-          <input type="radio" name="q_teacher" value="Vita先生">
-          <div class="tc-avatar">V</div>
-          <div class="tc-name">Vita 先生</div>
-          <div class="tc-role">MandStar Chinese 講師</div>
-          <div class="tc-check">✓</div>
-        </label>
-        <label class="teacher-card">
-          <input type="radio" name="q_teacher" value="Tong先生">
-          <div class="tc-avatar">T</div>
-          <div class="tc-name">Tong 先生</div>
-          <div class="tc-role">MandStar Chinese 講師</div>
-          <div class="tc-check">✓</div>
-        </label>
-      </div>
-      <div class="q-err" id="err_teacher">希望担当講師を選択してください</div>
-    </div>
-
-    <!-- 期待すること -->
-    <div class="q-block">
-      <div class="q-label">先生に特に期待することはありますか？ <span class="q-req">*</span></div>
-      <div class="q-hint">「間違いをしっかり直してほしい」「発音練習をたくさんしてほしい」など、遠慮なく教えてください</div>
-      <textarea class="q-textarea" id="q_expect" placeholder="例：発音練習を多めにしてほしい / 間違いはその場ですぐ指摘してほしい"></textarea>
-      <div class="q-err" id="err_expect">ご記入ください</div>
-    </div>
-
-    <div class="nav-row">
-      <button class="btn-back" onclick="goBack(3)">← 戻る</button>
-      <button class="btn-submit" id="submitBtn" onclick="submitForm()">
-        アンケートを送信して予約へ進む →
+      <button class="conf-btn" id="confBtn"
+              style="opacity:.4;pointer-events:none" onclick="doBook()">
+        予約を確定する →
       </button>
     </div>
   </div>
 
-</div><!-- /form-wrap -->
+  <!-- RIGHT sidebar -->
+  <div class="card sbar">
+    <div class="tb"></div>
+    <div class="cb">
+      <div class="sbar-title">入力済みの情報</div>
+      <div class="srow"><span class="slbl">お名前</span><span class="sval" id="si-name">—</span></div>
+      <div class="srow"><span class="slbl">メール</span><span class="sval" id="si-email">—</span></div>
+      <div class="srow"><span class="slbl">担当講師</span><span class="sval" id="si-teacher">—</span></div>
+      <div class="srow"><span class="slbl">レベル</span><span class="sval" id="si-level">—</span></div>
+      <div class="srow"><span class="slbl">ペース</span><span class="sval" id="si-pace">—</span></div>
+      <div class="srow"><span class="slbl">目的</span>
+        <span class="sval" id="si-purpose" style="font-size:12px;color:var(--ink3)">—</span></div>
+      <button class="back-btn" onclick="history.back()">← フォームに戻る</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ SUCCESS ══ -->
+<div class="succ" id="succWrap">
+  <div class="succ-in">
+    <div class="succ-card">
+      <div class="succ-top">
+        <div class="succ-ico">✓</div>
+        <div class="succ-ttl">ご予約が完了しました</div>
+        <div class="succ-sub">確認メールをお送りしました。<br>講師からのご連絡をお待ちください。</div>
+      </div>
+      <div class="succ-body">
+        <div style="font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p800);margin-bottom:12px">予約内容</div>
+        <div id="sumRows"></div>
+        <div class="eml-note">✉️ ご登録のメールアドレスに確認メールをお送りしました。<br>迷惑メールフォルダもご確認ください。</div>
+        <button class="top-btn" onclick="location.href='index.html'">← トップページへ戻る</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-// ── State ─────────────────────────────────────────────────────
-let currentSection = 1;
-const TOTAL_SECTIONS = 3;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  設定はすべてブラウザの⚙ボタンから行います。
+//  コードの編集は不要です。
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const SLOT_MIN = 60;   // スロット単位（分）
+const CFG_KEY  = 'msc_cfg_v5';  // localStorage キー
 
-// ── Progress ──────────────────────────────────────────────────
-function updateProgress(step) {
-  const pct = ((step - 1) / TOTAL_SECTIONS) * 100;
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = step + ' / ' + TOTAL_SECTIONS;
-  const dots = document.getElementById('stepDots');
-  dots.innerHTML = '';
-  for (let i = 1; i <= TOTAL_SECTIONS; i++) {
-    const d = document.createElement('div');
-    d.className = 'psd' + (i < step ? ' done' : i === step ? ' active' : '');
-    dots.appendChild(d);
+let cfg      = { url:'', teachers:[] };  // 設定
+let formData = {};                        // 問卷データ
+let S        = { ti:0, slot:null, wo:0 }; // 状態
+const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  起動
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function boot() {
+  // タイムゾーン表示
+  document.getElementById('tzTxt').textContent = userTz;
+
+  // ① 問卷データを sessionStorage から取得
+  try {
+    const raw = sessionStorage.getItem('mandstar_form');
+    if (raw) formData = JSON.parse(raw);
+  } catch(e) {}
+
+  // ② 設定を localStorage から読み込む
+  try {
+    const saved = localStorage.getItem(CFG_KEY);
+    if (saved) cfg = JSON.parse(saved);
+  } catch(e) {}
+
+  // ③ サイドバーに問卷データを表示
+  fillSidebar();
+
+  // ④ 設定未完了なら設定画面を開く
+  if (!cfg.url || !cfg.teachers.length) {
+    openCfg();
+    return;
+  }
+
+  // ⑤ 問卷で選択した講師を自動選択
+  selectTeacher();
+
+  // ⑥ カレンダー表示
+  updWeekLabel();
+  fetchSlots();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  サイドバーに問卷データを表示
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function fillSidebar() {
+  const set = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = v || '—';
+  };
+  set('si-name',    formData.name);
+  set('si-email',   formData.email);
+  set('si-teacher', formData.teacher);
+  set('si-level',   formData.level);
+  set('si-pace',    formData.pace);
+  set('si-purpose', formData.purpose);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  問卷で選択した講師に自動で合わせる
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function selectTeacher() {
+  const ft = (formData.teacher || '').replace('先生', '').trim();
+  let idx  = cfg.teachers.findIndex(t => {
+    const tn = (t.name || '').replace('先生', '').trim();
+    return tn === ft || t.name === formData.teacher;
+  });
+  if (idx < 0) idx = 0; // 一致しなければ先頭
+  S.ti = idx;
+
+  const t = cfg.teachers[S.ti];
+  if (!t) return;
+  // アバター（名前の最初の1文字）
+  const initial = (t.name || '').replace('先生', '').replace(/\s/g, '').slice(0, 1) || '?';
+  document.getElementById('tAv').textContent = initial;
+  document.getElementById('tNm').textContent = t.name || '—';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  設定オーバーレイ
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openCfg() {
+  document.getElementById('cfgUrl').value = cfg.url || '';
+  const tl = document.getElementById('tlist');
+  tl.innerHTML = '';
+  const list = cfg.teachers.length ? cfg.teachers : [{ name:'', email:'' }];
+  list.forEach(t => addTRow(t.name, t.email));
+  document.getElementById('ovl').classList.add('show');
+}
+
+function addTRow(n='', e='') {
+  const d  = document.createElement('div');
+  d.className = 'tent';
+  d.innerHTML =
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+       <input type="text"  class="fi tn" placeholder="講師名（例:Vita先生）" value="${esc(n)}">
+       <input type="email" class="fi te" placeholder="Gmailアドレス"          value="${esc(e)}">
+     </div>
+     <button class="rmbtn"
+       onclick="if(document.querySelectorAll('.tent').length>1)this.closest('.tent').remove()"
+       title="削除">✕</button>`;
+  document.getElementById('tlist').appendChild(d);
+}
+
+function saveCfg() {
+  const url = document.getElementById('cfgUrl').value.trim();
+  const ts  = [...document.querySelectorAll('.tent')].map(r => ({
+    name:  r.querySelector('.tn').value.trim(),
+    email: r.querySelector('.te').value.trim()
+  })).filter(t => t.name);
+
+  // バリデーション
+  document.getElementById('eUrl').textContent = '';
+  document.getElementById('eTch').textContent = '';
+  let ok = true;
+  if (!url) {
+    document.getElementById('eUrl').textContent = 'Apps Script URLを入力してください';
+    ok = false;
+  }
+  if (!ts.length) {
+    document.getElementById('eTch').textContent = '講師を1名以上登録してください';
+    ok = false;
+  }
+  if (!ok) return;
+
+  cfg = { url, teachers: ts };
+  localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+  document.getElementById('ovl').classList.remove('show');
+
+  // 設定後に再描画
+  selectTeacher();
+  updWeekLabel();
+  S.wo = 0;
+  fetchSlots();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  週ナビゲーション
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function getWeekRange() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const mon = new Date(today);
+  mon.setDate(today.getDate() - ((today.getDay() + 6) % 7) + S.wo * 7);
+  const sun = new Date(mon);
+  sun.setDate(mon.getDate() + 6);
+  sun.setHours(23, 59, 59, 999);
+  return { start: mon, end: sun };
+}
+
+function updWeekLabel() {
+  const { start: s } = getWeekRange();
+  const end = new Date(s); end.setDate(s.getDate() + 6);
+  const fmt = d => `${d.getMonth()+1}/${d.getDate()}`;
+  document.getElementById('wLbl').textContent =
+    `${s.getFullYear()}年 ${fmt(s)}（月）〜 ${fmt(end)}（日）`;
+  document.getElementById('prevBtn').disabled = (S.wo <= 0);
+}
+
+function shiftW(d) {
+  if (d < 0 && S.wo <= 0) return;
+  S.wo += d;
+  S.slot = null;
+  document.getElementById('selInf').classList.remove('show');
+  document.getElementById('confBtn').style.cssText = 'opacity:.4;pointer-events:none';
+  updWeekLabel();
+  fetchSlots();
+}
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  スロット取得（Apps Script 経由）
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function fetchSlots() {
+  const t = cfg.teachers[S.ti];
+  if (!t || !t.name) {
+    document.getElementById('calArea').innerHTML =
+      '<div class="calerr">講師が設定されていません。<br>右下の⚙ボタンから設定してください。</div>';
+    return;
+  }
+  if (!cfg.url) {
+    document.getElementById('calArea').innerHTML =
+      '<div class="calerr">Apps Script URLが設定されていません。<br>右下の⚙ボタンから設定してください。</div>';
+    return;
+  }
+
+  document.getElementById('calArea').innerHTML =
+    '<div class="ld"><span class="sp"></span>予約可能時間を取得中…</div>';
+
+  const { start } = getWeekRange();
+  const url = cfg.url
+    + '?action=slots'
+    + '&teacher=' + encodeURIComponent(t.name)
+    + '&weekStart=' + encodeURIComponent(start.toISOString());
+
+  try {
+    const res  = await fetch(url);
+    const json = await res.json();
+
+    if (json.error) {
+      showCalErr('カレンダーの取得に失敗しました', json.error);
+      return;
+    }
+
+    const slots = splitSlots(json.slots || [], SLOT_MIN);
+    renderCal(slots, start);
+
+  } catch (err) {
+    showCalErr('通信エラー', err.message);
   }
 }
 
-// ── Section navigation ────────────────────────────────────────
-function showSection(n) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('sec' + n).classList.add('active');
-  currentSection = n;
-  updateProgress(n);
+function showCalErr(title, detail) {
+  document.getElementById('calArea').innerHTML =
+    `<div class="calerr">
+      <strong>${title}</strong><br>
+      <small style="color:var(--ink3);font-size:11px">${detail}</small><br><br>
+      <button onclick="fetchSlots()"
+        style="padding:6px 14px;border:1px solid rgba(220,38,38,.3);border-radius:6px;
+               background:transparent;cursor:pointer;font-size:12px;color:var(--err)">
+        再試行
+      </button>
+    </div>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  長い予定を SLOT_MIN 分単位に分割
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function splitSlots(events, minLen) {
+  const ms  = minLen * 60000;
+  const out = [];
+  events.forEach(ev => {
+    const s = new Date(ev.start);
+    const e = new Date(ev.end);
+    if (e - s <= 0) return;
+    if (e - s <= ms) { out.push({ ...ev, _s: s, _e: e }); return; }
+    let cur = new Date(s);
+    while (cur < e) {
+      const ne = new Date(cur.getTime() + ms);
+      if (ne > e) break;
+      out.push({ ...ev, id: ev.id + '_' + cur.getTime(), _s: new Date(cur), _e: new Date(ne) });
+      cur = ne;
+    }
+  });
+  return out.sort((a, b) => a._s - b._s);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  カレンダーグリッド描画
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderCal(slots, weekStart) {
+  const days = ['月','火','水','木','金','土','日'];
+  const now  = new Date();
+
+  // ユーザーのローカル時刻でスロットの日を判定
+  function localDate(dt) {
+    const s = dt.toLocaleString('sv-SE', { timeZone: userTz }); // "YYYY-MM-DD HH:MM:SS"
+    return s.slice(0, 10); // "YYYY-MM-DD"
+  }
+  function localTime(dt) {
+    const s = dt.toLocaleString('sv-SE', { timeZone: userTz });
+    return s.slice(11, 16); // "HH:MM"
+  }
+
+  let html = '<div class="cgrid">';
+
+  for (let d = 0; d < 7; d++) {
+    const day = new Date(weekStart);
+    day.setDate(weekStart.getDate() + d);
+
+    const isToday = localDate(day) === localDate(now);
+    const isPast  = day < now && !isToday;
+    const dayKey  = localDate(day);
+
+    const ds = slots.filter(sl => localDate(sl._s) === dayKey);
+
+    html += `<div class="ccol">
+      <div class="cdh">${days[d]}</div>
+      <div class="cdd${isToday ? ' today' : ''}">${day.getDate()}</div>`;
+
+    if (isPast && !ds.length) {
+      html += '<div class="nos">—</div>';
+    } else if (!ds.length) {
+      html += '<div class="nos">空き<br>なし</div>';
+    } else {
+      ds.forEach(sl => {
+        const ts  = localTime(sl._s);
+        const te  = localTime(sl._e);
+        const m   = sl._s.getMonth() + 1;
+        const day2 = sl._s.getDate();
+        const past = sl._e < now;
+        html += `<button class="slot${past ? ' past' : ''}"
+          data-s="${sl._s.toISOString()}"
+          data-e="${sl._e.toISOString()}"
+          data-ts="${ts}" data-te="${te}"
+          data-m="${m}" data-d="${day2}"
+          onclick="pickSlot(this)">
+          ${ts}<br><span style="font-size:9px;opacity:.72">${te}</span>
+        </button>`;
+      });
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  document.getElementById('calArea').innerHTML = html;
+}
+
+function pickSlot(btn) {
+  document.querySelectorAll('.slot').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  S.slot = { start: btn.dataset.s, end: btn.dataset.e };
+
+  const si = document.getElementById('selInf');
+  si.classList.add('show');
+  document.getElementById('selTxt').textContent =
+    `${btn.dataset.m}月${btn.dataset.d}日　${btn.dataset.ts} 〜 ${btn.dataset.te}（${userTz}）`;
+
+  document.getElementById('confBtn').style.cssText = 'opacity:1;pointer-events:auto';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  予約確定（Apps Script へ POST）
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function doBook() {
+  if (!S.slot) return;
+  const btn = document.getElementById('confBtn');
+  btn.disabled = true;
+  btn.textContent = '予約処理中…';
+
+  const t = cfg.teachers[S.ti];
+  const payload = {
+    _type:        'booking',
+    teacherName:  t.name,
+    studentName:  formData.name    || '',
+    studentEmail: formData.email   || '',
+    startTime:    S.slot.start,
+    endTime:      S.slot.end,
+    timezone:     userTz,
+    level:        formData.level   || '',
+    history:      formData.history || '',
+    skill:        formData.skill   || '',
+    purpose:      formData.purpose || '',
+    goal:         formData.goal    || '',
+    pace:         formData.pace    || '',
+    expect:       formData.expect  || '',
+    lang:         formData.lang    || '',
+  };
+
+  try {
+    // Content-Type は text/plain にする（no-cors + application/json はプリフライトで失敗）
+    await fetch(cfg.url, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body:    JSON.stringify(payload)
+    });
+    // no-cors のため response は読めないが、例外なければ成功とみなす
+    showSuccess(t);
+  } catch (err) {
+    alert('予約の送信に失敗しました。\n' + err.message);
+    btn.disabled = false;
+    btn.textContent = '予約を確定する →';
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  完了画面
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function showSuccess(t) {
+  const st = new Date(S.slot.start);
+  const en = new Date(S.slot.end);
+  const toLocal = (d, fmt) => d.toLocaleString('ja-JP',
+    { timeZone: userTz, ...(fmt === 'date'
+      ? { year:'numeric', month:'long', day:'numeric', weekday:'short' }
+      : { hour:'2-digit', minute:'2-digit', hour12: false }) });
+
+  document.getElementById('mainWrap').style.display = 'none';
+  document.getElementById('succWrap').style.display = 'block';
+
+  const rows = [
+    ['お名前',   formData.name    || '—'],
+    ['メール',   formData.email   || '—'],
+    ['担当講師', t.name           || '—'],
+    ['日付',     toLocal(st, 'date')],
+    ['時間',     toLocal(st, 'time') + ' 〜 ' + toLocal(en, 'time') + '（' + userTz + '）'],
+    ...(formData.level   ? [['レベル',  formData.level]]   : []),
+    ...(formData.purpose ? [['学習目的', formData.purpose]] : []),
+  ];
+  document.getElementById('sumRows').innerHTML = rows.map(([l, v]) =>
+    `<div class="sum-row">
+       <span class="sum-lbl">${l}</span>
+       <span class="sum-val">${v}</span>
+     </div>`
+  ).join('');
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function goNext(from) {
-  if (!validateSection(from)) return;
-  showSection(from + 1);
-}
-function goBack(from) { showSection(from - 1); }
-
-// ── Validation ────────────────────────────────────────────────
-function validateSection(n) {
-  let ok = true;
-  const show = (id, show) => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('show', show);
-  };
-  const mark = (id, isErr) => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('err', isErr);
-  };
-
-  if (n === 1) {
-    const name = document.getElementById('q_name').value.trim();
-    const email = document.getElementById('q_email').value.trim();
-    const gender = document.querySelector('input[name=q_gender]:checked');
-    const age = document.querySelector('input[name=q_age]:checked');
-    if (!name) { show('err_name', true); mark('q_name', true); ok = false; }
-    else { show('err_name', false); mark('q_name', false); }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { show('err_email', true); mark('q_email', true); ok = false; }
-    else { show('err_email', false); mark('q_email', false); }
-    if (!gender) { show('err_gender', true); ok = false; } else show('err_gender', false);
-    if (!age)    { show('err_age', true);    ok = false; } else show('err_age', false);
-  }
-  if (n === 2) {
-    const level   = document.querySelector('input[name=q_level]:checked');
-    const history = document.querySelectorAll('input[name=q_history]:checked');
-    const skill   = document.querySelectorAll('input[name=q_skill]:checked');
-    const purpose = document.getElementById('q_purpose').value.trim();
-    const goal    = document.getElementById('q_goal').value.trim();
-    if (!level)          { show('err_level', true);   ok = false; } else show('err_level', false);
-    if (!history.length) { show('err_history', true); ok = false; } else show('err_history', false);
-    if (!skill.length)   { show('err_skill', true);   ok = false; } else show('err_skill', false);
-    if (!purpose) { show('err_purpose', true); mark('q_purpose', true); ok = false; }
-    else { show('err_purpose', false); mark('q_purpose', false); }
-    if (!goal)    { show('err_goal', true);    mark('q_goal', true);    ok = false; }
-    else { show('err_goal', false); mark('q_goal', false); }
-  }
-  if (n === 3) {
-    const lang    = document.querySelector('input[name=q_lang]:checked');
-    const pace    = document.querySelector('input[name=q_pace]:checked');
-    const teacher = document.querySelector('input[name=q_teacher]:checked');
-    const expect  = document.getElementById('q_expect').value.trim();
-    if (!lang)    { show('err_lang',    true); ok = false; } else show('err_lang', false);
-    if (!pace)    { show('err_pace',    true); ok = false; } else show('err_pace', false);
-    if (!teacher) { show('err_teacher', true); ok = false; } else show('err_teacher', false);
-    if (!expect)  { show('err_expect',  true); mark('q_expect', true); ok = false; }
-    else { show('err_expect', false); mark('q_expect', false); }
-  }
-  return ok;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  ユーティリティ
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── Option selection — all driven by change events ────────────
-function initAllOptions() {
-  // Radio buttons
-  document.querySelectorAll('.opt-label input[type=radio]').forEach(inp => {
-    inp.addEventListener('change', function() {
-      const name = this.name;
-      // Deselect all in same group
-      document.querySelectorAll(`input[name="${name}"]`).forEach(el => {
-        el.closest('.opt-label').classList.remove('selected');
-      });
-      // Select this one
-      const label = this.closest('.opt-label');
-      label.classList.add('selected');
-      // Focus other-input if present
-      const other = label.querySelector('.opt-other-input');
-      if (other) setTimeout(() => other.focus(), 50);
-    });
-  });
-
-  // Teacher cards (radio)
-  document.querySelectorAll('.teacher-card input[type=radio]').forEach(inp => {
-    inp.addEventListener('change', function() {
-      document.querySelectorAll('.teacher-card').forEach(c => c.classList.remove('selected'));
-      this.closest('.teacher-card').classList.add('selected');
-    });
-  });
-
-  // Checkboxes
-  document.querySelectorAll('.opt-label.checkbox input[type=checkbox]').forEach(inp => {
-    inp.addEventListener('change', function() {
-      const label = this.closest('.opt-label');
-      if (this.checked) {
-        label.classList.add('selected');
-        const other = label.querySelector('.opt-other-input');
-        if (other) setTimeout(() => other.focus(), 50);
-      } else {
-        label.classList.remove('selected');
-      }
-    });
-  });
-
-  // Prevent other-input clicks from propagating and toggling parent
-  document.querySelectorAll('.opt-other-input').forEach(inp => {
-    inp.addEventListener('click', e => e.stopPropagation());
-    inp.addEventListener('mousedown', e => e.stopPropagation());
-  });
-}
-
-// Keep these as no-ops for safety (onclick removed from HTML but just in case)
-function selectRadio() {}
-function toggleCheck() {}
-function selectTeacher() {}
-
-// ── Collect form data ─────────────────────────────────────────
-function collectData() {
-  const get = id => (document.getElementById(id) || {}).value || '';
-  const getRadio = name => {
-    const el = document.querySelector(`input[name=${name}]:checked`);
-    if (!el) return '';
-    const val = el.value;
-    if (val === 'その他') {
-      const otherMap = { q_lang: 'lang_other', q_skill: 'skill_other' };
-      const otherId = otherMap[name];
-      if (otherId) return 'その他：' + (get(otherId) || '');
-    }
-    return val;
-  };
-  const getChecks = name => {
-    return [...document.querySelectorAll(`input[name=${name}]:checked`)]
-      .map(el => el.value).join('、');
-  };
-
-  return {
-    name:     get('q_name').trim(),
-    email:    get('q_email').trim(),
-    gender:   getRadio('q_gender'),
-    age:      getRadio('q_age'),
-    hsk:      get('q_hsk').trim() || 'なし',
-    level:    getRadio('q_level'),
-    history:  getChecks('q_history'),
-    skill:    getChecks('q_skill'),
-    purpose:  get('q_purpose').trim(),
-    goal:     get('q_goal').trim(),
-    lang:     getRadio('q_lang'),
-    pace:     getRadio('q_pace'),
-    teacher:  getRadio('q_teacher'),
-    expect:   get('q_expect').trim(),
-  };
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  ★ Apps Script URL — localStorage から読み込む
-//  （booking.html の⚙設定画面で入力した URL を共有する）
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function getScriptUrl() {
-  try {
-    const c = JSON.parse(localStorage.getItem('msc_cfg_v5') || '{}');
-    return c.url || '';
-  } catch(e) { return ''; }
-}
-
-// ── Submit ────────────────────────────────────────────────────
-async function submitForm() {
-  if (!validateSection(3)) return;
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = '送信中…';
-  const data = collectData();
-
-  // sessionStorageに保存（予約ページで使用）
-  sessionStorage.setItem('mandstar_form', JSON.stringify(data));
-
-  // Apps Script に送信（メール + Sheets 記録）
-  // Content-Type は text/plain 必須（application/json だとno-corsでプリフライト発生）
-  const url = getScriptUrl();
-  if (url) {
-    try {
-      await fetch(url, {
-        method:  'POST',
-        mode:    'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-        body:    JSON.stringify(data)
-      });
-    } catch (e) {
-      console.warn('Apps Script送信エラー（予約は続行します）:', e);
-    }
-  }
-
-  // 予約ページへ遷移
-  window.location.href = 'booking.html';
-}
-
-// ── Init ──────────────────────────────────────────────────────
-updateProgress(1);
-initAllOptions();
+// 起動
+boot();
 </script>
 </body>
 </html>
