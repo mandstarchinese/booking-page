@@ -322,7 +322,7 @@ body::before {
   <div class="hero-badge">✦ MandStar Chinese</div>
   <h1 class="hero-title">中国語レッスン<span>お申し込み</span>フォーム</h1>
   <p class="hero-desc">
-    Mandstar Chineseの中国語レッスンにご興味をお持ちいただき、ありがとうございます。<br>
+   Mandstar Chineseの中国語レッスンにご興味をお持ちいただき、ありがとうございます。<br>
     いただいたご回答をもとに、最適な学習プランをご提案いたします。
   </p>
   <div class="hero-meta">
@@ -546,9 +546,9 @@ body::before {
       <div class="q-err" id="err_pace">学習ペースを選択してください</div>
     </div>
 
-    <!-- 希望担当講師 -->
+    <!-- 担当講師 -->
     <div class="q-block">
-      <div class="q-label">希望担当講師 <span class="q-req">*</span></div>
+      <div class="q-label">担当講師 <span class="q-req">*</span></div>
       <div class="teacher-cards">
         <label class="teacher-card">
           <input type="radio" name="q_teacher" value="Vita先生">
@@ -565,7 +565,7 @@ body::before {
           <div class="tc-check">✓</div>
         </label>
       </div>
-      <div class="q-err" id="err_teacher">希望担当講師を選択してください</div>
+      <div class="q-err" id="err_teacher">担当講師を選択してください</div>
     </div>
 
     <!-- 期待すること -->
@@ -763,9 +763,15 @@ function collectData() {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  ★ Apps Script URL をここに貼り付けてください ★
+//  ★ Apps Script URL — localStorage から読み込む
+//  （booking.html の⚙設定画面で入力した URL を共有する）
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx18u3qyeaHvtjKOHikpnmECOeNp1ediXH5C44mIEnbyeCKxFiNHItPrOXSgb2m0TPd/exec';  // 例: 'https://script.google.com/macros/s/xxx/exec'
+function getScriptUrl() {
+  try {
+    const c = JSON.parse(localStorage.getItem('msc_cfg_v5') || '{}');
+    return c.url || '';
+  } catch(e) { return ''; }
+}
 
 // ── Submit ────────────────────────────────────────────────────
 async function submitForm() {
@@ -779,15 +785,15 @@ async function submitForm() {
   sessionStorage.setItem('mandstar_form', JSON.stringify(data));
 
   // Apps Script に送信（メール + Sheets 記録）
-  // ★ Content-Type は text/plain 必須
-  //    application/json にすると no-cors モードでプリフライトが発生して失敗する
-  if (APPS_SCRIPT_URL) {
+  // Content-Type は text/plain 必須（application/json だとno-corsでプリフライト発生）
+  const url = getScriptUrl();
+  if (url) {
     try {
-      await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode:   'no-cors',
+      await fetch(url, {
+        method:  'POST',
+        mode:    'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-        body: JSON.stringify(data)
+        body:    JSON.stringify(data)
       });
     } catch (e) {
       console.warn('Apps Script送信エラー（予約は続行します）:', e);
