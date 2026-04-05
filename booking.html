@@ -646,14 +646,10 @@ async function doBook() {
   };
 
   try {
-    // Content-Type は text/plain にする（no-cors + application/json はプリフライトで失敗）
-    await fetch(cfg.url, {
-      method:  'POST',
-      mode:    'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-      body:    JSON.stringify(payload)
-    });
-    // no-cors のため response は読めないが、例外なければ成功とみなす
+    // GETリクエストでパラメータを送信（POSTのbodyはno-corsで届かない場合があるため）
+    const params = new URLSearchParams({ _data: JSON.stringify(payload) });
+    const getUrl = cfg.url + '?action=booking&' + params.toString();
+    await fetch(getUrl, { mode: 'no-cors' });
     showSuccess(t);
   } catch (err) {
     alert('予約の送信に失敗しました。\n' + err.message);
