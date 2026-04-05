@@ -3,40 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MandStar Chinese レッスン予約</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<title>MandStar Chinese — レッスン予約</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--p900:#1a0835;--p800:#2d1260;--p700:#4c1d95;--p600:#6d28d9;--p500:#7c3aed;--p400:#a78bfa;--p300:#c4b5fd;--p200:#ddd6fe;--p150:#ede9fe;--p100:#f0ebff;--p50:#faf8ff;--ink:#0f0520;--ink2:#3b1f6b;--ink3:#7c6a9e;--ink4:#b8aed4;--bg:#faf8ff;--white:#fff;--ok:#059669;--okbg:#ecfdf5;--err:#dc2626;--errbg:#fef2f2;--r:8px;--rlg:14px;--rxl:20px;--sh:0 1px 4px rgba(76,29,149,.07),0 4px 20px rgba(76,29,149,.05);}
+:root{
+  --p900:#1a0835;--p800:#2d1260;--p700:#4c1d95;--p600:#6d28d9;
+  --p500:#7c3aed;--p400:#a78bfa;--p300:#c4b5fd;--p200:#ddd6fe;
+  --p150:#ede9fe;--p100:#f0ebff;--p50:#faf8ff;
+  --ink:#0f0520;--ink2:#3b1f6b;--ink3:#7c6a9e;--ink4:#b8aed4;
+  --bg:#faf8ff;--white:#fff;
+  --ok:#059669;--okbg:#ecfdf5;--okbdr:#a7f3d0;
+  --err:#dc2626;--errbg:#fef2f2;
+  --r:8px;--rlg:14px;--rxl:20px;
+  --sh:0 1px 4px rgba(76,29,149,.07),0 4px 20px rgba(76,29,149,.05);
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(109,40,217,.07),transparent 55%),radial-gradient(ellipse 50% 60% at 100% 100%,rgba(124,58,237,.05),transparent 55%)}
-.hdr{position:relative;z-index:10;background:rgba(250,248,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,181,253,.25);padding:0 24px}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(109,40,217,.07),transparent 55%),
+             radial-gradient(ellipse 50% 60% at 100% 100%,rgba(124,58,237,.05),transparent 55%)}
+
+/* header */
+.hdr{position:relative;z-index:10;background:rgba(250,248,255,.92);backdrop-filter:blur(12px);
+     border-bottom:1px solid rgba(196,181,253,.25);padding:0 24px}
 .hdr-in{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:54px}
 .logo{display:flex;align-items:center;gap:9px;font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;color:var(--p700)}
-.logo-dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--p700),var(--p400));display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
-.cfg-btn{position:fixed;bottom:18px;right:18px;z-index:100;width:34px;height:34px;border-radius:50%;background:var(--white);border:1px solid var(--p200);cursor:pointer;color:var(--ink3);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:var(--sh)}
+.logo-dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--p700),var(--p400));
+          display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+.cfg-btn{width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid var(--p200);
+         cursor:pointer;color:var(--ink3);font-size:15px;display:flex;align-items:center;justify-content:center;
+         transition:all .2s;z-index:100}
 .cfg-btn:hover{border-color:var(--p400);color:var(--p500);background:var(--p100)}
-.main{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:28px 20px 80px;display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
+
+/* main layout */
+.main{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:28px 20px 80px;
+      display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
 @media(max-width:740px){.main{grid-template-columns:1fr}}
-.card{background:var(--white);border:1px solid rgba(196,181,253,.28);border-radius:var(--rxl);box-shadow:var(--sh);overflow:hidden}
+
+/* card */
+.card{background:var(--white);border:1px solid rgba(196,181,253,.28);border-radius:var(--rxl);
+      box-shadow:var(--sh);overflow:hidden}
 .tb{height:3px;background:linear-gradient(90deg,var(--p700),var(--p400))}
 .cb{padding:26px 30px 30px}
+
+/* sidebar */
 .sbar{position:sticky;top:72px}
-.sbar-title{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p800);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.sbar-title{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p800);
+            margin-bottom:14px;display:flex;align-items:center;gap:7px}
 .sbar-title::before{content:'';width:3px;height:14px;background:var(--p500);border-radius:2px}
 .srow{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--p100);font-size:13px}
 .srow:last-child{border-bottom:none}
 .slbl{color:var(--ink3);min-width:60px;flex-shrink:0;font-size:12px}
 .sval{color:var(--ink2);font-weight:500;word-break:break-all;font-size:13px}
-.back-btn{font-size:11px;color:var(--p500);text-decoration:underline;cursor:pointer;margin-top:12px;display:inline-block;background:none;border:none;font-family:'Noto Sans JP',sans-serif}
+.back-btn{font-size:11px;color:var(--p500);text-decoration:underline;cursor:pointer;
+          margin-top:12px;display:inline-block;background:none;border:none;
+          font-family:'Noto Sans JP',sans-serif}
+
+/* booking */
 .bhd{display:flex;align-items:center;gap:13px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--p100)}
-.av{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700}
+.av{width:46px;height:46px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,var(--p600),var(--p400));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700}
 .tname{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700;color:var(--p900)}
 .tsub{font-size:12px;color:var(--ink3);margin-top:2px}
-.tz-box{display:flex;align-items:flex-start;gap:9px;background:var(--p100);border:1px solid var(--p200);border-radius:var(--r);padding:11px 13px;margin-bottom:18px;font-size:12px;color:var(--p700);line-height:1.65}
+.tz-box{display:flex;align-items:flex-start;gap:9px;background:var(--p100);border:1px solid var(--p200);
+        border-radius:var(--r);padding:11px 13px;margin-bottom:18px;font-size:12px;color:var(--p700);line-height:1.65}
+
+/* calendar */
 .wnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
 .wlbl{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p900)}
-.nb{width:28px;height:28px;border-radius:50%;border:1px solid var(--p200);background:transparent;cursor:pointer;color:var(--ink3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.nb{width:28px;height:28px;border-radius:50%;border:1px solid var(--p200);background:transparent;
+    cursor:pointer;color:var(--ink3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .nb:hover{border-color:var(--p400);color:var(--p600);background:var(--p100)}
 .nb:disabled{opacity:.3;cursor:not-allowed}
 .cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px}
@@ -44,27 +82,41 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .cdh{text-align:center;font-size:10px;font-weight:500;color:var(--ink3);padding:3px 0;letter-spacing:.04em}
 .cdd{text-align:center;font-size:11px;font-weight:500;color:var(--ink3);padding:2px 0 5px}
 .cdd.today{color:var(--p500)}
-.slot{display:block;width:100%;padding:6px 2px;text-align:center;border:1px solid var(--p200);border-radius:5px;background:var(--p50);font-family:'Noto Sans JP',sans-serif;font-size:11px;color:var(--ink3);cursor:pointer;transition:all .17s;line-height:1.3}
+.slot{display:block;width:100%;padding:6px 2px;text-align:center;border:1px solid var(--p200);
+      border-radius:5px;background:var(--p50);font-family:'Noto Sans JP',sans-serif;
+      font-size:11px;color:var(--ink3);cursor:pointer;transition:all .17s;line-height:1.3}
 .slot:hover{border-color:var(--p500);color:var(--p700);background:var(--p150)}
 .slot.sel{border-color:var(--p600);background:var(--p600);color:#fff;font-weight:500}
 .slot.past{opacity:.3;cursor:not-allowed;pointer-events:none}
 .nos{font-size:10px;color:var(--ink4);text-align:center;padding:6px 1px}
 .ld{text-align:center;padding:28px 0;color:var(--ink3);font-size:13px}
-.sp{width:17px;height:17px;border:2px solid var(--p200);border-top-color:var(--p500);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:7px;vertical-align:middle}
+.sp{width:17px;height:17px;border:2px solid var(--p200);border-top-color:var(--p500);
+    border-radius:50%;animation:spin .7s linear infinite;display:inline-block;
+    margin-right:7px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-.calerr{text-align:center;padding:20px 14px;font-size:13px;color:var(--err);background:var(--errbg);border-radius:var(--r);border:1px solid rgba(220,38,38,.18);line-height:1.75}
-.selinf{background:var(--p150);border:1px solid var(--p200);border-radius:var(--r);padding:11px 13px;margin-bottom:14px;display:none}
+.calerr{text-align:center;padding:20px 14px;font-size:13px;color:var(--err);
+        background:var(--errbg);border-radius:var(--r);border:1px solid rgba(220,38,38,.18);line-height:1.75}
+.durNote{text-align:center;font-size:11px;color:var(--ink4);margin-bottom:11px}
+.selinf{background:var(--p150);border:1px solid var(--p200);border-radius:var(--r);
+        padding:11px 13px;margin-bottom:14px;display:none}
 .selinf.show{display:block}
 .selinf-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--p800)}
 .selinf-row b{font-size:14px;font-weight:700;font-family:'Noto Serif JP',serif}
-.conf-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--p700),var(--p500));color:#fff;border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(109,40,217,.22);letter-spacing:.03em}
+.conf-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--p700),var(--p500));
+          color:#fff;border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;
+          font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;
+          box-shadow:0 4px 14px rgba(109,40,217,.22);letter-spacing:.03em}
 .conf-btn:hover{transform:translateY(-1px);box-shadow:0 7px 22px rgba(109,40,217,.32)}
 .conf-btn:disabled{background:var(--ink4);box-shadow:none;cursor:not-allowed;transform:none}
+
+/* success */
 .succ{display:none;position:relative;z-index:1}
 .succ-in{max-width:560px;margin:36px auto;padding:0 20px}
 .succ-card{background:var(--white);border:1px solid rgba(196,181,253,.28);border-radius:var(--rxl);box-shadow:var(--sh);overflow:hidden}
 .succ-top{background:linear-gradient(135deg,var(--p900),var(--p700));padding:38px 32px;text-align:center}
-.succ-ico{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+.succ-ico{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.16);
+          display:flex;align-items:center;justify-content:center;margin:0 auto 14px;
+          font-size:26px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
 @keyframes pop{from{transform:scale(0);opacity:0}}
 .succ-ttl{font-family:'Noto Serif JP',serif;font-size:21px;font-weight:700;color:#fff;margin-bottom:6px}
 .succ-sub{font-size:13px;color:var(--p300);line-height:1.7}
@@ -73,298 +125,583 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .sum-row:last-child{border-bottom:none}
 .sum-lbl{color:var(--ink3);min-width:64px;flex-shrink:0;font-size:12px}
 .sum-val{color:var(--ink2);font-weight:500;word-break:break-all}
-.eml-note{background:var(--okbg);border:1px solid var(--okbdr);border-radius:var(--r);padding:11px 13px;font-size:12px;color:var(--ok);line-height:1.65;margin-top:14px}
-.top-btn{display:block;text-align:center;margin-top:18px;padding:10px 22px;border:1.5px solid var(--p200);border-radius:var(--r);font-size:13px;color:var(--p600);cursor:pointer;background:transparent;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
+.eml-note{background:var(--okbg);border:1px solid var(--okbdr);border-radius:var(--r);
+          padding:11px 13px;font-size:12px;color:var(--ok);line-height:1.65;margin-top:14px}
+.top-btn{display:block;text-align:center;margin-top:18px;padding:10px 22px;
+         border:1.5px solid var(--p200);border-radius:var(--r);font-size:13px;color:var(--p600);
+         cursor:pointer;background:transparent;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
 .top-btn:hover{background:var(--p100);border-color:var(--p400)}
-.ovl{position:fixed;inset:0;background:rgba(10,2,25,.62);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:200}
+
+/* overlay */
+.ovl{position:fixed;inset:0;background:rgba(10,2,25,.62);backdrop-filter:blur(5px);
+     display:none;align-items:center;justify-content:center;z-index:200}
 .ovl.show{display:flex}
-.obox{background:var(--white);border-radius:var(--rxl);padding:26px 28px;max-width:440px;width:92%;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(60,10,120,.2);animation:fu .28s ease}
+.obox{background:var(--white);border-radius:var(--rxl);padding:26px 28px;
+      max-width:440px;width:92%;max-height:88vh;overflow-y:auto;
+      box-shadow:0 8px 40px rgba(60,10,120,.2);animation:fu .28s ease}
 @keyframes fu{from{opacity:0;transform:translateY(11px)}to{opacity:1;transform:none}}
 .ottl{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--p900);margin-bottom:4px}
 .osub{font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6}
 .fr{margin-bottom:13px}
 .fl{display:block;font-size:11px;font-weight:500;letter-spacing:.07em;color:var(--ink2);margin-bottom:5px}
-.fi{width:100%;padding:9px 11px;border:1.5px solid var(--p200);border-radius:var(--r);background:var(--p50);font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none}
+.fi{width:100%;padding:9px 11px;border:1.5px solid var(--p200);border-radius:var(--r);
+    background:var(--p50);font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink);
+    outline:none;transition:border-color .2s,box-shadow .2s;appearance:none}
 .fi:focus{border-color:var(--p500);box-shadow:0 0 0 3px rgba(109,40,217,.1);background:#fff}
 .fe{font-size:11px;color:var(--err);margin-top:4px}
 .tent{display:grid;grid-template-columns:1fr auto;gap:5px;margin-bottom:6px;align-items:center}
 .tent .fi{font-size:12px;padding:7px 9px}
-.rmbtn{width:28px;height:28px;border-radius:var(--r);border:1px solid var(--p200);background:transparent;cursor:pointer;color:var(--ink3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.rmbtn{width:28px;height:28px;border-radius:var(--r);border:1px solid var(--p200);background:transparent;
+       cursor:pointer;color:var(--ink3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .rmbtn:hover{border-color:#fca5a5;color:var(--err);background:#fef2f2}
-.addlnk{font-size:12px;color:var(--p500);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-family:'Noto Sans JP',sans-serif;display:block;margin-top:5px}
+.addlnk{font-size:12px;color:var(--p500);background:none;border:none;cursor:pointer;
+        text-decoration:underline;padding:0;font-family:'Noto Sans JP',sans-serif;display:block;margin-top:5px}
 .nbox{border-radius:var(--r);padding:9px 12px;font-size:12px;line-height:1.6;margin-bottom:13px}
 .nbox.warn{background:#fffbeb;border:1px solid #fbbf24;color:#78350f}
 .nbox.info{background:var(--p100);border:1px solid var(--p200);color:var(--p800)}
-.save-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--p700),var(--p500));color:#fff;border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s}
+.save-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--p700),var(--p500));
+          color:#fff;border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;
+          font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s}
 .save-btn:hover{opacity:.88}
 </style>
 </head>
 <body>
 
-<button class="cfg-btn" onclick="openCfg()">⚙</button>
+<!-- ⚙ button -->
+<button class="cfg-btn" onclick="openCfg()" title="設定"
+  style="position:fixed;bottom:18px;right:18px;z-index:100;box-shadow:var(--sh)">⚙</button>
 
+<!-- ══ CONFIG OVERLAY ══ -->
 <div class="ovl" id="ovl">
   <div class="obox">
-    <div class="tb" style="margin:-26px -28px 20px;"></div>
+    <div class="tb" style="margin:-26px -28px 20px;border-radius:20px 20px 0 0"></div>
     <div class="ottl">管理者設定</div>
-    <div class="osub">Web App URL と講師名を設定してください</div>
-    <div class="nbox warn">⚠️ 設定は必ず正しく入力してください</div>
+    <div class="osub">Apps Script URLと担当講師を入力して保存してください。</div>
+    <div class="nbox warn">⚠️ 設定は管理者のみ変更してください。</div>
     <div class="fr">
-      <label class="fl">Web App URL</label>
-      <input class="fi" id="cfgUrl" placeholder="https://script.google.com/.../exec">
+      <label class="fl">Apps Script Web App URL <span style="color:var(--err)">*</span></label>
+      <input type="text" class="fi" id="cfgUrl"
+             placeholder="https://script.google.com/macros/s/.../exec">
       <div class="fe" id="eUrl"></div>
     </div>
     <div class="fr">
-      <label class="fl">講師リスト</label>
+      <label class="fl">担当講師リスト <span style="color:var(--err)">*</span></label>
+      <div class="nbox info" style="margin-bottom:8px">
+        講師名は Code.gs の TEACHER_CALENDARS のキーと完全一致させてください。
+      </div>
       <div id="tlist"></div>
-      <button class="addlnk" onclick="addTRow()">＋ 講師追加</button>
+      <button class="addlnk" onclick="addTRow()">＋ 講師を追加</button>
       <div class="fe" id="eTch"></div>
     </div>
-    <button class="save-btn" onclick="saveCfg()">保存</button>
+    <button class="save-btn" onclick="saveCfg()">設定を保存</button>
   </div>
 </div>
 
+<!-- ══ HEADER ══ -->
 <header class="hdr">
   <div class="hdr-in">
     <div class="logo">
       <div class="logo-dot">M</div>
       MandStar Chinese
+      <span style="font-size:11px;color:var(--ink3);font-family:'Noto Sans JP',sans-serif;font-weight:300;">予約システム</span>
     </div>
   </div>
 </header>
 
-<div class="main" id="main">
+<!-- ══ MAIN ══ -->
+<div class="main" id="mainWrap">
+
+  <!-- LEFT -->
   <div class="card">
     <div class="tb"></div>
     <div class="cb">
       <div class="bhd">
-        <div class="av" id="av">?</div>
+        <div class="av" id="tAv">—</div>
         <div>
-          <div class="tname" id="tname">読込中…</div>
-          <div class="tsub">日時を選択して予約</div>
+          <div class="tname" id="tNm">担当講師</div>
+          <div class="tsub">ご希望の日時をお選びください（1時間単位）</div>
         </div>
       </div>
+
       <div class="tz-box">
-        🌍 現在のタイムゾーン：<strong id="tzName"></strong>
+        🌍&ensp;<span>表示されている時刻は、あなたのタイムゾーン（<strong id="tzTxt">—</strong>）に合わせています。<br>
+        講師のカレンダーは日本時間（JST）で管理されていますが、自動変換して表示しています。</span>
       </div>
+
       <div class="wnav">
-        <button class="nb" id="prev" onclick="prevWeek()">&lt;</button>
-        <div class="wlbl" id="weekLabel"></div>
-        <button class="nb" onclick="nextWeek()">&gt;</button>
+        <button class="nb" id="prevBtn" onclick="shiftW(-1)">‹</button>
+        <div class="wlbl" id="wLbl">—</div>
+        <button class="nb" onclick="shiftW(1)">›</button>
       </div>
-      <div id="cal" style="min-height:200px;"></div>
-      <div class="selinf" id="sel"></div>
-      <button class="conf-btn" id="bookBtn" disabled>予約を確定する</button>
+
+      <div id="calArea"><div class="ld"><span class="sp"></span>カレンダーを読み込み中…</div></div>
+
+      <div class="durNote">各枠は1時間単位です。</div>
+
+      <div class="selinf" id="selInf">
+        <div class="selinf-row">📅&ensp;<b id="selTxt">—</b></div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:4px;padding-left:20px">
+          この時間帯を選択しました。「予約を確定する」で完了します。
+        </div>
+      </div>
+
+      <button class="conf-btn" id="confBtn"
+              style="opacity:.4;pointer-events:none" onclick="doBook()">
+        予約を確定する →
+      </button>
     </div>
   </div>
 
+  <!-- RIGHT sidebar -->
   <div class="card sbar">
     <div class="tb"></div>
     <div class="cb">
-      <div class="sbar-title">予約情報</div>
-      <div class="srow"><span class="slbl">名前</span><span class="sval" id="sName">-</span></div>
-      <div class="srow"><span class="slbl">メール</span><span class="sval" id="sMail">-</span></div>
-      <div class="srow"><span class="slbl">講師</span><span class="sval" id="sTeacher">-</span></div>
-      <div class="srow"><span class="slbl">レベル</span><span class="sval" id="sLevel">-</span></div>
-      <div class="srow"><span class="slbl">目的</span><span class="sval" id="sPurpose">-</span></div>
-      <button class="back-btn" onclick="history.back()">← 戻る</button>
+      <div class="sbar-title">入力済みの情報</div>
+      <div class="srow"><span class="slbl">お名前</span><span class="sval" id="si-name">—</span></div>
+      <div class="srow"><span class="slbl">メール</span><span class="sval" id="si-email">—</span></div>
+      <div class="srow"><span class="slbl">担当講師</span><span class="sval" id="si-teacher">—</span></div>
+      <div class="srow"><span class="slbl">レベル</span><span class="sval" id="si-level">—</span></div>
+      <div class="srow"><span class="slbl">ペース</span><span class="sval" id="si-pace">—</span></div>
+      <div class="srow"><span class="slbl">目的</span>
+        <span class="sval" id="si-purpose" style="font-size:12px;color:var(--ink3)">—</span></div>
+      <button class="back-btn" onclick="history.back()">← フォームに戻る</button>
     </div>
   </div>
+
 </div>
 
-<div class="succ" id="done">
+<!-- ══ SUCCESS ══ -->
+<div class="succ" id="succWrap">
   <div class="succ-in">
     <div class="succ-card">
       <div class="succ-top">
         <div class="succ-ico">✓</div>
-        <div class="succ-ttl">予約完了</div>
-        <div class="succ-sub">確認メールを送信しました</div>
+        <div class="succ-ttl">ご予約が完了しました</div>
+        <div class="succ-sub">確認メールをお送りしました。<br>講師からのご連絡をお待ちください。</div>
       </div>
       <div class="succ-body">
-        <div id="sum"></div>
-        <div class="eml-note">メールが届かない場合は迷惑メールをご確認ください</div>
-        <button class="top-btn" onclick="location.href='index.html'">トップへ</button>
+        <div style="font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p800);margin-bottom:12px">予約内容</div>
+        <div id="sumRows"></div>
+        <div class="eml-note">✉️ ご登録のメールアドレスに確認メールをお送りしました。<br>迷惑メールフォルダもご確認ください。</div>
+        <button class="top-btn" onclick="location.href='index.html'">← トップページへ戻る</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const CFG_KEY = "msc_booking";
-let cfg = { url:"", teachers:[] };
-let user = JSON.parse(sessionStorage.getItem("msc_form") || "{}");
-let week = 0;
-let selected = null;
-const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  設定はすべてブラウザの⚙ボタンから行います。
+//  コードの編集は不要です。
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const SLOT_MIN = 60;   // スロット単位（分）
+const CFG_KEY  = 'msc_cfg_v5';  // localStorage キー
 
-window.onload = boot;
+let cfg      = { url:'', teachers:[] };  // 設定
+let formData = {};                        // 問卷データ
+let S        = { ti:0, slot:null, wo:0 }; // 状態
+const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-function boot(){
-  loadCfg();
-  renderUser();
-  loadWeek(0);
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  起動
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function boot() {
+  // タイムゾーン表示
+  document.getElementById('tzTxt').textContent = userTz;
+
+  // ① 問卷データを sessionStorage から取得
+  try {
+    const raw = sessionStorage.getItem('mandstar_form');
+    if (raw) formData = JSON.parse(raw);
+  } catch(e) {}
+
+  // ② 設定を localStorage から読み込む
+  try {
+    const saved = localStorage.getItem(CFG_KEY);
+    if (saved) cfg = JSON.parse(saved);
+  } catch(e) {}
+
+  // ③ サイドバーに問卷データを表示
+  fillSidebar();
+
+  // ④ 設定未完了なら設定画面を開く
+  if (!cfg.url || !cfg.teachers.length) {
+    openCfg();
+    return;
+  }
+
+  // ⑤ 問卷で選択した講師を自動選択
+  selectTeacher();
+
+  // ⑥ カレンダー表示
+  updWeekLabel();
+  fetchSlots();
 }
 
-function loadCfg(){
-  const s = localStorage.getItem(CFG_KEY);
-  if(s) cfg = JSON.parse(s);
-  if(!cfg.url || !cfg.teachers.length) openCfg();
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  サイドバーに問卷データを表示
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function fillSidebar() {
+  const set = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = v || '—';
+  };
+  set('si-name',    formData.name);
+  set('si-email',   formData.email);
+  set('si-teacher', formData.teacher);
+  set('si-level',   formData.level);
+  set('si-pace',    formData.pace);
+  set('si-purpose', formData.purpose);
 }
 
-function renderUser(){
-  document.getElementById("sName").textContent = user.name || "-";
-  document.getElementById("sMail").textContent = user.email || "-";
-  document.getElementById("sTeacher").textContent = user.teacher || "-";
-  document.getElementById("sLevel").textContent = user.level || "-";
-  document.getElementById("sPurpose").textContent = user.purpose || "-";
-  document.getElementById("tzName").textContent = tz;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  問卷で選択した講師に自動で合わせる
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function selectTeacher() {
+  const ft = (formData.teacher || '').replace('先生', '').trim();
+  let idx  = cfg.teachers.findIndex(t => {
+    const tn = (t.name || '').replace('先生', '').trim();
+    return tn === ft || t.name === formData.teacher;
+  });
+  if (idx < 0) idx = 0; // 一致しなければ先頭
+  S.ti = idx;
+
+  const t = cfg.teachers[S.ti];
+  if (!t) return;
+  // アバター（名前の最初の1文字）
+  const initial = (t.name || '').replace('先生', '').replace(/\s/g, '').slice(0, 1) || '?';
+  document.getElementById('tAv').textContent = initial;
+  document.getElementById('tNm').textContent = t.name || '—';
 }
 
-function openCfg(){
-  document.getElementById("cfgUrl").value = cfg.url || "";
-  const list = document.getElementById("tlist");
-  list.innerHTML = "";
-  const ts = cfg.teachers.length ? cfg.teachers : [{name:""}];
-  ts.forEach(t=>addTRow(t.name));
-  document.getElementById("ovl").classList.add("show");
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  設定オーバーレイ
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openCfg() {
+  document.getElementById('cfgUrl').value = cfg.url || '';
+  const tl = document.getElementById('tlist');
+  tl.innerHTML = '';
+  const list = cfg.teachers.length ? cfg.teachers : [{ name:'', email:'' }];
+  list.forEach(t => addTRow(t.name, t.email));
+  document.getElementById('ovl').classList.add('show');
 }
 
-function addTRow(n=""){
-  const d = document.createElement("div");
-  d.className = "tent";
-  d.innerHTML = `
-    <input class="fi tName" placeholder="講師名" value="${esc(n)}">
-    <button class="rmbtn" onclick="this.parentElement.remove()">✕</button>
-  `;
-  document.getElementById("tlist").appendChild(d);
+function addTRow(n='', e='') {
+  const d  = document.createElement('div');
+  d.className = 'tent';
+  d.innerHTML =
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+       <input type="text"  class="fi tn" placeholder="講師名（例:Vita先生）" value="${esc(n)}">
+       <input type="email" class="fi te" placeholder="Gmailアドレス"          value="${esc(e)}">
+     </div>
+     <button class="rmbtn"
+       onclick="if(document.querySelectorAll('.tent').length>1)this.closest('.tent').remove()"
+       title="削除">✕</button>`;
+  document.getElementById('tlist').appendChild(d);
 }
 
-function saveCfg(){
-  const url = document.getElementById("cfgUrl").value.trim();
-  const ts = [...document.querySelectorAll(".tName")].map(i=>i.value.trim()).filter(Boolean);
-  if(!url || ts.length===0){ alert("URLと講師を設定してください"); return; }
-  cfg = { url, teachers:ts.map(n=>({name:n})) };
+function saveCfg() {
+  const url = document.getElementById('cfgUrl').value.trim();
+  const ts  = [...document.querySelectorAll('.tent')].map(r => ({
+    name:  r.querySelector('.tn').value.trim(),
+    email: r.querySelector('.te').value.trim()
+  })).filter(t => t.name);
+
+  // バリデーション
+  document.getElementById('eUrl').textContent = '';
+  document.getElementById('eTch').textContent = '';
+  let ok = true;
+  if (!url) {
+    document.getElementById('eUrl').textContent = 'Apps Script URLを入力してください';
+    ok = false;
+  }
+  if (!ts.length) {
+    document.getElementById('eTch').textContent = '講師を1名以上登録してください';
+    ok = false;
+  }
+  if (!ok) return;
+
+  cfg = { url, teachers: ts };
   localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
-  document.getElementById("ovl").classList.remove("show");
-  location.reload();
+  document.getElementById('ovl').classList.remove('show');
+
+  // 設定後に再描画
+  selectTeacher();
+  updWeekLabel();
+  S.wo = 0;
+  fetchSlots();
 }
 
-function loadWeek(offset){
-  week = offset;
-  const now = new Date();
-  const mon = new Date(now);
-  mon.setDate(now.getDate() - now.getDay() + 1 + 7*week);
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  週ナビゲーション
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function getWeekRange() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const mon = new Date(today);
+  mon.setDate(today.getDate() - ((today.getDay() + 6) % 7) + S.wo * 7);
   const sun = new Date(mon);
-  sun.setDate(mon.getDate() +6);
-  document.getElementById("weekLabel").textContent = fmtDay(mon)+" ～ "+fmtDay(sun);
-  fetchSlots(mon);
+  sun.setDate(mon.getDate() + 6);
+  sun.setHours(23, 59, 59, 999);
+  return { start: mon, end: sun };
 }
 
-function prevWeek(){ loadWeek(week-1); }
-function nextWeek(){ loadWeek(week+1); }
+function updWeekLabel() {
+  const { start: s } = getWeekRange();
+  const end = new Date(s); end.setDate(s.getDate() + 6);
+  const fmt = d => `${d.getMonth()+1}/${d.getDate()}`;
+  document.getElementById('wLbl').textContent =
+    `${s.getFullYear()}年 ${fmt(s)}（月）〜 ${fmt(end)}（日）`;
+  document.getElementById('prevBtn').disabled = (S.wo <= 0);
+}
 
-async function fetchSlots(mon){
-  const cal = document.getElementById("cal");
-  cal.innerHTML = '<div class="ld"><span class="sp"></span>読込中…</div>';
-  const teacher = user.teacher || cfg.teachers[0]?.name;
-  try{
-    const u = new URL(cfg.url);
-    u.searchParams.set("action","slots");
-    u.searchParams.set("teacher",teacher);
-    u.searchParams.set("weekStart",mon.toISOString());
-    const r = await fetch(u);
-    const j = await r.json();
-    if(j.error) throw new Error(j.error);
-    renderCal(j.slots || []);
-  }catch(e){
-    cal.innerHTML = '<div class="calerr">'+e.message+'</div>';
+function shiftW(d) {
+  if (d < 0 && S.wo <= 0) return;
+  S.wo += d;
+  S.slot = null;
+  document.getElementById('selInf').classList.remove('show');
+  document.getElementById('confBtn').style.cssText = 'opacity:.4;pointer-events:none';
+  updWeekLabel();
+  fetchSlots();
+}
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  スロット取得（Apps Script 経由）
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function fetchSlots() {
+  const t = cfg.teachers[S.ti];
+  if (!t || !t.name) {
+    document.getElementById('calArea').innerHTML =
+      '<div class="calerr">講師が設定されていません。<br>右下の⚙ボタンから設定してください。</div>';
+    return;
+  }
+  if (!cfg.url) {
+    document.getElementById('calArea').innerHTML =
+      '<div class="calerr">Apps Script URLが設定されていません。<br>右下の⚙ボタンから設定してください。</div>';
+    return;
+  }
+
+  document.getElementById('calArea').innerHTML =
+    '<div class="ld"><span class="sp"></span>予約可能時間を取得中…</div>';
+
+  const { start } = getWeekRange();
+  const url = cfg.url
+    + '?action=slots'
+    + '&teacher=' + encodeURIComponent(t.name)
+    + '&weekStart=' + encodeURIComponent(start.toISOString());
+
+  try {
+    const res  = await fetch(url);
+    const json = await res.json();
+
+    if (json.error) {
+      showCalErr('カレンダーの取得に失敗しました', json.error);
+      return;
+    }
+
+    const slots = splitSlots(json.slots || [], SLOT_MIN);
+    renderCal(slots, start);
+
+  } catch (err) {
+    showCalErr('通信エラー', err.message);
   }
 }
 
-function renderCal(slots){
-  const cal = document.getElementById("cal");
-  cal.innerHTML = "";
-  const days = "月火水木金土日".split("");
-  const grid = document.createElement("div");
-  grid.className = "cgrid";
-  days.forEach(d=>{
-    const col = document.createElement("div");
-    col.className = "ccol";
-    col.innerHTML = `<div class="cdh">${d}</div>`;
-    grid.appendChild(col);
-  });
-  cal.appendChild(grid);
-
-  slots.forEach(s=>{
-    const st = new Date(s.start);
-    const wd = st.getDay() ||7;
-    const col = grid.children[wd-1];
-    const btn = document.createElement("button");
-    btn.className = "slot";
-    btn.textContent = fmtHm(st);
-    btn.onclick = ()=>select(s,st);
-    col.appendChild(btn);
-  });
+function showCalErr(title, detail) {
+  document.getElementById('calArea').innerHTML =
+    `<div class="calerr">
+      <strong>${title}</strong><br>
+      <small style="color:var(--ink3);font-size:11px">${detail}</small><br><br>
+      <button onclick="fetchSlots()"
+        style="padding:6px 14px;border:1px solid rgba(220,38,38,.3);border-radius:6px;
+               background:transparent;cursor:pointer;font-size:12px;color:var(--err)">
+        再試行
+      </button>
+    </div>`;
 }
 
-function select(slot,dt){
-  selected = slot;
-  document.getElementById("sel").innerHTML = `<div class="selinf-row">📅 ${fmtDay(dt)} ${fmtHm(dt)}</div>`;
-  document.getElementById("sel").classList.add("show");
-  document.getElementById("bookBtn").disabled = false;
-  document.getElementById("bookBtn").style.opacity = 1;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  長い予定を SLOT_MIN 分単位に分割
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function splitSlots(events, minLen) {
+  const ms  = minLen * 60000;
+  const out = [];
+  events.forEach(ev => {
+    const s = new Date(ev.start);
+    const e = new Date(ev.end);
+    if (e - s <= 0) return;
+    if (e - s <= ms) { out.push({ ...ev, _s: s, _e: e }); return; }
+    let cur = new Date(s);
+    while (cur < e) {
+      const ne = new Date(cur.getTime() + ms);
+      if (ne > e) break;
+      out.push({ ...ev, id: ev.id + '_' + cur.getTime(), _s: new Date(cur), _e: new Date(ne) });
+      cur = ne;
+    }
+  });
+  return out.sort((a, b) => a._s - b._s);
 }
 
-async function doBook(){
-  if(!selected) return;
-  const btn = document.getElementById("bookBtn");
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  カレンダーグリッド描画
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderCal(slots, weekStart) {
+  const days = ['月','火','水','木','金','土','日'];
+  const now  = new Date();
+
+  // ユーザーのローカル時刻でスロットの日を判定
+  function localDate(dt) {
+    const s = dt.toLocaleString('sv-SE', { timeZone: userTz }); // "YYYY-MM-DD HH:MM:SS"
+    return s.slice(0, 10); // "YYYY-MM-DD"
+  }
+  function localTime(dt) {
+    const s = dt.toLocaleString('sv-SE', { timeZone: userTz });
+    return s.slice(11, 16); // "HH:MM"
+  }
+
+  let html = '<div class="cgrid">';
+
+  for (let d = 0; d < 7; d++) {
+    const day = new Date(weekStart);
+    day.setDate(weekStart.getDate() + d);
+
+    const isToday = localDate(day) === localDate(now);
+    const isPast  = day < now && !isToday;
+    const dayKey  = localDate(day);
+
+    const ds = slots.filter(sl => localDate(sl._s) === dayKey);
+
+    html += `<div class="ccol">
+      <div class="cdh">${days[d]}</div>
+      <div class="cdd${isToday ? ' today' : ''}">${day.getDate()}</div>`;
+
+    if (isPast && !ds.length) {
+      html += '<div class="nos">—</div>';
+    } else if (!ds.length) {
+      html += '<div class="nos">空き<br>なし</div>';
+    } else {
+      ds.forEach(sl => {
+        const ts  = localTime(sl._s);
+        const te  = localTime(sl._e);
+        const m   = sl._s.getMonth() + 1;
+        const day2 = sl._s.getDate();
+        const past = sl._e < now;
+        html += `<button class="slot${past ? ' past' : ''}"
+          data-s="${sl._s.toISOString()}"
+          data-e="${sl._e.toISOString()}"
+          data-ts="${ts}" data-te="${te}"
+          data-m="${m}" data-d="${day2}"
+          onclick="pickSlot(this)">
+          ${ts}<br><span style="font-size:9px;opacity:.72">${te}</span>
+        </button>`;
+      });
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  document.getElementById('calArea').innerHTML = html;
+}
+
+function pickSlot(btn) {
+  document.querySelectorAll('.slot').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  S.slot = { start: btn.dataset.s, end: btn.dataset.e };
+
+  const si = document.getElementById('selInf');
+  si.classList.add('show');
+  document.getElementById('selTxt').textContent =
+    `${btn.dataset.m}月${btn.dataset.d}日　${btn.dataset.ts} 〜 ${btn.dataset.te}（${userTz}）`;
+
+  document.getElementById('confBtn').style.cssText = 'opacity:1;pointer-events:auto';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  予約確定（Apps Script へ POST）
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function doBook() {
+  if (!S.slot) return;
+  const btn = document.getElementById('confBtn');
   btn.disabled = true;
-  btn.textContent = "送信中…";
-  try{
-    const data = {
-      _type:"booking",
-      teacherName: user.teacher || cfg.teachers[0].name,
-      studentName: user.name,
-      studentEmail:user.email,
-      startTime:selected.start,
-      endTime:selected.end,
-      timezone:tz,
-      level:user.level,
-      purpose:user.purpose
-    };
-    const u = new URL(cfg.url);
-    u.searchParams.set("action","booking");
-    u.searchParams.set("_data",JSON.stringify(data));
-    await fetch(u);
-    showSuccess();
-  }catch(e){
-    alert("送信エラー："+e.message);
+  btn.textContent = '予約処理中…';
+
+  const t = cfg.teachers[S.ti];
+  const payload = {
+    _type:        'booking',
+    teacherName:  t.name,
+    studentName:  formData.name    || '',
+    studentEmail: formData.email   || '',
+    startTime:    S.slot.start,
+    endTime:      S.slot.end,
+    timezone:     userTz,
+    level:        formData.level   || '',
+    history:      formData.history || '',
+    skill:        formData.skill   || '',
+    purpose:      formData.purpose || '',
+    goal:         formData.goal    || '',
+    pace:         formData.pace    || '',
+    expect:       formData.expect  || '',
+    lang:         formData.lang    || '',
+  };
+
+  try {
+    // GETリクエストでパラメータを送信（POSTのbodyはno-corsで届かない場合があるため）
+    const params = new URLSearchParams({ _data: JSON.stringify(payload) });
+    const getUrl = cfg.url + '?action=booking&' + params.toString();
+    await fetch(getUrl, { mode: 'no-cors' });
+    showSuccess(t);
+  } catch (err) {
+    alert('予約の送信に失敗しました。\n' + err.message);
     btn.disabled = false;
-    btn.textContent = "予約を確定する";
+    btn.textContent = '予約を確定する →';
   }
 }
 
-function showSuccess(){
-  document.getElementById("main").style.display = "none";
-  document.getElementById("done").style.display = "block";
-  const sum = document.getElementById("sum");
-  sum.innerHTML = `
-    <div class="sum-row"><span class="sum-lbl">名前</span><span class="sum-val">${user.name}</span></div>
-    <div class="sum-row"><span class="sum-lbl">メール</span><span class="sum-val">${user.email}</span></div>
-    <div class="sum-row"><span class="sum-lbl">講師</span><span class="sum-val">${user.teacher}</span></div>
-    <div class="sum-row"><span class="sum-lbl">日時</span><span class="sum-val">${fmtDay(new Date(selected.start))} ${fmtHm(new Date(selected.start))}</span></div>
-  `;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  完了画面
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function showSuccess(t) {
+  const st = new Date(S.slot.start);
+  const en = new Date(S.slot.end);
+  const toLocal = (d, fmt) => d.toLocaleString('ja-JP',
+    { timeZone: userTz, ...(fmt === 'date'
+      ? { year:'numeric', month:'long', day:'numeric', weekday:'short' }
+      : { hour:'2-digit', minute:'2-digit', hour12: false }) });
+
+  document.getElementById('mainWrap').style.display = 'none';
+  document.getElementById('succWrap').style.display = 'block';
+
+  const rows = [
+    ['お名前',   formData.name    || '—'],
+    ['メール',   formData.email   || '—'],
+    ['担当講師', t.name           || '—'],
+    ['日付',     toLocal(st, 'date')],
+    ['時間',     toLocal(st, 'time') + ' 〜 ' + toLocal(en, 'time') + '（' + userTz + '）'],
+    ...(formData.level   ? [['レベル',  formData.level]]   : []),
+    ...(formData.purpose ? [['学習目的', formData.purpose]] : []),
+  ];
+  document.getElementById('sumRows').innerHTML = rows.map(([l, v]) =>
+    `<div class="sum-row">
+       <span class="sum-lbl">${l}</span>
+       <span class="sum-val">${v}</span>
+     </div>`
+  ).join('');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function fmtDay(d){
-  return d.getMonth()+1+"/"+d.getDate();
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  ユーティリティ
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function fmtHm(d){
-  return ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
-}
-function esc(s){
-  return s.replace(/"/g,"&quot;").replace(/</g,"&lt;");
-}
+
+// 起動
+boot();
 </script>
 </body>
 </html>
