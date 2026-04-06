@@ -322,7 +322,7 @@ body::before {
   <div class="hero-badge">✦ MandStar Chinese</div>
   <h1 class="hero-title">中国語レッスン<span>お申し込み</span>フォーム</h1>
   <p class="hero-desc">
-    Mandstar Chineseの中国語レッスンにご興味をお持ちいただき、ありがとうございます。<br>
+   Mandstar Chineseの中国語レッスンにご興味をお持ちいただき、ありがとうございます。<br>
     いただいたご回答をもとに、最適な学習プランをご提案いたします。
   </p>
   <div class="hero-meta">
@@ -789,9 +789,11 @@ async function submitForm() {
   const url = getScriptUrl();
   if (url) {
     try {
-      // GETリクエストでデータを送信（POSTのbodyはno-corsで届かない場合があるため）
-      const params = new URLSearchParams({ _data: JSON.stringify(data) });
-      await fetch(url + '?action=survey&' + params.toString(), { mode: 'no-cors' });
+      // FormData で送信（multipart/form-data は no-cors で CORS プリフライトが不要）
+      const fd = new FormData();
+      fd.append('action', 'survey');
+      fd.append('data', JSON.stringify(data));
+      await fetch(url, { method: 'POST', mode: 'no-cors', body: fd });
     } catch (e) {
       console.warn('Apps Script送信エラー（予約は続行します）:', e);
     }
