@@ -322,7 +322,7 @@ body::before {
   <div class="hero-badge">✦ MandStar Chinese</div>
   <h1 class="hero-title">中国語レッスン<span>お申し込み</span>フォーム</h1>
   <p class="hero-desc">
-   Mandstar Chineseの中国語レッスンにご興味をお持ちいただき、ありがとうございます。<br>
+    Mandstar Chineseの中国語レッスンにご興味をお持ちいただき、ありがとうございます。<br>
     いただいたご回答をもとに、最適な学習プランをご提案いたします。
   </p>
   <div class="hero-meta">
@@ -546,7 +546,7 @@ body::before {
       <div class="q-err" id="err_pace">学習ペースを選択してください</div>
     </div>
 
-    <!-- 担当講師 -->
+    <!-- 希望担当講師 -->
     <div class="q-block">
       <div class="q-label">希望担当講師 <span class="q-req">*</span></div>
       <div class="teacher-cards">
@@ -789,11 +789,14 @@ async function submitForm() {
   const url = getScriptUrl();
   if (url) {
     try {
-      // FormData で送信（multipart/form-data は no-cors で CORS プリフライトが不要）
-      const fd = new FormData();
-      fd.append('action', 'survey');
-      fd.append('data', JSON.stringify(data));
-      await fetch(url, { method: 'POST', mode: 'no-cors', body: fd });
+      // application/x-www-form-urlencoded で送信（Apps Script に body が確実に届く）
+      const body = 'action=survey&data=' + encodeURIComponent(JSON.stringify(data));
+      await fetch(url, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    body
+      });
     } catch (e) {
       console.warn('Apps Script送信エラー（予約は続行します）:', e);
     }
