@@ -646,11 +646,15 @@ async function doBook() {
   };
 
   try {
-    // FormData で送信（multipart/form-data は no-cors で CORS プリフライトが不要）
-    const fd = new FormData();
-    fd.append('action', 'booking');
-    fd.append('data', JSON.stringify(payload));
-    await fetch(cfg.url, { method: 'POST', mode: 'no-cors', body: fd });
+    // application/x-www-form-urlencoded で送信
+    // この形式は「シンプルリクエスト」に該当し no-cors でも body が Apps Script に届く
+    const body = 'action=booking&data=' + encodeURIComponent(JSON.stringify(payload));
+    await fetch(cfg.url, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:    body
+    });
     showSuccess(t);
   } catch (err) {
     alert('予約の送信に失敗しました。\n' + err.message);
