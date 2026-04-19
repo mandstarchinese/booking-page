@@ -546,10 +546,10 @@ body::before {
       <div class="q-err" id="err_pace">学習ペースを選択してください</div>
     </div>
 
-    <!-- 希望担当講師 -->
+    <!-- 担当講師 -->
     <div class="q-block">
-      <div class="q-label">希望担当講師 <span class="q-req">*</span></div>
-      <div class="teacher-cards">
+      <div class="q-label">担当講師 <span class="q-req">*</span></div>
+      <div class="teacher-cards" id="teacherCards" style="grid-template-columns:1fr 1fr 1fr;">
         <label class="teacher-card">
           <input type="radio" name="q_teacher" value="Vita先生">
           <div class="tc-avatar">V</div>
@@ -564,8 +564,15 @@ body::before {
           <div class="tc-role">MandStar Chinese 講師</div>
           <div class="tc-check">✓</div>
         </label>
+        <label class="teacher-card" id="tc-auto">
+          <input type="radio" name="q_teacher" value="システムにお任せ">
+          <div class="tc-avatar" style="background:linear-gradient(135deg,#059669,#34d399);font-size:13px;">AI</div>
+          <div class="tc-name" style="font-size:13px;">中国語レベルで自動配分</div>
+          <div class="tc-role">おすすめオプション</div>
+          <div class="tc-check">✓</div>
+        </label>
       </div>
-      <div class="q-err" id="err_teacher">希望担当講師を選択してください</div>
+      <div class="q-err" id="err_teacher">担当講師を選択してください</div>
     </div>
 
     <!-- 期待すること -->
