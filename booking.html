@@ -22,31 +22,19 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink)
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(109,40,217,.07),transparent 55%),
              radial-gradient(ellipse 50% 60% at 100% 100%,rgba(124,58,237,.05),transparent 55%)}
-
-/* header */
 .hdr{position:relative;z-index:10;background:rgba(250,248,255,.92);backdrop-filter:blur(12px);
      border-bottom:1px solid rgba(196,181,253,.25);padding:0 24px}
 .hdr-in{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:54px}
 .logo{display:flex;align-items:center;gap:9px;font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;color:var(--p700)}
 .logo-dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--p700),var(--p400));
           display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
-.cfg-btn{width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid var(--p200);
-         cursor:pointer;color:var(--ink3);font-size:15px;display:flex;align-items:center;justify-content:center;
-         transition:all .2s;z-index:100}
-.cfg-btn:hover{border-color:var(--p400);color:var(--p500);background:var(--p100)}
-
-/* main layout */
 .main{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:28px 20px 80px;
-      display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
+      display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
 @media(max-width:740px){.main{grid-template-columns:1fr}}
-
-/* card */
 .card{background:var(--white);border:1px solid rgba(196,181,253,.28);border-radius:var(--rxl);
       box-shadow:var(--sh);overflow:hidden}
 .tb{height:3px;background:linear-gradient(90deg,var(--p700),var(--p400))}
 .cb{padding:26px 30px 30px}
-
-/* sidebar */
 .sbar{position:sticky;top:72px}
 .sbar-title{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p800);
             margin-bottom:14px;display:flex;align-items:center;gap:7px}
@@ -58,8 +46,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .back-btn{font-size:11px;color:var(--p500);text-decoration:underline;cursor:pointer;
           margin-top:12px;display:inline-block;background:none;border:none;
           font-family:'Noto Sans JP',sans-serif}
-
-/* booking */
 .bhd{display:flex;align-items:center;gap:13px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--p100)}
 .av{width:46px;height:46px;border-radius:50%;flex-shrink:0;
     background:linear-gradient(135deg,var(--p600),var(--p400));
@@ -69,8 +55,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .tsub{font-size:12px;color:var(--ink3);margin-top:2px}
 .tz-box{display:flex;align-items:flex-start;gap:9px;background:var(--p100);border:1px solid var(--p200);
         border-radius:var(--r);padding:11px 13px;margin-bottom:18px;font-size:12px;color:var(--p700);line-height:1.65}
-
-/* calendar */
 .wnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
 .wlbl{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p900)}
 .nb{width:28px;height:28px;border-radius:50%;border:1px solid var(--p200);background:transparent;
@@ -91,8 +75,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .nos{font-size:10px;color:var(--ink4);text-align:center;padding:6px 1px}
 .ld{text-align:center;padding:28px 0;color:var(--ink3);font-size:13px}
 .sp{width:17px;height:17px;border:2px solid var(--p200);border-top-color:var(--p500);
-    border-radius:50%;animation:spin .7s linear infinite;display:inline-block;
-    margin-right:7px;vertical-align:middle}
+    border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:7px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
 .calerr{text-align:center;padding:20px 14px;font-size:13px;color:var(--err);
         background:var(--errbg);border-radius:var(--r);border:1px solid rgba(220,38,38,.18);line-height:1.75}
@@ -108,7 +91,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
           box-shadow:0 4px 14px rgba(109,40,217,.22);letter-spacing:.03em}
 .conf-btn:hover{transform:translateY(-1px);box-shadow:0 7px 22px rgba(109,40,217,.32)}
 .conf-btn:disabled{background:var(--ink4);box-shadow:none;cursor:not-allowed;transform:none}
-
+/* 日付picker (auto-assign mode) */
+.datepicker-wrap{background:var(--p50);border:1px solid var(--p200);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.datepicker-wrap label{display:block;font-size:12px;color:var(--ink3);margin-bottom:6px;font-weight:500}
+.datepicker-wrap input[type=date],.datepicker-wrap input[type=time]{
+  width:100%;padding:9px 11px;border:1.5px solid var(--p200);border-radius:var(--r);
+  font-family:'Noto Sans JP',sans-serif;font-size:14px;color:var(--ink);
+  background:var(--white);outline:none;margin-bottom:10px}
+.datepicker-wrap input:focus{border-color:var(--p500);box-shadow:0 0 0 3px rgba(109,40,217,.1)}
+.auto-note{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #a7f3d0;
+           border-radius:var(--r);padding:12px 14px;margin-bottom:14px;font-size:13px;color:#065f46;line-height:1.7}
 /* success */
 .succ{display:none;position:relative;z-index:1}
 .succ-in{max-width:560px;margin:36px auto;padding:0 20px}
@@ -131,8 +123,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
          border:1.5px solid var(--p200);border-radius:var(--r);font-size:13px;color:var(--p600);
          cursor:pointer;background:transparent;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
 .top-btn:hover{background:var(--p100);border-color:var(--p400)}
-
-/* overlay */
+/* admin overlay */
 .ovl{position:fixed;inset:0;background:rgba(10,2,25,.62);backdrop-filter:blur(5px);
      display:none;align-items:center;justify-content:center;z-index:200}
 .ovl.show{display:flex}
@@ -140,9 +131,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       max-width:440px;width:92%;max-height:88vh;overflow-y:auto;
       box-shadow:0 8px 40px rgba(60,10,120,.2);animation:fu .28s ease}
 @keyframes fu{from{opacity:0;transform:translateY(11px)}to{opacity:1;transform:none}}
-.ottl{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--p900);margin-bottom:4px}
-.osub{font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6}
-.fr{margin-bottom:13px}
+.ottl{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700;color:var(--p900);margin-bottom:4px}
+.osub{font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6}
+.fr{margin-bottom:12px}
 .fl{display:block;font-size:11px;font-weight:500;letter-spacing:.07em;color:var(--ink2);margin-bottom:5px}
 .fi{width:100%;padding:9px 11px;border:1.5px solid var(--p200);border-radius:var(--r);
     background:var(--p50);font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink);
@@ -152,48 +143,46 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .tent{display:grid;grid-template-columns:1fr auto;gap:5px;margin-bottom:6px;align-items:center}
 .tent .fi{font-size:12px;padding:7px 9px}
 .rmbtn{width:28px;height:28px;border-radius:var(--r);border:1px solid var(--p200);background:transparent;
-       cursor:pointer;color:var(--ink3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+       cursor:pointer;color:var(--ink3);font-size:13px;display:flex;align-items:center;justify-content:center}
 .rmbtn:hover{border-color:#fca5a5;color:var(--err);background:#fef2f2}
 .addlnk{font-size:12px;color:var(--p500);background:none;border:none;cursor:pointer;
-        text-decoration:underline;padding:0;font-family:'Noto Sans JP',sans-serif;display:block;margin-top:5px}
-.nbox{border-radius:var(--r);padding:9px 12px;font-size:12px;line-height:1.6;margin-bottom:13px}
-.nbox.warn{background:#fffbeb;border:1px solid #fbbf24;color:#78350f}
-.nbox.info{background:var(--p100);border:1px solid var(--p200);color:var(--p800)}
+        text-decoration:underline;padding:0;font-family:'Noto Sans JP',sans-serif;display:block;margin-top:4px}
 .save-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--p700),var(--p500));
           color:#fff;border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;
-          font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s}
-.save-btn:hover{opacity:.88}
+          font-size:14px;font-weight:500;cursor:pointer}
 </style>
 </head>
 <body>
 
-<!-- ⚙ button -->
-<button class="cfg-btn" onclick="openCfg()" title="設定"
-  style="position:fixed;bottom:18px;right:18px;z-index:100;box-shadow:var(--sh)">⚙</button>
+<!-- ★ 管理者ボタン（学生には見せない・右下に小さく隠す） -->
+<button onclick="openCfg()" title="管理者設定"
+  style="position:fixed;bottom:14px;right:14px;z-index:100;width:30px;height:30px;
+         border-radius:50%;background:rgba(196,181,253,.3);border:1px solid var(--p200);
+         cursor:pointer;color:var(--ink4);font-size:12px;opacity:.4">⚙</button>
 
-<!-- ══ CONFIG OVERLAY ══ -->
+<!-- ══ 管理者設定オーバーレイ ══ -->
 <div class="ovl" id="ovl">
   <div class="obox">
-    <div class="tb" style="margin:-26px -28px 20px;border-radius:20px 20px 0 0"></div>
+    <div class="tb" style="margin:-26px -28px 18px;border-radius:20px 20px 0 0"></div>
     <div class="ottl">管理者設定</div>
-    <div class="osub">Apps Script URLと担当講師を入力して保存してください。</div>
-    <div class="nbox warn">⚠️ 設定は管理者のみ変更してください。</div>
+    <div class="osub">Apps Script URLと講師情報を設定します。この画面は管理者のみ使用してください。</div>
     <div class="fr">
       <label class="fl">Apps Script Web App URL <span style="color:var(--err)">*</span></label>
-      <input type="text" class="fi" id="cfgUrl"
-             placeholder="https://script.google.com/macros/s/.../exec">
+      <input type="text" class="fi" id="cfgUrl" placeholder="https://script.google.com/macros/s/.../exec">
       <div class="fe" id="eUrl"></div>
     </div>
     <div class="fr">
-      <label class="fl">担当講師リスト <span style="color:var(--err)">*</span></label>
-      <div class="nbox info" style="margin-bottom:8px">
-        講師名は Code.gs の TEACHER_CALENDARS のキーと完全一致させてください。
-      </div>
+      <label class="fl">担当講師（Code.gsのTEACHERSキーと完全一致）</label>
       <div id="tlist"></div>
-      <button class="addlnk" onclick="addTRow()">＋ 講師を追加</button>
+      <button class="addlnk" onclick="addTRow()">＋ 追加</button>
       <div class="fe" id="eTch"></div>
     </div>
-    <button class="save-btn" onclick="saveCfg()">設定を保存</button>
+    <button class="save-btn" onclick="saveCfg()">保存</button>
+    <button onclick="document.getElementById('ovl').classList.remove('show')"
+      style="width:100%;margin-top:8px;padding:9px;background:transparent;border:1px solid var(--p200);
+             border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink3);cursor:pointer">
+      キャンセル
+    </button>
   </div>
 </div>
 
@@ -219,24 +208,40 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <div class="av" id="tAv">—</div>
         <div>
           <div class="tname" id="tNm">担当講師</div>
-          <div class="tsub">ご希望の日時をお選びください（1時間単位）</div>
+          <div class="tsub" id="tSub">ご希望の日時をお選びください（1時間単位）</div>
         </div>
       </div>
 
-      <div class="tz-box">
-        🌍&ensp;<span>表示されている時刻は、あなたのタイムゾーン（<strong id="tzTxt">—</strong>）に合わせています。<br>
-        講師のカレンダーは日本時間（JST）で管理されていますが、自動変換して表示しています。</span>
+      <!-- 通常モード: タイムゾーン通知 -->
+      <div class="tz-box" id="tzBox">
+        🌍&ensp;<span>表示されている時刻は、あなたのタイムゾーン（<strong id="tzTxt">—</strong>）に合わせています。</span>
       </div>
 
-      <div class="wnav">
-        <button class="nb" id="prevBtn" onclick="shiftW(-1)">‹</button>
-        <div class="wlbl" id="wLbl">—</div>
-        <button class="nb" onclick="shiftW(1)">›</button>
+      <!-- 自動配分モード: 日時手動入力 -->
+      <div id="autoMode" style="display:none">
+        <div class="auto-note">
+          🌟 ご希望の日時を選択してください。最適な講師を MandStar Chinese が選定し、ご連絡いたします。
+        </div>
+        <div class="datepicker-wrap">
+          <label>ご希望の日付</label>
+          <input type="date" id="autoDate" min="">
+          <label>ご希望の開始時間</label>
+          <input type="time" id="autoTimeStart" value="10:00" step="3600">
+          <label>ご希望の終了時間</label>
+          <input type="time" id="autoTimeEnd" value="11:00" step="3600">
+        </div>
       </div>
 
-      <div id="calArea"><div class="ld"><span class="sp"></span>カレンダーを読み込み中…</div></div>
-
-      <div class="durNote">各枠は1時間単位です。</div>
+      <!-- 週ナビ（通常モードのみ） -->
+      <div id="weekNav">
+        <div class="wnav">
+          <button class="nb" id="prevBtn" onclick="shiftW(-1)">‹</button>
+          <div class="wlbl" id="wLbl">—</div>
+          <button class="nb" onclick="shiftW(1)">›</button>
+        </div>
+        <div id="calArea"><div class="ld"><span class="sp"></span>カレンダーを読み込み中…</div></div>
+        <div class="durNote">各枠は1時間単位です。</div>
+      </div>
 
       <div class="selinf" id="selInf">
         <div class="selinf-row">📅&ensp;<b id="selTxt">—</b></div>
@@ -245,8 +250,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         </div>
       </div>
 
-      <button class="conf-btn" id="confBtn"
-              style="opacity:.4;pointer-events:none" onclick="doBook()">
+      <button class="conf-btn" id="confBtn" style="opacity:.4;pointer-events:none" onclick="doBook()">
         予約を確定する →
       </button>
     </div>
@@ -277,12 +281,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="succ-top">
         <div class="succ-ico">✓</div>
         <div class="succ-ttl">ご予約が完了しました</div>
-        <div class="succ-sub">確認メールをお送りしました。<br>講師からのご連絡をお待ちください。</div>
+        <div class="succ-sub" id="succSub">確認メールをお送りしました。<br>講師からのご連絡をお待ちください。</div>
       </div>
       <div class="succ-body">
         <div style="font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--p800);margin-bottom:12px">予約内容</div>
         <div id="sumRows"></div>
-        <div class="eml-note">✉️ ご登録のメールアドレスに確認メールをお送りしました。<br>迷惑メールフォルダもご確認ください。</div>
+        <div class="eml-note" id="emlNote">✉️ ご登録のメールアドレスに確認メールをお送りしました。迷惑メールフォルダもご確認ください。</div>
         <button class="top-btn" onclick="location.href='index.html'">← トップページへ戻る</button>
       </div>
     </div>
@@ -291,61 +295,118 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 <script>
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  設定はすべてブラウザの⚙ボタンから行います。
-//  コードの編集は不要です。
+//  ★★★ 管理者設定 ★★★
+//  GitHub にアップロードする前にここを変更してください
+//  変更後は全デバイス（PC・スマホ）で自動的に反映されます
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const SLOT_MIN = 60;   // スロット単位（分）
-const CFG_KEY  = 'msc_cfg_v5';  // localStorage キー
+const SCRIPT_URL = '';  // ← Apps Script の Web App URL を貼り付け
+                        // 例: 'https://script.google.com/macros/s/AKfy.../exec'
 
-let cfg      = { url:'', teachers:[] };  // 設定
-let formData = {};                        // 問卷データ
-let S        = { ti:0, slot:null, wo:0 }; // 状態
+const TEACHERS_LIST = [
+  // Code.gs の TEACHERS キーと完全一致させること
+  { name: 'Vita先生',  email: 'xuyihan990106@gmail.com' },  // ← Vita先生のGmailを入力
+  { name: 'Tong先生',  email: 'perachinese777@gmail.com' },  // ← Tong先生のGmailを入力
+];
+
+const AUTO_TEACHER_VALUE = 'システムにお任せ';  // 自動配分モードのvalue
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const SLOT_MIN = 60;
+const CFG_KEY  = 'msc_cfg_v5';
+
+let cfg      = { url: SCRIPT_URL, teachers: TEACHERS_LIST };
+let formData = {};
+let S        = { ti: 0, slot: null, wo: 0, autoMode: false };
 const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  起動
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── 起動 ──────────────────────────────────────────────────────
 function boot() {
-  // タイムゾーン表示
   document.getElementById('tzTxt').textContent = userTz;
 
-  // ① 問卷データを sessionStorage から取得
+  // 問卷データ取得
   try {
     const raw = sessionStorage.getItem('mandstar_form');
     if (raw) formData = JSON.parse(raw);
   } catch(e) {}
 
-  // ② 設定を localStorage から読み込む
-  try {
-    const saved = localStorage.getItem(CFG_KEY);
-    if (saved) cfg = JSON.parse(saved);
-  } catch(e) {}
+  // 設定読み込み（コードに直書きが優先、なければ localStorage）
+  if (!cfg.url || !cfg.teachers.length) {
+    try {
+      const saved = localStorage.getItem(CFG_KEY);
+      if (saved) { const c = JSON.parse(saved); if (c.url) cfg = c; }
+    } catch(e) {}
+  }
 
-  // ③ サイドバーに問卷データを表示
+  // サイドバー表示
   fillSidebar();
 
-  // ④ 設定未完了なら設定画面を開く
-  if (!cfg.url || !cfg.teachers.length) {
-    openCfg();
+  // 設定がなければ管理者設定画面
+  if (!cfg.url) {
+    showError('設定が未完了です。管理者にお問い合わせください。');
     return;
   }
 
-  // ⑤ 問卷で選択した講師を自動選択
-  selectTeacher();
+  // 自動配分モード判定
+  const teacherChoice = formData.teacher || '';
+  S.autoMode = (teacherChoice === AUTO_TEACHER_VALUE);
 
-  // ⑥ カレンダー表示
+  if (S.autoMode) {
+    setupAutoMode();
+  } else {
+    setupNormalMode();
+  }
+}
+
+// ── 自動配分モード ─────────────────────────────────────────────
+function setupAutoMode() {
+  document.getElementById('tAv').textContent = '★';
+  document.getElementById('tAv').style.background = 'linear-gradient(135deg,#059669,#34d399)';
+  document.getElementById('tAv').style.fontSize = '18px';
+  document.getElementById('tNm').textContent = 'MandStar Chinese おすすめ配分';
+  document.getElementById('tSub').textContent = 'ご希望の日時をご選択ください。最適な講師をご案内します。';
+  document.getElementById('tzBox').style.display  = 'none';
+  document.getElementById('weekNav').style.display = 'none';
+  document.getElementById('autoMode').style.display = 'block';
+
+  // 日付の最小値を今日に設定
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm   = String(today.getMonth()+1).padStart(2,'0');
+  const dd   = String(today.getDate()).padStart(2,'0');
+  document.getElementById('autoDate').min = `${yyyy}-${mm}-${dd}`;
+
+  // 日付・時間変化で確定ボタン活性化
+  ['autoDate','autoTimeStart','autoTimeEnd'].forEach(id => {
+    document.getElementById(id).addEventListener('change', checkAutoReady);
+  });
+}
+
+function checkAutoReady() {
+  const d  = document.getElementById('autoDate').value;
+  const ts = document.getElementById('autoTimeStart').value;
+  const te = document.getElementById('autoTimeEnd').value;
+  if (d && ts && te && ts < te) {
+    const startISO = d + 'T' + ts + ':00';
+    const endISO   = d + 'T' + te + ':00';
+    S.slot = { start: new Date(startISO).toISOString(), end: new Date(endISO).toISOString() };
+    const selInf = document.getElementById('selInf');
+    selInf.classList.add('show');
+    document.getElementById('selTxt').textContent =
+      d.replace(/-/g,'/') + '　' + ts + ' 〜 ' + te;
+    document.getElementById('confBtn').style.cssText = 'opacity:1;pointer-events:auto';
+  }
+}
+
+// ── 通常モード ─────────────────────────────────────────────────
+function setupNormalMode() {
+  selectTeacher();
   updWeekLabel();
   fetchSlots();
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  サイドバーに問卷データを表示
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── サイドバー ─────────────────────────────────────────────────
 function fillSidebar() {
-  const set = (id, v) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = v || '—';
-  };
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v||'—'; };
   set('si-name',    formData.name);
   set('si-email',   formData.email);
   set('si-teacher', formData.teacher);
@@ -354,250 +415,160 @@ function fillSidebar() {
   set('si-purpose', formData.purpose);
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  問卷で選択した講師に自動で合わせる
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── 講師自動選択 ───────────────────────────────────────────────
 function selectTeacher() {
-  const ft = (formData.teacher || '').replace('先生', '').trim();
-  let idx  = cfg.teachers.findIndex(t => {
-    const tn = (t.name || '').replace('先生', '').trim();
+  const ft  = (formData.teacher || '').replace('先生','').trim();
+  let   idx = cfg.teachers.findIndex(t => {
+    const tn = (t.name||'').replace('先生','').trim();
     return tn === ft || t.name === formData.teacher;
   });
-  if (idx < 0) idx = 0; // 一致しなければ先頭
+  if (idx < 0) idx = 0;
   S.ti = idx;
-
   const t = cfg.teachers[S.ti];
   if (!t) return;
-  // アバター（名前の最初の1文字）
-  const initial = (t.name || '').replace('先生', '').replace(/\s/g, '').slice(0, 1) || '?';
+  const initial = (t.name||'').replace('先生','').replace(/\s/g,'').slice(0,1) || '?';
   document.getElementById('tAv').textContent = initial;
   document.getElementById('tNm').textContent = t.name || '—';
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  設定オーバーレイ
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── 管理者設定オーバーレイ ─────────────────────────────────────
 function openCfg() {
   document.getElementById('cfgUrl').value = cfg.url || '';
   const tl = document.getElementById('tlist');
   tl.innerHTML = '';
-  const list = cfg.teachers.length ? cfg.teachers : [{ name:'', email:'' }];
+  const list = cfg.teachers.length ? cfg.teachers : [{name:'',email:''}];
   list.forEach(t => addTRow(t.name, t.email));
   document.getElementById('ovl').classList.add('show');
 }
-
 function addTRow(n='', e='') {
-  const d  = document.createElement('div');
+  const d = document.createElement('div');
   d.className = 'tent';
-  d.innerHTML =
-    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-       <input type="text"  class="fi tn" placeholder="講師名（例:Vita先生）" value="${esc(n)}">
-       <input type="email" class="fi te" placeholder="Gmailアドレス"          value="${esc(e)}">
-     </div>
-     <button class="rmbtn"
-       onclick="if(document.querySelectorAll('.tent').length>1)this.closest('.tent').remove()"
-       title="削除">✕</button>`;
+  d.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+    <input type="text"  class="fi tn" placeholder="講師名" value="${esc(n)}">
+    <input type="email" class="fi te" placeholder="Gmail"   value="${esc(e)}">
+  </div>
+  <button class="rmbtn" onclick="if(document.querySelectorAll('.tent').length>1)this.closest('.tent').remove()">✕</button>`;
   document.getElementById('tlist').appendChild(d);
 }
-
 function saveCfg() {
   const url = document.getElementById('cfgUrl').value.trim();
   const ts  = [...document.querySelectorAll('.tent')].map(r => ({
     name:  r.querySelector('.tn').value.trim(),
     email: r.querySelector('.te').value.trim()
   })).filter(t => t.name);
-
-  // バリデーション
   document.getElementById('eUrl').textContent = '';
   document.getElementById('eTch').textContent = '';
-  let ok = true;
-  if (!url) {
-    document.getElementById('eUrl').textContent = 'Apps Script URLを入力してください';
-    ok = false;
-  }
-  if (!ts.length) {
-    document.getElementById('eTch').textContent = '講師を1名以上登録してください';
-    ok = false;
-  }
-  if (!ok) return;
-
+  if (!url) { document.getElementById('eUrl').textContent = 'URLを入力してください'; return; }
+  if (!ts.length) { document.getElementById('eTch').textContent = '講師を登録してください'; return; }
   cfg = { url, teachers: ts };
   localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
   document.getElementById('ovl').classList.remove('show');
-
-  // 設定後に再描画
-  selectTeacher();
-  updWeekLabel();
-  S.wo = 0;
-  fetchSlots();
+  S.wo = 0; S.autoMode = (formData.teacher === AUTO_TEACHER_VALUE);
+  if (S.autoMode) setupAutoMode(); else { selectTeacher(); updWeekLabel(); fetchSlots(); }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  週ナビゲーション
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── エラー表示 ─────────────────────────────────────────────────
+function showError(msg) {
+  document.getElementById('calArea').innerHTML =
+    `<div class="calerr">${msg}</div>`;
+}
+
+// ── 週ナビ ─────────────────────────────────────────────────────
 function getWeekRange() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const mon = new Date(today);
-  mon.setDate(today.getDate() - ((today.getDay() + 6) % 7) + S.wo * 7);
-  const sun = new Date(mon);
-  sun.setDate(mon.getDate() + 6);
-  sun.setHours(23, 59, 59, 999);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const mon   = new Date(today);
+  mon.setDate(today.getDate() - ((today.getDay()+6)%7) + S.wo*7);
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6); sun.setHours(23,59,59,999);
   return { start: mon, end: sun };
 }
-
 function updWeekLabel() {
   const { start: s } = getWeekRange();
-  const end = new Date(s); end.setDate(s.getDate() + 6);
-  const fmt = d => `${d.getMonth()+1}/${d.getDate()}`;
-  document.getElementById('wLbl').textContent =
-    `${s.getFullYear()}年 ${fmt(s)}（月）〜 ${fmt(end)}（日）`;
+  const end = new Date(s); end.setDate(s.getDate()+6);
+  const f = d => `${d.getMonth()+1}/${d.getDate()}`;
+  document.getElementById('wLbl').textContent = `${s.getFullYear()}年 ${f(s)}（月）〜 ${f(end)}（日）`;
   document.getElementById('prevBtn').disabled = (S.wo <= 0);
 }
-
 function shiftW(d) {
   if (d < 0 && S.wo <= 0) return;
-  S.wo += d;
-  S.slot = null;
+  S.wo += d; S.slot = null;
   document.getElementById('selInf').classList.remove('show');
   document.getElementById('confBtn').style.cssText = 'opacity:.4;pointer-events:none';
-  updWeekLabel();
-  fetchSlots();
+  updWeekLabel(); fetchSlots();
 }
+function pad2(n) { return String(n).padStart(2,'0'); }
 
-function pad2(n) { return String(n).padStart(2, '0'); }
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  スロット取得（Apps Script 経由）
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── スロット取得 ───────────────────────────────────────────────
 async function fetchSlots() {
   const t = cfg.teachers[S.ti];
-  if (!t || !t.name) {
-    document.getElementById('calArea').innerHTML =
-      '<div class="calerr">講師が設定されていません。<br>右下の⚙ボタンから設定してください。</div>';
-    return;
-  }
-  if (!cfg.url) {
-    document.getElementById('calArea').innerHTML =
-      '<div class="calerr">Apps Script URLが設定されていません。<br>右下の⚙ボタンから設定してください。</div>';
-    return;
-  }
+  if (!t || !t.name) { showError('講師が設定されていません。管理者にお問い合わせください。'); return; }
+  if (!cfg.url)       { showError('接続設定が未完了です。管理者にお問い合わせください。'); return; }
 
-  document.getElementById('calArea').innerHTML =
-    '<div class="ld"><span class="sp"></span>予約可能時間を取得中…</div>';
+  document.getElementById('calArea').innerHTML = '<div class="ld"><span class="sp"></span>予約可能時間を取得中…</div>';
 
   const { start } = getWeekRange();
-  const url = cfg.url
-    + '?action=slots'
-    + '&teacher=' + encodeURIComponent(t.name)
-    + '&weekStart=' + encodeURIComponent(start.toISOString());
+  const url = cfg.url + '?action=slots' +
+    '&teacher=' + encodeURIComponent(t.name) +
+    '&weekStart=' + encodeURIComponent(start.toISOString());
 
   try {
     const res  = await fetch(url);
     const json = await res.json();
-
-    if (json.error) {
-      showCalErr('カレンダーの取得に失敗しました', json.error);
-      return;
-    }
-
-    const slots = splitSlots(json.slots || [], SLOT_MIN);
-    renderCal(slots, start);
-
+    if (json.error) { showError(json.error); return; }
+    renderCal(splitSlots(json.slots || [], SLOT_MIN), start);
   } catch (err) {
-    showCalErr('通信エラー', err.message);
+    showError('通信エラー: ' + err.message);
   }
 }
 
-function showCalErr(title, detail) {
-  document.getElementById('calArea').innerHTML =
-    `<div class="calerr">
-      <strong>${title}</strong><br>
-      <small style="color:var(--ink3);font-size:11px">${detail}</small><br><br>
-      <button onclick="fetchSlots()"
-        style="padding:6px 14px;border:1px solid rgba(220,38,38,.3);border-radius:6px;
-               background:transparent;cursor:pointer;font-size:12px;color:var(--err)">
-        再試行
-      </button>
-    </div>`;
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  長い予定を SLOT_MIN 分単位に分割
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── スロット分割 ───────────────────────────────────────────────
 function splitSlots(events, minLen) {
   const ms  = minLen * 60000;
   const out = [];
   events.forEach(ev => {
-    const s = new Date(ev.start);
-    const e = new Date(ev.end);
+    const s = new Date(ev.start), e = new Date(ev.end);
     if (e - s <= 0) return;
-    if (e - s <= ms) { out.push({ ...ev, _s: s, _e: e }); return; }
+    if (e - s <= ms) { out.push({...ev, _s:s, _e:e}); return; }
     let cur = new Date(s);
     while (cur < e) {
       const ne = new Date(cur.getTime() + ms);
       if (ne > e) break;
-      out.push({ ...ev, id: ev.id + '_' + cur.getTime(), _s: new Date(cur), _e: new Date(ne) });
+      out.push({...ev, id: ev.id+'_'+cur.getTime(), _s: new Date(cur), _e: new Date(ne)});
       cur = ne;
     }
   });
-  return out.sort((a, b) => a._s - b._s);
+  return out.sort((a,b) => a._s - b._s);
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  カレンダーグリッド描画
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── カレンダー描画 ─────────────────────────────────────────────
 function renderCal(slots, weekStart) {
   const days = ['月','火','水','木','金','土','日'];
   const now  = new Date();
-
-  // ユーザーのローカル時刻でスロットの日を判定
-  function localDate(dt) {
-    const s = dt.toLocaleString('sv-SE', { timeZone: userTz }); // "YYYY-MM-DD HH:MM:SS"
-    return s.slice(0, 10); // "YYYY-MM-DD"
-  }
-  function localTime(dt) {
-    const s = dt.toLocaleString('sv-SE', { timeZone: userTz });
-    return s.slice(11, 16); // "HH:MM"
-  }
+  const localDate = dt => dt.toLocaleString('sv-SE',{timeZone:userTz}).slice(0,10);
+  const localTime = dt => dt.toLocaleString('sv-SE',{timeZone:userTz}).slice(11,16);
 
   let html = '<div class="cgrid">';
-
   for (let d = 0; d < 7; d++) {
-    const day = new Date(weekStart);
-    day.setDate(weekStart.getDate() + d);
-
+    const day = new Date(weekStart); day.setDate(weekStart.getDate()+d);
     const isToday = localDate(day) === localDate(now);
     const isPast  = day < now && !isToday;
     const dayKey  = localDate(day);
-
-    const ds = slots.filter(sl => localDate(sl._s) === dayKey);
+    const ds      = slots.filter(sl => localDate(sl._s) === dayKey);
 
     html += `<div class="ccol">
       <div class="cdh">${days[d]}</div>
-      <div class="cdd${isToday ? ' today' : ''}">${day.getDate()}</div>`;
+      <div class="cdd${isToday?' today':''}">${day.getDate()}</div>`;
 
-    if (isPast && !ds.length) {
-      html += '<div class="nos">—</div>';
-    } else if (!ds.length) {
-      html += '<div class="nos">空き<br>なし</div>';
-    } else {
-      ds.forEach(sl => {
-        const ts  = localTime(sl._s);
-        const te  = localTime(sl._e);
-        const m   = sl._s.getMonth() + 1;
-        const day2 = sl._s.getDate();
-        const past = sl._e < now;
-        html += `<button class="slot${past ? ' past' : ''}"
-          data-s="${sl._s.toISOString()}"
-          data-e="${sl._e.toISOString()}"
-          data-ts="${ts}" data-te="${te}"
-          data-m="${m}" data-d="${day2}"
-          onclick="pickSlot(this)">
-          ${ts}<br><span style="font-size:9px;opacity:.72">${te}</span>
-        </button>`;
-      });
-    }
+    if (isPast && !ds.length) { html += '<div class="nos">—</div>'; }
+    else if (!ds.length)       { html += '<div class="nos">空き<br>なし</div>'; }
+    else ds.forEach(sl => {
+      const ts   = localTime(sl._s), te = localTime(sl._e);
+      const past = sl._e < now;
+      html += `<button class="slot${past?' past':''}"
+        data-s="${sl._s.toISOString()}" data-e="${sl._e.toISOString()}"
+        data-ts="${ts}" data-te="${te}"
+        data-m="${sl._s.getMonth()+1}" data-d="${sl._s.getDate()}"
+        onclick="pickSlot(this)">${ts}<br><span style="font-size:9px;opacity:.72">${te}</span></button>`;
+    });
     html += '</div>';
   }
   html += '</div>';
@@ -608,27 +579,24 @@ function pickSlot(btn) {
   document.querySelectorAll('.slot').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
   S.slot = { start: btn.dataset.s, end: btn.dataset.e };
-
-  const si = document.getElementById('selInf');
-  si.classList.add('show');
+  const si = document.getElementById('selInf'); si.classList.add('show');
   document.getElementById('selTxt').textContent =
     `${btn.dataset.m}月${btn.dataset.d}日　${btn.dataset.ts} 〜 ${btn.dataset.te}（${userTz}）`;
-
   document.getElementById('confBtn').style.cssText = 'opacity:1;pointer-events:auto';
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  予約確定（Apps Script へ POST）
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── 予約確定 ───────────────────────────────────────────────────
 async function doBook() {
   if (!S.slot) return;
   const btn = document.getElementById('confBtn');
-  btn.disabled = true;
-  btn.textContent = '予約処理中…';
+  btn.disabled = true; btn.textContent = '予約処理中…';
 
-  const t = cfg.teachers[S.ti];
+  const t = S.autoMode
+    ? { name: AUTO_TEACHER_VALUE, email: '' }
+    : cfg.teachers[S.ti];
+
   const payload = {
-    _type:        'booking',
+    _type:        S.autoMode ? 'auto_booking' : 'booking',
     teacherName:  t.name,
     studentName:  formData.name    || '',
     studentEmail: formData.email   || '',
@@ -646,9 +614,8 @@ async function doBook() {
   };
 
   try {
-    // application/x-www-form-urlencoded で送信
-    // この形式は「シンプルリクエスト」に該当し no-cors でも body が Apps Script に届く
-    const body = 'action=booking&data=' + encodeURIComponent(JSON.stringify(payload));
+    const body = 'action=' + (S.autoMode ? 'auto_booking' : 'booking') +
+                 '&data=' + encodeURIComponent(JSON.stringify(payload));
     await fetch(cfg.url, {
       method:  'POST',
       mode:    'no-cors',
@@ -658,54 +625,45 @@ async function doBook() {
     showSuccess(t);
   } catch (err) {
     alert('予約の送信に失敗しました。\n' + err.message);
-    btn.disabled = false;
-    btn.textContent = '予約を確定する →';
+    btn.disabled = false; btn.textContent = '予約を確定する →';
   }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  完了画面
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── 完了画面 ───────────────────────────────────────────────────
 function showSuccess(t) {
-  const st = new Date(S.slot.start);
-  const en = new Date(S.slot.end);
-  const toLocal = (d, fmt) => d.toLocaleString('ja-JP',
-    { timeZone: userTz, ...(fmt === 'date'
-      ? { year:'numeric', month:'long', day:'numeric', weekday:'short' }
-      : { hour:'2-digit', minute:'2-digit', hour12: false }) });
+  const st = new Date(S.slot.start), en = new Date(S.slot.end);
+  const toLocal = (d, fmt) => d.toLocaleString('ja-JP', {
+    timeZone: userTz,
+    ...(fmt==='date' ? {year:'numeric',month:'long',day:'numeric',weekday:'short'} : {hour:'2-digit',minute:'2-digit',hour12:false})
+  });
 
   document.getElementById('mainWrap').style.display = 'none';
   document.getElementById('succWrap').style.display = 'block';
+
+  if (S.autoMode) {
+    document.getElementById('succSub').textContent = 'ご希望の日時を受け付けました。担当講師が決まり次第ご連絡いたします。';
+    document.getElementById('emlNote').textContent = '📋 ご希望内容を受け付けました。MandStar Chinese よりご連絡いたします。';
+  }
 
   const rows = [
     ['お名前',   formData.name    || '—'],
     ['メール',   formData.email   || '—'],
     ['担当講師', t.name           || '—'],
-    ['日付',     toLocal(st, 'date')],
-    ['時間',     toLocal(st, 'time') + ' 〜 ' + toLocal(en, 'time') + '（' + userTz + '）'],
-    ...(formData.level   ? [['レベル',  formData.level]]   : []),
-    ...(formData.purpose ? [['学習目的', formData.purpose]] : []),
+    ['日付',     toLocal(st,'date')],
+    ['時間',     toLocal(st,'time') + ' 〜 ' + toLocal(en,'time') + '（' + userTz + '）'],
+    ...(formData.level   ? [['レベル',  formData.level]]  : []),
+    ...(formData.purpose ? [['学習目的',formData.purpose]] : []),
   ];
-  document.getElementById('sumRows').innerHTML = rows.map(([l, v]) =>
-    `<div class="sum-row">
-       <span class="sum-lbl">${l}</span>
-       <span class="sum-val">${v}</span>
-     </div>`
-  ).join('');
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('sumRows').innerHTML = rows
+    .map(([l,v]) => `<div class="sum-row"><span class="sum-lbl">${l}</span><span class="sum-val">${v}</span></div>`)
+    .join('');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  ユーティリティ
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function esc(s) {
-  return String(s || '')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// 起動
 boot();
 </script>
 </body>
