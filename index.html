@@ -618,7 +618,10 @@ function showSection(n) {
   document.getElementById('sec' + n).classList.add('active');
   currentSection = n;
   updateProgress(n);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // モバイル対応スクロール（instant + 両方指定）
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 }
 
 function goNext(from) {
@@ -770,10 +773,15 @@ function collectData() {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  ★ Apps Script URL — localStorage から読み込む
-//  （booking.html の⚙設定画面で入力した URL を共有する）
+//  ★ Apps Script URL（管理者が設定）
+//  booking.html の SCRIPT_URL と同じ値を入力してください
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const SCRIPT_URL_INDEX = 'https://script.google.com/macros/s/AKfycbxR34xepudUNMjsszH2zFFQiaRMvVj_TLBENWxlTHQVaDpMXsC7wqPzDA9J-ZhgcHA8GA/exec';  // ← Apps Script の Web App URL を貼り付け
+
 function getScriptUrl() {
+  // 1. コードに直書きされた URL を優先
+  if (SCRIPT_URL_INDEX) return SCRIPT_URL_INDEX;
+  // 2. フォールバック: booking.html の⚙設定で保存された URL
   try {
     const c = JSON.parse(localStorage.getItem('msc_cfg_v5') || '{}');
     return c.url || '';
