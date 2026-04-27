@@ -299,7 +299,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 //  GitHub にアップロードする前にここを変更してください
 //  変更後は全デバイス（PC・スマホ）で自動的に反映されます
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfpDOq29xlsFN4pKZ_me4gfK2umrmGHHZ6TTjj5s0s3lf3XN3APK-vK6cQcxsvQsCgeQ/exec';  // ← Apps Script の Web App URL を貼り付け
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNih9gdSxkwOJ5UbGVD3dKuIFGwCdzXnp9V1Ar1e8CGDumyAM-N1B5OF857GZcNDpPvg/exec';  // ← Apps Script の Web App URL を貼り付け
                         // 例: 'https://script.google.com/macros/s/AKfy.../exec'
 
 const TEACHERS_LIST = [
@@ -474,20 +474,39 @@ function showError(msg) {
 }
 
 // ── 週ナビ ─────────────────────────────────────────────────────
+// 予約可能最短日（今日から3日後）
+function getEarliestBookingDate() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 3);
+  return d;
+}
+
 function getWeekRange() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const mon   = new Date(today);
-  mon.setDate(today.getDate() - ((today.getDay()+6)%7) + S.wo*7);
-  const sun = new Date(mon); sun.setDate(mon.getDate()+6); sun.setHours(23,59,59,999);
+  const earliest = getEarliestBookingDate(); // 今日+3日
+  const today    = new Date(); today.setHours(0,0,0,0);
+
+  // 最初のページは最早予約日を含む週から表示
+  // S.wo=0 のときは最早予約日が含まれる週の月曜日を基点にする
+  const base = S.wo === 0 ? earliest : today;
+  const mon  = new Date(base);
+  mon.setDate(base.getDate() - ((base.getDay()+6)%7) + S.wo*7);
+
+  const sun = new Date(mon);
+  sun.setDate(mon.getDate() + 6);
+  sun.setHours(23, 59, 59, 999);
   return { start: mon, end: sun };
 }
+
 function updWeekLabel() {
   const { start: s } = getWeekRange();
   const end = new Date(s); end.setDate(s.getDate()+6);
   const f = d => `${d.getMonth()+1}/${d.getDate()}`;
-  document.getElementById('wLbl').textContent = `${s.getFullYear()}年 ${f(s)}（月）〜 ${f(end)}（日）`;
+  document.getElementById('wLbl').textContent =
+    `${s.getFullYear()}年 ${f(s)}（月）〜 ${f(end)}（日）`;
   document.getElementById('prevBtn').disabled = (S.wo <= 0);
 }
+
 function shiftW(d) {
   if (d < 0 && S.wo <= 0) return;
   S.wo += d; S.slot = null;
@@ -541,34 +560,42 @@ function splitSlots(events, minLen) {
 
 // ── カレンダー描画 ─────────────────────────────────────────────
 function renderCal(slots, weekStart) {
-  const days = ['月','火','水','木','金','土','日'];
-  const now  = new Date();
+  const days     = ['月','火','水','木','金','土','日'];
+  const now      = new Date();
+  const earliest = getEarliestBookingDate(); // 今日+3日
   const localDate = dt => dt.toLocaleString('sv-SE',{timeZone:userTz}).slice(0,10);
   const localTime = dt => dt.toLocaleString('sv-SE',{timeZone:userTz}).slice(11,16);
 
   let html = '<div class="cgrid">';
   for (let d = 0; d < 7; d++) {
     const day = new Date(weekStart); day.setDate(weekStart.getDate()+d);
-    const isToday = localDate(day) === localDate(now);
-    const isPast  = day < now && !isToday;
-    const dayKey  = localDate(day);
-    const ds      = slots.filter(sl => localDate(sl._s) === dayKey);
+    const isToday   = localDate(day) === localDate(now);
+    // 今日+3日未満は「予約不可」扱い
+    const isTooSoon = day < earliest;
+    const isPast    = day < now && !isToday;
+    const dayKey    = localDate(day);
+    const ds        = slots.filter(sl => localDate(sl._s) === dayKey);
 
     html += `<div class="ccol">
       <div class="cdh">${days[d]}</div>
       <div class="cdd${isToday?' today':''}">${day.getDate()}</div>`;
 
-    if (isPast && !ds.length) { html += '<div class="nos">—</div>'; }
-    else if (!ds.length)       { html += '<div class="nos">空き<br>なし</div>'; }
-    else ds.forEach(sl => {
-      const ts   = localTime(sl._s), te = localTime(sl._e);
-      const past = sl._e < now;
-      html += `<button class="slot${past?' past':''}"
-        data-s="${sl._s.toISOString()}" data-e="${sl._e.toISOString()}"
-        data-ts="${ts}" data-te="${te}"
-        data-m="${sl._s.getMonth()+1}" data-d="${sl._s.getDate()}"
-        onclick="pickSlot(this)">${ts}<br><span style="font-size:9px;opacity:.72">${te}</span></button>`;
-    });
+    if (isPast || isTooSoon) {
+      // 過去 or 3日以内は空きなし表示
+      html += '<div class="nos">—</div>';
+    } else if (!ds.length) {
+      html += '<div class="nos">空き<br>なし</div>';
+    } else {
+      ds.forEach(sl => {
+        const ts   = localTime(sl._s), te = localTime(sl._e);
+        const past = sl._e < now;
+        html += `<button class="slot${past?' past':''}"
+          data-s="${sl._s.toISOString()}" data-e="${sl._e.toISOString()}"
+          data-ts="${ts}" data-te="${te}"
+          data-m="${sl._s.getMonth()+1}" data-d="${sl._s.getDate()}"
+          onclick="pickSlot(this)">${ts}<br><span style="font-size:9px;opacity:.72">${te}</span></button>`;
+      });
+    }
     html += '</div>';
   }
   html += '</div>';
