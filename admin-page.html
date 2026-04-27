@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MandStar Chinese — 管理后台</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ── 变量 ── */
+:root {
+  --p900:#1a0835;--p800:#2d1260;--p700:#4c1d95;--p600:#6d28d9;
+  --p500:#7c3aed;--p400:#a78bfa;--p300:#c4b5fd;--p200:#ddd6fe;
+  --p150:#ede9fe;--p100:#f5f3ff;--p50:#faf8ff;
+  --ok:#059669;--okl:#ecfdf5;--okb:#a7f3d0;
+  --warn:#d97706;--warnl:#fffbeb;
+  --err:#dc2626;--errl:#fef2f2;
+  --info:#0284c7;--infol:#e0f2fe;
+  --ink:#0f0520;--ink2:#3b1f6b;--ink3:#6b5b8e;--ink4:#a89cc8;
+  --bd:rgba(196,181,253,.2);
+  --sh:0 1px 3px rgba(76,29,149,.05),0 4px 16px rgba(76,29,149,.07);
+  --r:10px;--rx:16px;--sb:216px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#ede9fe;color:var(--ink);min-height:100vh;font-size:14px}
+
+/* ── 登录页 ── */
+#loginPage{position:fixed;inset:0;z-index:999;
+  background:linear-gradient(135deg,#0d0520 0%,#2d1260 50%,#4c1d95 100%);
+  display:flex;align-items:center;justify-content:center}
+.lcard{background:#fff;border-radius:20px;padding:40px 36px;width:340px;
+  box-shadow:0 24px 80px rgba(0,0,0,.4)}
+.lbrand{text-align:center;margin-bottom:28px}
+.lbrand-icon{width:54px;height:54px;background:linear-gradient(135deg,var(--p700),var(--p400));
+  border-radius:14px;margin:0 auto 12px;display:flex;align-items:center;
+  justify-content:center;font-size:22px;font-weight:800;color:#fff}
+.lbrand-name{font-size:17px;font-weight:800;color:var(--p900)}
+.lbrand-sub{font-size:11px;color:var(--ink3);margin-top:3px}
+.lfield{margin-bottom:14px}
+.lfield label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:5px}
+.lfield input{width:100%;padding:11px 13px;border:1.5px solid var(--p200);border-radius:9px;
+  font-size:14px;color:var(--ink);outline:none;background:var(--p50)}
+.lfield input:focus{border-color:var(--p500);box-shadow:0 0 0 3px rgba(109,40,217,.1)}
+.lerr{font-size:12px;color:var(--err);margin:8px 0 12px;display:none}
+.lbtn{width:100%;padding:13px;background:linear-gradient(135deg,var(--p700),var(--p500));
+  color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer}
+.lbtn:hover{opacity:.9}
+
+/* ── 应用外壳 ── */
+#app{display:none;min-height:100vh}
+.sidebar{width:var(--sb);position:fixed;top:0;left:0;bottom:0;
+  background:var(--p900);display:flex;flex-direction:column;z-index:50}
+.sb-logo{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-logo-name{font-size:14px;font-weight:800;color:#fff;letter-spacing:.01em}
+.sb-logo-sub{font-size:10px;color:var(--p400);margin-top:2px}
+.sb-nav{flex:1;padding:12px 8px;overflow-y:auto}
+.sb-sec{font-size:9px;font-weight:700;color:var(--p400);letter-spacing:.14em;
+  padding:12px 10px 5px;text-transform:uppercase}
+.nav-btn{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:8px;
+  cursor:pointer;color:rgba(255,255,255,.58);font-size:13px;font-weight:500;
+  transition:all .14s;margin-bottom:1px;border:none;background:transparent;
+  width:100%;text-align:left}
+.nav-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}
+.nav-btn.active{background:linear-gradient(90deg,var(--p600),var(--p500));
+  color:#fff;box-shadow:0 2px 8px rgba(109,40,217,.35)}
+.sb-footer{padding:14px;border-top:1px solid rgba(255,255,255,.07);
+  font-size:11px;color:var(--p400)}
+.sb-footer strong{display:block;color:rgba(255,255,255,.75);margin-bottom:2px}
+
+/* ── 主内容区 ── */
+.main{margin-left:var(--sb);padding:24px 28px;min-height:100vh}
+@media(max-width:700px){.sidebar{display:none}.main{margin-left:0;padding:14px}}
+
+/* ── 页面顶部 ── */
+.page-top{display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:20px;font-weight:800;color:var(--p900);line-height:1.2}
+.page-sub{font-size:12px;color:var(--ink3);margin-top:3px}
+
+/* ── 按钮 ── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;
+  border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;
+  transition:all .14s;line-height:1;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-p{background:linear-gradient(135deg,var(--p700),var(--p500));color:#fff;
+  box-shadow:0 2px 8px rgba(109,40,217,.25)}
+.btn-p:hover:not(:disabled){opacity:.9;transform:translateY(-1px)}
+.btn-o{background:#fff;border:1.5px solid var(--p200);color:var(--p700)}
+.btn-o:hover:not(:disabled){background:var(--p100)}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-err{background:var(--err);color:#fff}
+.btn-sm{padding:6px 11px;font-size:12px}
+
+/* ── 统计卡片 ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:#fff;border-radius:var(--rx);padding:18px;
+  box-shadow:var(--sh);border:1px solid var(--bd)}
+.stat-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:17px;margin-bottom:10px}
+.ic-p{background:var(--p100)} .ic-g{background:var(--okl)}
+.ic-o{background:var(--warnl)} .ic-b{background:var(--infol)}
+.stat-val{font-size:26px;font-weight:800;color:var(--p900);line-height:1}
+.stat-lbl{font-size:11px;color:var(--ink3);margin-top:4px}
+
+/* ── 卡片 ── */
+.card{background:#fff;border-radius:var(--rx);border:1px solid var(--bd);
+  box-shadow:var(--sh);overflow:hidden;margin-bottom:18px}
+.card-head{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid var(--p100)}
+.card-title{font-size:14px;font-weight:700;color:var(--p900)}
+.card-body{padding:18px 20px}
+.card-body-0{padding:0}
+
+/* ── 表格 ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;
+  color:var(--ink3);letter-spacing:.08em;border-bottom:1.5px solid var(--p150);
+  background:var(--p50);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--p100);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--p50)}
+td{padding:9px 12px;color:var(--ink2);vertical-align:middle}
+td.nowrap{white-space:nowrap}
+
+/* ── 徽章 ── */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;
+  border-radius:20px;font-size:11px;font-weight:600}
+.b-ok{background:var(--okl);color:var(--ok)}
+.b-warn{background:var(--warnl);color:var(--warn)}
+.b-err{background:var(--errl);color:var(--err)}
+.b-info{background:var(--infol);color:var(--info)}
+.b-purple{background:var(--p100);color:var(--p700)}
+
+/* ── 工具栏 ── */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.search{flex:1;min-width:160px;padding:8px 12px;border:1.5px solid var(--p200);
+  border-radius:8px;font-size:13px;color:var(--ink);background:var(--p50);outline:none}
+.search:focus{border-color:var(--p500)}
+.sel{padding:8px 10px;border:1.5px solid var(--p200);border-radius:8px;
+  font-size:13px;color:var(--ink2);background:var(--p50);outline:none;cursor:pointer}
+
+/* ── 模态框 ── */
+.overlay{position:fixed;inset:0;background:rgba(10,2,25,.52);
+  backdrop-filter:blur(4px);z-index:200;display:none;
+  align-items:center;justify-content:center;padding:16px}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:18px;width:100%;max-width:540px;
+  max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.22)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;border-bottom:1px solid var(--p150)}
+.modal-title{font-size:15px;font-weight:700;color:var(--p900)}
+.close-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--p200);
+  background:transparent;cursor:pointer;font-size:15px;color:var(--ink3);
+  display:flex;align-items:center;justify-content:center}
+.modal-body{padding:22px}
+.modal-foot{display:flex;gap:8px;justify-content:flex-end;
+  padding:14px 22px;border-top:1px solid var(--p150)}
+
+/* ── 表单 ── */
+.f-row{margin-bottom:13px}
+.f-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f-label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:5px}
+.f-input{width:100%;padding:9px 12px;border:1.5px solid var(--p200);border-radius:8px;
+  font-size:13px;color:var(--ink);background:var(--p50);outline:none}
+.f-input:focus{border-color:var(--p500);background:#fff}
+.f-select{width:100%;padding:9px 12px;border:1.5px solid var(--p200);border-radius:8px;
+  font-size:13px;color:var(--ink2);background:var(--p50);outline:none;appearance:none}
+.f-textarea{width:100%;padding:9px 12px;border:1.5px solid var(--p200);border-radius:8px;
+  font-size:13px;color:var(--ink);background:var(--p50);outline:none;
+  resize:vertical;min-height:80px;font-family:inherit}
+
+/* ── 图表 ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+@media(max-width:700px){.chart-grid{grid-template-columns:1fr}}
+.chart-card{background:#fff;border-radius:var(--rx);border:1px solid var(--bd);
+  box-shadow:var(--sh);padding:18px}
+.chart-title{font-size:13px;font-weight:700;color:var(--p900);margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between}
+.chart-wrap{position:relative;height:230px}
+
+/* ── 财务概要 ── */
+.fin-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:600px){.fin-summary{grid-template-columns:1fr}}
+.fin-box{background:var(--p50);border:1.5px solid var(--p200);border-radius:12px;padding:15px 17px}
+.fin-box-lbl{font-size:10px;font-weight:700;color:var(--ink3);margin-bottom:5px;letter-spacing:.08em}
+.fin-box-val{font-size:22px;font-weight:800;color:var(--p900)}
+.fin-box-sub{font-size:10px;color:var(--ink4);margin-top:3px}
+.fin-box.income .fin-box-val{color:var(--ok)}
+.fin-box.expense .fin-box-val{color:var(--err)}
+
+/* ── 邮件编辑器 ── */
+.email-layout{display:grid;grid-template-columns:250px 1fr;gap:16px;align-items:start}
+@media(max-width:660px){.email-layout{grid-template-columns:1fr}}
+.tpl-list{display:flex;flex-direction:column;gap:7px}
+.tpl-item{padding:11px 13px;border-radius:9px;border:1.5px solid var(--p200);
+  cursor:pointer;transition:all .14s}
+.tpl-item:hover{border-color:var(--p400);background:var(--p100)}
+.tpl-item.active{border-color:var(--p600);background:var(--p150)}
+.tpl-name{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:2px}
+.tpl-item.active .tpl-name{color:var(--p800)}
+.tpl-desc{font-size:11px;color:var(--ink3)}
+
+/* ── 教师卡片 ── */
+.teacher-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.tc-card{background:#fff;border-radius:var(--rx);border:1px solid var(--bd);
+  box-shadow:var(--sh);padding:18px}
+.tc-avatar{width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,var(--p700),var(--p400));color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:800;margin-bottom:12px}
+.tc-name{font-size:15px;font-weight:700;color:var(--p900)}
+.tc-email{font-size:11px;color:var(--ink3);word-break:break-all;margin-top:2px}
+.tc-calid{font-size:10px;color:var(--ink4);margin-top:2px;word-break:break-all}
+.slots-title{font-size:10px;font-weight:700;color:var(--ink3);margin:12px 0 6px;letter-spacing:.08em}
+.slot-pill{display:inline-block;background:var(--p100);color:var(--p700);
+  font-size:10px;padding:2px 7px;border-radius:10px;margin:2px}
+
+/* ── 杂项 ── */
+.page{display:none} .page.active{display:block}
+.empty{text-align:center;padding:36px;color:var(--ink4);font-size:13px}
+.loading{text-align:center;padding:28px;color:var(--ink3);font-size:13px}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid var(--p200);
+  border-top-color:var(--p500);border-radius:50%;animation:spin .7s linear infinite;
+  margin-right:6px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tag{display:inline-block;background:var(--p100);color:var(--p700);
+  font-size:11px;padding:2px 7px;border-radius:6px;font-weight:600}
+.text-ok{color:var(--ok)} .text-err{color:var(--err)}
+.text-sm{font-size:11px;color:var(--ink3)}
+.divider{height:1px;background:var(--p100);margin:14px 0}
+.actions{display:flex;gap:5px;flex-wrap:wrap}
+.alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px}
+.alert-ok{background:var(--okl);border:1px solid var(--okb);color:var(--ok)}
+.alert-err{background:var(--errl);border:1px solid #fca5a5;color:var(--err)}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:660px){.dash-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ 登录页 ══════════════════ -->
+<div id="loginPage">
+  <div class="lcard">
+    <div class="lbrand">
+      <div class="lbrand-icon">M</div>
+      <div class="lbrand-name">MandStar Chinese</div>
+      <div class="lbrand-sub">管理后台 / 管理システム</div>
+    </div>
+    <div class="lfield">
+      <label>Apps Script URL</label>
+      <input type="url" id="loginUrl" placeholder="https://script.google.com/macros/s/…/exec"
+             onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="lfield">
+      <label>管理密码 / パスワード</label>
+      <input type="password" id="loginPw" placeholder="••••••••"
+             onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="lerr" id="loginErr"></div>
+    <button class="lbtn" onclick="doLogin()">登录 / ログイン →</button>
+  </div>
+</div>
+
+<!-- ══════════════════ 应用 ══════════════════ -->
+<div id="app">
+
+  <!-- 侧边栏 -->
+  <nav class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-name">MandStar Chinese</div>
+      <div class="sb-logo-sub">管理后台</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-sec">总览</div>
+      <button class="nav-btn active" data-page="dashboard" onclick="navTo(this)">📊 仪表盘</button>
+      <div class="sb-sec">学员 & 教师</div>
+      <button class="nav-btn" data-page="students"  onclick="navTo(this)">👨‍🎓 学员管理</button>
+      <button class="nav-btn" data-page="teachers"  onclick="navTo(this)">👩‍🏫 教师管理</button>
+      <button class="nav-btn" data-page="bookings"  onclick="navTo(this)">📅 预约记录</button>
+      <div class="sb-sec">运营</div>
+      <button class="nav-btn" data-page="email"   onclick="navTo(this)">✉️ 邮件中心</button>
+      <button class="nav-btn" data-page="finance" onclick="navTo(this)">💴 财务管理</button>
+    </div>
+    <div class="sb-footer">
+      <strong>mandstarchinese@gmail.com</strong>管理员
+    </div>
+  </nav>
+
+  <!-- 主内容 -->
+  <div class="main">
+
+    <!-- ── 仪表盘 ── -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-top">
+        <div>
+          <div class="page-title">仪表盘</div>
+          <div class="page-sub">MandStar Chinese 管理后台</div>
+        </div>
+        <button class="btn btn-o btn-sm" onclick="loadDashboard()">🔄 刷新</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stat-icon ic-p">👨‍🎓</div>
+          <div class="stat-val" id="s-students">—</div><div class="stat-lbl">学员总数</div></div>
+        <div class="stat"><div class="stat-icon ic-g">📅</div>
+          <div class="stat-val" id="s-bookings">—</div><div class="stat-lbl">预约总数</div></div>
+        <div class="stat"><div class="stat-icon ic-o">💴</div>
+          <div class="stat-val" id="s-income">—</div><div class="stat-lbl">本月收入（円）</div></div>
+        <div class="stat"><div class="stat-icon ic-b">🤖</div>
+          <div class="stat-val" id="s-pending">—</div><div class="stat-lbl">待处理自动配分</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">最近预约（指定教师）</div>
+            <button class="btn btn-o btn-sm" onclick="navTo(document.querySelector('[data-page=bookings]'))">全部 →</button>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>学员</th><th>教师</th><th>开始时间</th><th>状态</th></tr></thead>
+              <tbody id="dash-bookings"><tr><td colspan="4" class="loading"><span class="spinner"></span>加载中…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">待处理 — 自动配分预约</div></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>学员</th><th>希望时间</th><th>状态</th></tr></thead>
+              <tbody id="dash-auto"><tr><td colspan="3" class="loading"><span class="spinner"></span>加载中…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 学员管理 ── -->
+    <div class="page" id="page-students">
+      <div class="page-top">
+        <div>
+          <div class="page-title">学员管理</div>
+          <div class="page-sub">同步自 Google Sheets「学生申込データ」</div>
+        </div>
+        <button class="btn btn-p btn-sm" onclick="loadStudents()">🔄 同步数据</button>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">学员档案</div>
+          <span class="text-sm" id="student-count"></span>
+        </div>
+        <div class="card-body">
+          <div class="toolbar">
+            <input class="search" id="stu-search" placeholder="🔍 搜索姓名 / 邮箱…" oninput="filterStudents()">
+            <select class="sel" id="stu-teacher" onchange="filterStudents()">
+              <option value="">全部教师</option>
+            </select>
+            <select class="sel" id="stu-status" onchange="filterStudents()">
+              <option value="">全部状态</option>
+              <option value="新規">新規</option>
+              <option value="対応中">対応中</option>
+              <option value="完了">完了</option>
+              <option value="キャンセル">キャンセル</option>
+            </select>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr><th>申込日</th><th>姓名</th><th>邮箱</th><th>级别</th><th>希望教师</th><th>学习目的</th><th>状态</th><th>操作</th></tr>
+            </thead>
+            <tbody id="stu-tbody">
+              <tr><td colspan="8" class="loading"><span class="spinner"></span>加载中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 教师管理 ── -->
+    <div class="page" id="page-teachers">
+      <div class="page-top">
+        <div>
+          <div class="page-title">教师管理</div>
+          <div class="page-sub">教师档案 + 本周 Google 日历空闲时间</div>
+        </div>
+        <button class="btn btn-p btn-sm" onclick="loadTeachers()">🔄 读取日历</button>
+      </div>
+      <div class="teacher-grid" id="teacher-grid">
+        <div class="loading"><span class="spinner"></span>加载中…</div>
+      </div>
+    </div>
+
+    <!-- ── 预约记录 ── -->
+    <div class="page" id="page-bookings">
+      <div class="page-top">
+        <div>
+          <div class="page-title">预约记录</div>
+          <div class="page-sub">全部预约历史</div>
+        </div>
+        <button class="btn btn-p btn-sm" onclick="loadBookings()">🔄 同步</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="btn btn-p btn-sm" id="tab-normal" onclick="switchBookingTab('normal')">📅 指定教师预约</button>
+        <button class="btn btn-o btn-sm" id="tab-auto"   onclick="switchBookingTab('auto')">🤖 自动配分预约</button>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title" id="booking-title">指定教师预约</div>
+        </div>
+        <div class="card-body">
+          <div class="toolbar">
+            <input class="search" id="bk-search" placeholder="🔍 搜索学员 / 教师…" oninput="filterBookings()">
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead id="bk-thead"></thead>
+            <tbody id="bk-tbody">
+              <tr><td colspan="7" class="loading"><span class="spinner"></span>加载中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 邮件中心 ── -->
+    <div class="page" id="page-email">
+      <div class="page-top">
+        <div>
+          <div class="page-title">邮件中心</div>
+          <div class="page-sub">从 mandstarchinese@gmail.com 发送</div>
+        </div>
+      </div>
+      <div class="email-layout">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--p900);margin-bottom:10px">📋 邮件模板</div>
+          <div class="tpl-list" id="tpl-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">✍️ 撰写邮件</div></div>
+          <div class="card-body">
+            <div class="f-row">
+              <label class="f-label">收件人邮箱 *</label>
+              <input class="f-input" id="mail-to" placeholder="student@example.com">
+            </div>
+            <div class="f-row">
+              <label class="f-label">邮件主题 *</label>
+              <input class="f-input" id="mail-subject">
+            </div>
+            <div class="f-row">
+              <label class="f-label">正文内容（支持 HTML）</label>
+              <textarea class="f-textarea" id="mail-body" style="min-height:160px"></textarea>
+            </div>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button class="btn btn-o btn-sm" onclick="previewMail()">👁 预览</button>
+              <button class="btn btn-p btn-sm" onclick="sendMail()">📨 发送</button>
+            </div>
+            <div id="mail-status" style="margin-top:10px;font-size:12px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 财务管理 ── -->
+    <div class="page" id="page-finance">
+      <div class="page-top">
+        <div>
+          <div class="page-title">财务管理</div>
+          <div class="page-sub">收支记录与统计</div>
+        </div>
+        <button class="btn btn-p btn-sm" onclick="openFinanceModal()">＋ 新增记录</button>
+      </div>
+      <div class="fin-summary">
+        <div class="fin-box income">
+          <div class="fin-box-lbl">本月收入</div>
+          <div class="fin-box-val" id="fin-income">¥0</div>
+          <div class="fin-box-sub">学费合计</div>
+        </div>
+        <div class="fin-box expense">
+          <div class="fin-box-lbl">本月支出</div>
+          <div class="fin-box-val" id="fin-expense">¥0</div>
+          <div class="fin-box-sub">工资 + 运营</div>
+        </div>
+        <div class="fin-box">
+          <div class="fin-box-lbl">净利润</div>
+          <div class="fin-box-val" id="fin-profit">¥0</div>
+          <div class="fin-box-sub">收入 − 支出</div>
+        </div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">收支分类（本月）</div>
+          <div class="chart-wrap"><canvas id="chart-pie"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">
+            月度趋势
+            <select class="sel" id="trend-mode" style="font-size:11px;padding:3px 8px" onchange="renderLineChart()">
+              <option value="month">按月（近6个月）</option>
+              <option value="day">按日（本月）</option>
+            </select>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-line"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">收支明细</div>
+          <div style="display:flex;gap:7px">
+            <select class="sel" id="fin-cat-filter" onchange="filterFinance()">
+              <option value="">全部分类</option>
+              <option value="学費">学費</option>
+              <option value="教師給与">教師給与</option>
+              <option value="プラットフォーム費">プラットフォーム費</option>
+              <option value="その他収入">その他収入</option>
+              <option value="その他支出">その他支出</option>
+            </select>
+            <select class="sel" id="fin-type-filter" onchange="filterFinance()">
+              <option value="">全部</option>
+              <option value="収入">収入</option>
+              <option value="支出">支出</option>
+            </select>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr><th>日期</th><th>分类</th><th>种别</th><th>金额（円）</th><th>相手先</th><th>摘要</th></tr>
+            </thead>
+            <tbody id="fin-tbody">
+              <tr><td colspan="6" class="loading"><span class="spinner"></span>加载中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══════════════════ 模态框 ══════════════════ -->
+
+<!-- 学员详情 -->
+<div class="overlay" id="modal-student">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">🎓 学员档案详情</div>
+      <button class="close-btn" onclick="closeModal('modal-student')">✕</button>
+    </div>
+    <div class="modal-body" id="modal-student-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-o btn-sm" onclick="closeModal('modal-student')">关闭</button>
+      <button class="btn btn-p btn-sm" onclick="mailToCurrentStudent()">✉️ 发邮件</button>
+    </div>
+  </div>
+</div>
+
+<!-- 财务新增 -->
+<div class="overlay" id="modal-finance">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">＋ 新增财务记录</div>
+      <button class="close-btn" onclick="closeModal('modal-finance')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="f-row-2">
+        <div class="f-row">
+          <label class="f-label">日期 *</label>
+          <input type="date" class="f-input" id="fin-date">
+        </div>
+        <div class="f-row">
+          <label class="f-label">分类 *</label>
+          <select class="f-select" id="fin-category">
+            <option value="学費">学費（学费）</option>
+            <option value="教師給与">教師給与（教师工资）</option>
+            <option value="プラットフォーム費">プラットフォーム費（平台费）</option>
+            <option value="その他収入">その他収入（其他收入）</option>
+            <option value="その他支出">その他支出（其他支出）</option>
+          </select>
+        </div>
+      </div>
+      <div class="f-row-2">
+        <div class="f-row">
+          <label class="f-label">种别 *</label>
+          <select class="f-select" id="fin-type">
+            <option value="収入">収入（收入）</option>
+            <option value="支出">支出（支出）</option>
+          </select>
+        </div>
+        <div class="f-row">
+          <label class="f-label">金额（円） *</label>
+          <input type="number" class="f-input" id="fin-amount" placeholder="5000">
+        </div>
+      </div>
+      <div class="f-row">
+        <label class="f-label">相手先（学员名 / 教师名）</label>
+        <input class="f-input" id="fin-party" placeholder="例：田中 様 / Vita先生">
+      </div>
+      <div class="f-row">
+        <label class="f-label">摘要（备注）</label>
+        <textarea class="f-textarea" id="fin-note" style="min-height:65px" placeholder="例：4月体験レッスン料金"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-o btn-sm" onclick="closeModal('modal-finance')">取消</button>
+      <button class="btn btn-p btn-sm" onclick="submitFinance()">保存记录</button>
+    </div>
+  </div>
+</div>
+
+<!-- 邮件预览 -->
+<div class="overlay" id="modal-preview">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-head">
+      <div class="modal-title">📧 邮件预览</div>
+      <button class="close-btn" onclick="closeModal('modal-preview')">✕</button>
+    </div>
+    <div class="modal-body">
+      <iframe id="preview-iframe"
+        style="width:100%;height:420px;border:1px solid var(--p200);border-radius:8px"></iframe>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-o btn-sm" onclick="closeModal('modal-preview')">关闭</button>
+      <button class="btn btn-p btn-sm" onclick="sendMail()">📨 确认发送</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  全局状态
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let API_URL = '';
+let API_PW  = '';
+let DATA = {
+  students:  [],
+  bookings:  [],
+  autoBooks: [],
+  finance:   [],
+  teachers:  []
+};
+let currentStudent   = null;
+let currentBookingTab = 'normal';
+let pieChart  = null;
+let lineChart = null;
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  登录
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function doLogin() {
+  const url = document.getElementById('loginUrl').value.trim();
+  const pw  = document.getElementById('loginPw').value.trim();
+  const err = document.getElementById('loginErr');
+  err.style.display = 'none';
+
+  if (!url || !pw) {
+    err.textContent = '请填写 URL 和密码';
+    err.style.display = 'block';
+    return;
+  }
+
+  try {
+    const res  = await fetch(url + '?action=auth&pw=' + encodeURIComponent(pw));
+    const data = await res.json();
+
+    if (!data.ok) {
+      err.textContent = '密码错误，请重试';
+      err.style.display = 'block';
+      return;
+    }
+
+    // 保存到 localStorage
+    API_URL = url;
+    API_PW  = pw;
+    localStorage.setItem('msc_admin_url', url);
+    localStorage.setItem('msc_admin_pw',  pw);
+
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadDashboard();
+
+  } catch (e) {
+    err.textContent = '连接失败，请检查 URL 是否正确：' + e.message;
+    err.style.display = 'block';
+  }
+}
+
+// 自动读取保存的登录信息
+window.addEventListener('DOMContentLoaded', () => {
+  const savedUrl = localStorage.getItem('msc_admin_url');
+  const savedPw  = localStorage.getItem('msc_admin_pw');
+  if (savedUrl) document.getElementById('loginUrl').value = savedUrl;
+  if (savedPw)  document.getElementById('loginPw').value  = savedPw;
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  API 调用
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function apiGet(params) {
+  params.pw = API_PW;
+  const qs  = Object.entries(params)
+    .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
+    .join('&');
+  const res = await fetch(API_URL + '?' + qs);
+  return res.json();
+}
+
+async function apiPost(action, data) {
+  const body = 'action=' + encodeURIComponent(action) +
+               '&data='   + encodeURIComponent(JSON.stringify(data));
+  // no-cors because GitHub Pages → Apps Script cross-origin
+  await fetch(API_URL, {
+    method:  'POST',
+    mode:    'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body:    body
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  导航
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function navTo(btn) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const pageId = 'page-' + btn.dataset.page;
+  document.getElementById(pageId).classList.add('active');
+
+  const page = btn.dataset.page;
+  if (page === 'students') loadStudents();
+  else if (page === 'teachers') loadTeachers();
+  else if (page === 'bookings') loadBookings();
+  else if (page === 'finance')  loadFinance();
+  else if (page === 'email')    initEmail();
+  else if (page === 'dashboard') loadDashboard();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  仪表盘
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function loadDashboard() {
+  try {
+    const [sr, br, ar, fr] = await Promise.all([
+      apiGet({ action: 'students' }),
+      apiGet({ action: 'bookings' }),
+      apiGet({ action: 'auto_bookings' }),
+      apiGet({ action: 'finance' })
+    ]);
+    DATA.students  = sr.students  || [];
+    DATA.bookings  = br.bookings  || [];
+    DATA.autoBooks = ar.bookings  || [];
+    DATA.finance   = fr.rows      || [];
+    renderDashboard();
+  } catch (e) {
+    console.error('Dashboard load error:', e);
+  }
+}
+
+function renderDashboard() {
+  // 统计卡片
+  document.getElementById('s-students').textContent = DATA.students.length;
+  document.getElementById('s-bookings').textContent = DATA.bookings.length + DATA.autoBooks.length;
+  document.getElementById('s-pending').textContent  =
+    DATA.autoBooks.filter(b => b['ステータス'] === '未割当').length;
+
+  const now = new Date();
+  const monthIncome = DATA.finance
+    .filter(r => {
+      const d = new Date(r['日付']);
+      return d.getMonth() === now.getMonth() &&
+             d.getFullYear() === now.getFullYear() &&
+             r['種別'] === '収入';
+    })
+    .reduce((sum, r) => sum + (parseFloat(r['金額']) || 0), 0);
+  document.getElementById('s-income').textContent = '¥' + monthIncome.toLocaleString();
+
+  // 最近预约
+  const recent = DATA.bookings.slice(0, 6);
+  document.getElementById('dash-bookings').innerHTML = recent.length
+    ? recent.map(b => `<tr>
+        <td>${b['学生名'] || '—'}</td>
+        <td>${b['担当講師'] || '—'}</td>
+        <td class="nowrap text-sm">${(b['開始(JST)'] || '').slice(0, 16)}</td>
+        <td><span class="badge b-ok">確定</span></td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" class="empty">暂无预约记录</td></tr>';
+
+  // 自动配分待处理
+  const autoRecent = DATA.autoBooks.slice(0, 6);
+  document.getElementById('dash-auto').innerHTML = autoRecent.length
+    ? autoRecent.map(b => `<tr>
+        <td>${b['学生名'] || '—'}</td>
+        <td class="nowrap text-sm">${(b['希望開始（JST）'] || '').slice(0, 16)}</td>
+        <td><span class="badge ${b['ステータス'] === '未割当' ? 'b-warn' : 'b-ok'}">${b['ステータス'] || '—'}</span></td>
+      </tr>`).join('')
+    : '<tr><td colspan="3" class="empty">暂无自动配分请求</td></tr>';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  学员管理
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function loadStudents() {
+  document.getElementById('stu-tbody').innerHTML =
+    '<tr><td colspan="8" class="loading"><span class="spinner"></span>从 Google Sheets 同步中…</td></tr>';
+  try {
+    const res = await apiGet({ action: 'students' });
+    DATA.students = res.students || [];
+    document.getElementById('student-count').textContent = '共 ' + DATA.students.length + ' 名学员';
+
+    // 填充教师筛选
+    const teachers = [...new Set(DATA.students.map(s => s['担当講師']).filter(Boolean))];
+    const tf = document.getElementById('stu-teacher');
+    tf.innerHTML = '<option value="">全部教师</option>' +
+      teachers.map(t => `<option value="${t}">${t}</option>`).join('');
+
+    renderStudentTable(DATA.students);
+  } catch (e) {
+    document.getElementById('stu-tbody').innerHTML =
+      '<tr><td colspan="8" class="empty">加载失败：' + e.message + '</td></tr>';
+  }
+}
+
+function filterStudents() {
+  const q  = document.getElementById('stu-search').value.toLowerCase();
+  const tc = document.getElementById('stu-teacher').value;
+  const st = document.getElementById('stu-status').value;
+  const filtered = DATA.students.filter(s =>
+    (!q  || (s['お名前'] || '').toLowerCase().includes(q) ||
+             (s['メール']  || '').toLowerCase().includes(q)) &&
+    (!tc || s['担当講師'] === tc) &&
+    (!st || s['ステータス'] === st)
+  );
+  renderStudentTable(filtered);
+}
+
+function renderStudentTable(rows) {
+  document.getElementById('stu-tbody').innerHTML = rows.length
+    ? rows.map(s => `<tr>
+        <td class="text-sm nowrap">${(s['申込日時'] || '').slice(0, 10)}</td>
+        <td><strong>${s['お名前'] || '—'}</strong></td>
+        <td class="text-sm">${s['メール'] || '—'}</td>
+        <td><span class="tag">${s['レベル'] || '—'}</span></td>
+        <td>${s['担当講師'] || '—'}</td>
+        <td class="text-sm" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s['学習目的'] || '—'}</td>
+        <td><span class="badge ${statusBadge(s['ステータス'])}">${s['ステータス'] || '新規'}</span></td>
+        <td>
+          <div class="actions">
+            <button class="btn btn-o btn-sm" onclick='openStudentDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>详情</button>
+            <button class="btn btn-o btn-sm" onclick="quickMailTo('${s['メール']}','${s['お名前']}')">✉</button>
+          </div>
+        </td>
+      </tr>`).join('')
+    : '<tr><td colspan="8" class="empty">暂无数据，请点击「🔄 同步数据」</td></tr>';
+}
+
+function statusBadge(s) {
+  const map = { '完了': 'b-ok', '対応中': 'b-info', 'キャンセル': 'b-err' };
+  return map[s] || 'b-purple';
+}
+
+function openStudentDetail(student) {
+  currentStudent = student;
+  const fields = [
+    ['申込日時', '申込日時'], ['お名前', 'お名前'], ['メール', 'メール'],
+    ['性別', '性別'], ['年齢', '年齢'], ['HSK', 'HSK'], ['レベル', 'レベル'],
+    ['学習歴', '学習歴'], ['強化スキル', '強化スキル'], ['学習目的', '学習目的'],
+    ['理想ゴール', '理想ゴール'], ['レッスン言語', 'レッスン言語'],
+    ['学習ペース', '学習ペース'], ['担当講師', '担当講師'],
+    ['先生への期待', '先生への期待'], ['ステータス', 'ステータス'], ['メモ', 'メモ']
+  ];
+  document.getElementById('modal-student-body').innerHTML =
+    '<table style="width:100%;font-size:13px">' +
+    fields.map(([label, key]) =>
+      `<tr style="border-bottom:1px solid var(--p100)">
+        <td style="padding:8px 12px;color:var(--p600);font-weight:600;width:130px;white-space:nowrap">${label}</td>
+        <td style="padding:8px 12px;color:var(--ink2)">${student[key] || '—'}</td>
+      </tr>`
+    ).join('') + '</table>' +
+    '<div class="divider"></div>' +
+    '<label class="f-label">更新状态</label>' +
+    `<select class="f-select" id="edit-status" onchange="updateStudentStatus()">
+      <option value="新規"       ${student['ステータス']==='新規'       ?'selected':''}>新規</option>
+      <option value="対応中"     ${student['ステータス']==='対応中'     ?'selected':''}>対応中</option>
+      <option value="完了"       ${student['ステータス']==='完了'       ?'selected':''}>完了</option>
+      <option value="キャンセル" ${student['ステータス']==='キャンセル' ?'selected':''}>キャンセル</option>
+    </select>`;
+  document.getElementById('modal-student').classList.add('show');
+}
+
+async function updateStudentStatus() {
+  const val = document.getElementById('edit-status').value;
+  if (!currentStudent) return;
+  await apiPost('update_student', {
+    _row:  currentStudent._row,
+    field: 'ステータス',
+    value: val
+  });
+  currentStudent['ステータス'] = val;
+  const idx = DATA.students.findIndex(s => s._row === currentStudent._row);
+  if (idx >= 0) DATA.students[idx]['ステータス'] = val;
+  renderStudentTable(DATA.students);
+}
+
+function mailToCurrentStudent() {
+  if (!currentStudent) return;
+  closeModal('modal-student');
+  quickMailTo(currentStudent['メール'], currentStudent['お名前']);
+}
+
+function quickMailTo(email, name) {
+  // 跳转到邮件中心并预填收件人
+  const btn = document.querySelector('[data-page="email"]');
+  navTo(btn);
+  setTimeout(() => {
+    document.getElementById('mail-to').value      = email || '';
+    document.getElementById('mail-subject').value = 'MandStar Chinese｜' + (name || '') + ' 様';
+  }, 80);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  教师管理
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function loadTeachers() {
+  document.getElementById('teacher-grid').innerHTML =
+    '<div class="loading"><span class="spinner"></span>从 Apps Script 读取教师信息与日历…</div>';
+  try {
+    const res = await apiGet({ action: 'teachers_info' });
+    DATA.teachers = res.teachers || [];
+
+    if (!DATA.teachers.length) {
+      document.getElementById('teacher-grid').innerHTML =
+        '<div class="empty">暂无教师数据。请检查 Code.gs 中的 TEACHERS 配置。</div>';
+      return;
+    }
+
+    // 读取本周一
+    const now = new Date();
+    const mon = new Date(now);
+    mon.setHours(0, 0, 0, 0);
+    mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+
+    // 并行读取每位教师的日历
+    const slotResults = await Promise.all(
+      DATA.teachers.map(tc =>
+        apiGet({ action: 'teacher_slots', teacher: tc.key, weekStart: mon.toISOString() })
+          .then(r => r.slots || [])
+          .catch(() => [])
+      )
+    );
+
+    document.getElementById('teacher-grid').innerHTML = DATA.teachers.map((tc, i) => {
+      const slots = slotResults[i];
+      const slotHtml = slots.length
+        ? slots.slice(0, 10).map(s => {
+            const d = new Date(s.start);
+            return `<span class="slot-pill">${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</span>`;
+          }).join('') + (slots.length > 10 ? `<span class="slot-pill">+${slots.length-10}件</span>` : '')
+        : '<span style="font-size:11px;color:var(--ink4)">本週は空き枠なし</span>';
+      return `<div class="tc-card">
+        <div class="tc-avatar">${tc.name.slice(0, 1)}</div>
+        <div class="tc-name">${tc.key}</div>
+        <div class="tc-email">${tc.email}</div>
+        <div class="tc-calid">Calendar ID: ${tc.calId}</div>
+        <div class="slots-title">本週の空き枠（JST）</div>
+        <div>${slotHtml}</div>
+        <button class="btn btn-o btn-sm" style="margin-top:12px;width:100%"
+          onclick="quickMailTo('${tc.email}','${tc.key}')">✉️ 发送邮件</button>
+      </div>`;
+    }).join('');
+
+  } catch (e) {
+    document.getElementById('teacher-grid').innerHTML =
+      '<div class="empty">加载失败：' + e.message + '</div>';
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  预约记录
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function loadBookings() {
+  const [br, ar] = await Promise.all([
+    apiGet({ action: 'bookings' }),
+    apiGet({ action: 'auto_bookings' })
+  ]);
+  DATA.bookings  = br.bookings || [];
+  DATA.autoBooks = ar.bookings || [];
+  renderBookings();
+}
+
+function switchBookingTab(tab) {
+  currentBookingTab = tab;
+  document.getElementById('tab-normal').className = 'btn btn-sm ' + (tab === 'normal' ? 'btn-p' : 'btn-o');
+  document.getElementById('tab-auto').className   = 'btn btn-sm ' + (tab === 'auto'   ? 'btn-p' : 'btn-o');
+  renderBookings();
+}
+
+function filterBookings() {
+  renderBookings(document.getElementById('bk-search').value.toLowerCase());
+}
+
+function renderBookings(q) {
+  if (currentBookingTab === 'normal') {
+    document.getElementById('booking-title').textContent =
+      '指定教师预约（' + DATA.bookings.length + '件）';
+    document.getElementById('bk-thead').innerHTML =
+      '<tr><th>预约时间</th><th>学员</th><th>邮箱</th><th>教师</th><th>开始(JST)</th><th>结束(JST)</th><th>TZ</th></tr>';
+    const rows = q
+      ? DATA.bookings.filter(b =>
+          (b['学生名']||'').toLowerCase().includes(q) ||
+          (b['担当講師']||'').toLowerCase().includes(q) ||
+          (b['メール']||'').toLowerCase().includes(q))
+      : DATA.bookings;
+    document.getElementById('bk-tbody').innerHTML = rows.length
+      ? rows.map(b => `<tr>
+          <td class="text-sm nowrap">${(b['予約日時']||'').slice(0,16)}</td>
+          <td><strong>${b['学生名']||'—'}</strong></td>
+          <td class="text-sm">${b['メール']||'—'}</td>
+          <td>${b['担当講師']||'—'}</td>
+          <td class="text-sm nowrap">${(b['開始(JST)']||'').slice(0,16)}</td>
+          <td class="text-sm nowrap">${(b['終了(JST)']||'').slice(0,16)}</td>
+          <td class="text-sm">${b['学生TZ']||'—'}</td>
+        </tr>`).join('')
+      : '<tr><td colspan="7" class="empty">暂无数据</td></tr>';
+
+  } else {
+    document.getElementById('booking-title').textContent =
+      '自动配分预约（' + DATA.autoBooks.length + '件）';
+    document.getElementById('bk-thead').innerHTML =
+      '<tr><th>申込時間</th><th>学员</th><th>邮箱</th><th>级别</th><th>希望开始</th><th>希望结束</th><th>状态</th></tr>';
+    const rows = q
+      ? DATA.autoBooks.filter(b =>
+          (b['学生名']||'').toLowerCase().includes(q) ||
+          (b['メール']||'').toLowerCase().includes(q))
+      : DATA.autoBooks;
+    document.getElementById('bk-tbody').innerHTML = rows.length
+      ? rows.map(b => `<tr>
+          <td class="text-sm nowrap">${(b['申込日時']||'').slice(0,16)}</td>
+          <td><strong>${b['学生名']||'—'}</strong></td>
+          <td class="text-sm">${b['メール']||'—'}</td>
+          <td><span class="tag">${b['レベル']||'—'}</span></td>
+          <td class="text-sm nowrap">${(b['希望開始（JST）']||'').slice(0,16)}</td>
+          <td class="text-sm nowrap">${(b['希望終了（JST）']||'').slice(0,16)}</td>
+          <td><span class="badge ${b['ステータス']==='未割当'?'b-warn':'b-ok'}">${b['ステータス']||'—'}</span></td>
+        </tr>`).join('')
+      : '<tr><td colspan="7" class="empty">暂无数据</td></tr>';
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  邮件中心
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const EMAIL_TEMPLATES = [
+  {
+    name: '📗 学员预约确认（日语）',
+    desc: '发送至学员邮箱',
+    subject: 'MandStar Chinese｜コース予約確認｜{姓名} 様',
+    body: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="background:#f0ebff;padding:30px 12px;font-family:Arial,sans-serif">
+<table width="540" align="center" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(76,29,149,.12)">
+<tr><td style="background:linear-gradient(135deg,#2e1065,#6d28d9);padding:36px;text-align:center">
+  <div style="font-size:28px;margin-bottom:10px">✓</div>
+  <h1 style="color:#fff;margin:0 0 6px;font-size:22px;font-weight:800">コース予約確認</h1>
+  <p style="color:#ddd6fe;margin:0;font-size:13px">MandStar Chinese</p>
+</td></tr>
+<tr><td style="padding:28px 32px">
+  <p style="font-size:15px;color:#1a0835;font-weight:700;margin-bottom:12px">{姓名} 様</p>
+  <p style="color:#4c3a7a;font-size:14px;line-height:1.85">この度はMandStar Chineseをご利用いただき、誠にありがとうございます。<br>以下の内容でご予約が確定しました。</p>
+  <table width="100%" style="border:1.5px solid #ddd6fe;border-radius:12px;overflow:hidden;margin-top:18px">
+    <tr><td colspan="2" style="background:#6d28d9;padding:11px 18px"><span style="color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em">予約内容</span></td></tr>
+    <tr><td style="padding:12px 18px;color:#6d28d9;font-weight:600;font-size:13px;width:110px;border-bottom:1px solid #ede9fe">担当講師</td><td style="padding:12px 18px;font-size:14px;font-weight:700;color:#1a0835;border-bottom:1px solid #ede9fe">{教师}</td></tr>
+    <tr><td style="padding:12px 18px;color:#6d28d9;font-weight:600;font-size:13px;border-bottom:1px solid #ede9fe">日付</td><td style="padding:12px 18px;font-size:14px;font-weight:700;color:#1a0835;border-bottom:1px solid #ede9fe">{日期}</td></tr>
+    <tr><td style="padding:12px 18px;color:#6d28d9;font-weight:600;font-size:13px">時間</td><td style="padding:12px 18px;font-size:14px;font-weight:700;color:#1a0835">{时间}</td></tr>
+  </table>
+  <div style="background:#f5f3ff;border-left:4px solid #8b5cf6;border-radius:0 10px 10px 0;padding:14px 16px;margin-top:18px;font-size:13px;color:#4c3a7a;line-height:1.85">
+    • 课程开始前，老师会将腾讯会议链接发送至您的邮箱，请注意查收。<br>
+    • 系统将在课程前一天和前1小时发送提醒邮件。<br>
+    • 如有疑问，请直接回复此邮件。
+  </div>
+</td></tr>
+<tr><td style="padding:20px 32px;text-align:center;background:#faf8ff;border-top:1px solid #ede9fe">
+  <strong style="color:#4c1d95;font-size:15px">MandStar Chinese</strong><br>
+  <span style="font-size:12px;color:#8b5cf6">mandstarchinese@gmail.com</span>
+</td></tr>
+</table></body></html>`
+  },
+  {
+    name: '📕 教师新预约提醒（中文）',
+    desc: '发送至教师邮箱',
+    subject: 'MandStar Chinese｜新课程预约提醒｜{姓名} 様',
+    body: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="background:#f0ebff;padding:30px 12px;font-family:Arial,sans-serif">
+<table width="540" align="center" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(76,29,149,.12)">
+<tr><td style="background:linear-gradient(135deg,#2e1065,#6d28d9);padding:32px;text-align:center">
+  <div style="background:rgba(255,255,255,.15);border-radius:50px;display:inline-block;padding:8px 20px;margin-bottom:12px">
+    <span style="color:#fff;font-size:13px;font-weight:600">📬 新课程预约提醒</span>
+  </div>
+  <h1 style="color:#fff;margin:0;font-size:22px;font-weight:800">您有一个新的课程预约</h1>
+</td></tr>
+<tr><td style="padding:26px 30px">
+  <div style="background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:12px;padding:18px;margin-bottom:16px">
+    <div style="font-size:11px;color:#6d28d9;font-weight:700;letter-spacing:.1em;margin-bottom:12px">📅 课程信息（日本時間）</div>
+    <table width="100%">
+      <tr><td style="color:#6d28d9;font-weight:600;font-size:13px;width:80px;padding:5px 0">日期</td><td style="font-size:14px;font-weight:800;color:#1a0835">{日期}</td></tr>
+      <tr><td style="color:#6d28d9;font-weight:600;font-size:13px;padding:5px 0">時間</td><td style="font-size:14px;font-weight:800;color:#1a0835">{时间}</td></tr>
+    </table>
+  </div>
+  <div style="background:#faf8ff;border:1.5px solid #ddd6fe;border-radius:12px;overflow:hidden">
+    <div style="background:linear-gradient(90deg,#6d28d9,#8b5cf6);padding:11px 18px"><span style="color:#fff;font-size:11px;font-weight:700">👤 学员信息</span></div>
+    <table width="100%">
+      <tr><td style="padding:10px 18px;color:#6d28d9;font-weight:600;font-size:13px;width:90px;border-bottom:1px solid #ede9fe">学员姓名</td><td style="padding:10px 18px;font-size:13px;font-weight:700;border-bottom:1px solid #ede9fe">{姓名}</td></tr>
+      <tr><td style="padding:10px 18px;color:#6d28d9;font-weight:600;font-size:13px;border-bottom:1px solid #ede9fe">联系邮箱</td><td style="padding:10px 18px;font-size:13px;border-bottom:1px solid #ede9fe">{邮箱}</td></tr>
+      <tr><td style="padding:10px 18px;color:#6d28d9;font-weight:600;font-size:13px;border-bottom:1px solid #ede9fe">中文水平</td><td style="padding:10px 18px;font-size:13px;border-bottom:1px solid #ede9fe">{水平}</td></tr>
+      <tr><td style="padding:10px 18px;color:#6d28d9;font-weight:600;font-size:13px">学员备注</td><td style="padding:10px 18px;font-size:13px">{备注}</td></tr>
+    </table>
+  </div>
+  <div style="background:#fdf4ff;border:1.5px solid #e9d5ff;border-radius:12px;padding:15px 18px;margin-top:16px;font-size:13px;color:#4c3a7a;line-height:1.85">
+    ⚠️ <strong>请注意：</strong><br>
+    • 请在上课前将腾讯会议链接发送给学员<br>
+    • 如需调整时间请及时与学员沟通并通知后台
+  </div>
+</td></tr>
+<tr><td style="padding:18px;text-align:center;background:#faf8ff;border-top:1px solid #ede9fe">
+  <strong style="color:#4c1d95">MandStar Chinese</strong><br>
+  <span style="font-size:12px;color:#8b5cf6">mandstarchinese@gmail.com</span>
+</td></tr>
+</table></body></html>`
+  },
+  {
+    name: '⏰ 前日リマインダー',
+    desc: '学员 + 教师均可使用',
+    subject: 'MandStar Chinese｜【前日リマインダー】{姓名} 様',
+    body: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="background:#f0ebff;padding:30px 12px;font-family:Arial,sans-serif">
+<table width="540" align="center" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(76,29,149,.12)">
+<tr><td style="background:linear-gradient(135deg,#2e1065,#6d28d9);padding:30px;text-align:center">
+  <div style="font-size:38px;margin-bottom:10px">⏰</div>
+  <h1 style="color:#fff;margin:0;font-size:22px;font-weight:800">明日レッスンがあります</h1>
+  <p style="color:#ddd6fe;margin:6px 0 0;font-size:13px">前日リマインダー</p>
+</td></tr>
+<tr><td style="padding:26px 30px">
+  <p style="font-size:15px;color:#1a0835;font-weight:700;margin-bottom:14px">{姓名} 様</p>
+  <table width="100%" style="border:1.5px solid #ddd6fe;border-radius:12px;overflow:hidden">
+    <tr><td colspan="2" style="background:#6d28d9;padding:11px 18px"><span style="color:#fff;font-size:11px;font-weight:700">予約内容の確認</span></td></tr>
+    <tr><td style="padding:12px 18px;color:#6d28d9;font-weight:600;font-size:13px;width:110px;border-bottom:1px solid #ede9fe">担当講師</td><td style="padding:12px 18px;font-size:14px;font-weight:700;color:#1a0835;border-bottom:1px solid #ede9fe">{教师}</td></tr>
+    <tr><td style="padding:12px 18px;color:#6d28d9;font-weight:600;font-size:13px;border-bottom:1px solid #ede9fe">日付</td><td style="padding:12px 18px;font-size:14px;font-weight:700;color:#1a0835;border-bottom:1px solid #ede9fe">{日期}</td></tr>
+    <tr><td style="padding:12px 18px;color:#6d28d9;font-weight:600;font-size:13px">時間</td><td style="padding:12px 18px;font-size:14px;font-weight:700;color:#1a0835">{时间}</td></tr>
+  </table>
+  <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-top:16px;font-size:13px;color:#92400e;line-height:1.85">
+    明日のレッスンに向けてご準備をお忘れなく。<br>
+    腾讯会议リンクは講師より別途お送りします。
+  </div>
+</td></tr>
+<tr><td style="padding:18px;text-align:center;background:#faf8ff;border-top:1px solid #ede9fe">
+  <strong style="color:#4c1d95">MandStar Chinese</strong>
+</td></tr>
+</table></body></html>`
+  },
+  {
+    name: '✉️ 自由文本邮件',
+    desc: '完全自定义内容',
+    subject: 'MandStar Chinese｜{姓名} 様',
+    body: ''
+  }
+];
+
+function initEmail() {
+  const list = document.getElementById('tpl-list');
+  list.innerHTML = EMAIL_TEMPLATES.map((t, i) =>
+    `<div class="tpl-item ${i === 0 ? 'active' : ''}" onclick="selectTemplate(${i}, this)">
+      <div class="tpl-name">${t.name}</div>
+      <div class="tpl-desc">${t.desc}</div>
+    </div>`
+  ).join('');
+  selectTemplate(0, list.querySelector('.tpl-item'));
+}
+
+function selectTemplate(idx, el) {
+  document.querySelectorAll('.tpl-item').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mail-subject').value = EMAIL_TEMPLATES[idx].subject;
+  document.getElementById('mail-body').value    = EMAIL_TEMPLATES[idx].body;
+}
+
+function previewMail() {
+  document.getElementById('preview-iframe').srcdoc = document.getElementById('mail-body').value;
+  document.getElementById('modal-preview').classList.add('show');
+}
+
+async function sendMail() {
+  const to      = document.getElementById('mail-to').value.trim();
+  const subject = document.getElementById('mail-subject').value.trim();
+  const body    = document.getElementById('mail-body').value;
+  const status  = document.getElementById('mail-status');
+
+  if (!to || !subject) {
+    status.innerHTML = '<span class="text-err">请填写收件人邮箱和主题</span>';
+    return;
+  }
+
+  status.innerHTML = '<span class="spinner"></span>发送中…';
+
+  try {
+    // send_email 是 POST action，通过 apiPost
+    await apiPost('send_email', {
+      to:      to,
+      subject: subject,
+      html:    body,
+      text:    body.replace(/<[^>]+>/g, '')
+    });
+    status.innerHTML = '<span class="text-ok">✓ 已成功发送至 ' + to + '</span>';
+    closeModal('modal-preview');
+  } catch (e) {
+    status.innerHTML = '<span class="text-err">发送失败：' + e.message + '</span>';
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  财务管理
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function loadFinance() {
+  document.getElementById('fin-tbody').innerHTML =
+    '<tr><td colspan="6" class="loading"><span class="spinner"></span>加载中…</td></tr>';
+  try {
+    const res = await apiGet({ action: 'finance' });
+    DATA.finance = res.rows || [];
+    renderFinance(DATA.finance);
+    renderCharts();
+  } catch (e) {
+    document.getElementById('fin-tbody').innerHTML =
+      '<tr><td colspan="6" class="empty">加载失败：' + e.message + '</td></tr>';
+  }
+}
+
+function filterFinance() {
+  const cat  = document.getElementById('fin-cat-filter').value;
+  const type = document.getElementById('fin-type-filter').value;
+  const filtered = DATA.finance.filter(r =>
+    (!cat  || r['カテゴリ'] === cat) &&
+    (!type || r['種別']     === type)
+  );
+  renderFinance(filtered);
+}
+
+function renderFinance(rows) {
+  const now = new Date();
+  let income = 0, expense = 0;
+  DATA.finance.forEach(r => {
+    const d = new Date(r['日付']);
+    if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+      const amt = parseFloat(r['金額']) || 0;
+      if (r['種別'] === '収入') income  += amt;
+      if (r['種別'] === '支出') expense += amt;
+    }
+  });
+  document.getElementById('fin-income').textContent  = '¥' + income.toLocaleString();
+  document.getElementById('fin-expense').textContent = '¥' + expense.toLocaleString();
+  const profit    = income - expense;
+  const profitEl  = document.getElementById('fin-profit');
+  profitEl.textContent = (profit >= 0 ? '+' : '') + '¥' + profit.toLocaleString();
+  profitEl.style.color = profit >= 0 ? 'var(--ok)' : 'var(--err)';
+
+  document.getElementById('fin-tbody').innerHTML = rows.length
+    ? rows.map(r => {
+        const type = r['種別'] || '';
+        const amt  = parseFloat(r['金額']) || 0;
+        return `<tr>
+          <td class="nowrap">${r['日付'] || '—'}</td>
+          <td><span class="tag">${r['カテゴリ'] || '—'}</span></td>
+          <td><span class="badge ${type === '収入' ? 'b-ok' : 'b-err'}">${type}</span></td>
+          <td style="font-weight:700;color:${type === '収入' ? 'var(--ok)' : 'var(--err)'}">
+            ${type === '収入' ? '+' : '−'}¥${amt.toLocaleString()}
+          </td>
+          <td>${r['相手先'] || '—'}</td>
+          <td class="text-sm">${r['摘要'] || '—'}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="6" class="empty">暂无财务记录，请点击「＋ 新增记录」添加</td></tr>';
+}
+
+function renderCharts() {
+  const now = new Date();
+  // 饼状图 — 本月分类
+  const monthRows = DATA.finance.filter(r => {
+    const d = new Date(r['日付']);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const catMap = {};
+  monthRows.forEach(r => {
+    const cat = r['カテゴリ'] || '未分類';
+    catMap[cat] = (catMap[cat] || 0) + (parseFloat(r['金額']) || 0);
+  });
+
+  const pieCtx = document.getElementById('chart-pie').getContext('2d');
+  if (pieChart) pieChart.destroy();
+  pieChart = new Chart(pieCtx, {
+    type: 'doughnut',
+    data: {
+      labels:   Object.keys(catMap),
+      datasets: [{
+        data: Object.values(catMap),
+        backgroundColor: ['#6d28d9','#8b5cf6','#a78bfa','#c4b5fd','#059669','#34d399','#fbbf24'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } } }
+    }
+  });
+
+  renderLineChart();
+}
+
+function renderLineChart() {
+  const mode = document.getElementById('trend-mode').value;
+  const now  = new Date();
+  let labels = [], incomeArr = [], expenseArr = [];
+
+  if (mode === 'month') {
+    for (let m = 5; m >= 0; m--) {
+      const target = new Date(now.getFullYear(), now.getMonth() - m, 1);
+      labels.push((target.getMonth() + 1) + '月');
+      let inc = 0, exp = 0;
+      DATA.finance.forEach(r => {
+        const d = new Date(r['日付']);
+        if (d.getMonth() === target.getMonth() && d.getFullYear() === target.getFullYear()) {
+          const a = parseFloat(r['金額']) || 0;
+          if (r['種別'] === '収入') inc += a;
+          if (r['種別'] === '支出') exp += a;
+        }
+      });
+      incomeArr.push(inc); expenseArr.push(exp);
+    }
+  } else {
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+      labels.push(day + '日');
+      let inc = 0, exp = 0;
+      DATA.finance.forEach(r => {
+        const d = new Date(r['日付']);
+        if (d.getDate() === day && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+          const a = parseFloat(r['金額']) || 0;
+          if (r['種別'] === '収入') inc += a;
+          if (r['種別'] === '支出') exp += a;
+        }
+      });
+      incomeArr.push(inc); expenseArr.push(exp);
+    }
+  }
+
+  const lineCtx = document.getElementById('chart-line').getContext('2d');
+  if (lineChart) lineChart.destroy();
+  lineChart = new Chart(lineCtx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: '収入', data: incomeArr,  borderColor: '#059669',
+          backgroundColor: 'rgba(5,150,105,.1)',  tension: .35, fill: true, pointRadius: 3 },
+        { label: '支出', data: expenseArr, borderColor: '#dc2626',
+          backgroundColor: 'rgba(220,38,38,.08)', tension: .35, fill: true, pointRadius: 3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { font: { size: 11 } } } },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => '¥' + v.toLocaleString(), font: { size: 10 } } },
+        x: { ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+function openFinanceModal() {
+  const today = new Date();
+  document.getElementById('fin-date').value =
+    today.getFullYear() + '-' +
+    String(today.getMonth() + 1).padStart(2, '0') + '-' +
+    String(today.getDate()).padStart(2, '0');
+  document.getElementById('modal-finance').classList.add('show');
+}
+
+async function submitFinance() {
+  const data = {
+    date:     document.getElementById('fin-date').value,
+    category: document.getElementById('fin-category').value,
+    type:     document.getElementById('fin-type').value,
+    amount:   document.getElementById('fin-amount').value,
+    party:    document.getElementById('fin-party').value,
+    note:     document.getElementById('fin-note').value,
+    recorder: 'admin'
+  };
+  if (!data.date || !data.amount) {
+    alert('请填写日期和金额');
+    return;
+  }
+  await apiPost('add_finance', data);
+  closeModal('modal-finance');
+
+  // 乐观更新本地数据
+  DATA.finance.unshift({
+    '日付':    data.date,
+    'カテゴリ': data.category,
+    '種別':    data.type,
+    '金額':    data.amount,
+    '相手先':  data.party,
+    '摘要':    data.note
+  });
+  renderFinance(DATA.finance);
+  renderCharts();
+
+  // 清空表单
+  document.getElementById('fin-amount').value = '';
+  document.getElementById('fin-party').value  = '';
+  document.getElementById('fin-note').value   = '';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  通用工具
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+</script>
+</body>
+</html>
