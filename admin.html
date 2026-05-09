@@ -1,560 +1,1247 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MandStar Chinese — 管理者ダッシュボード</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<title>MandStar Chinese — 管理后台</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
-  --p900:#1a0835;--p800:#2d1260;--p700:#4c1d95;--p600:#6d28d9;
-  --p500:#7c3aed;--p400:#a78bfa;--p300:#c4b5fd;--p200:#ddd6fe;
-  --p150:#ede9fe;--p100:#f0ebff;--p50:#faf8ff;
-  --ink:#0f0520;--ink2:#3b1f6b;--ink3:#7c6a9e;--ink4:#b8aed4;
-  --bg:#faf8ff;--white:#fff;
-  --ok:#059669;--okbg:#ecfdf5;--okbdr:#a7f3d0;
-  --warn:#d97706;--warnbg:#fffbeb;
-  --err:#dc2626;--errbg:#fef2f2;
-  --r:8px;--rlg:14px;--rxl:20px;
-  --sh:0 1px 4px rgba(76,29,149,.07),0 4px 20px rgba(76,29,149,.05);
+  --p900:#1a0835;--p700:#4c1d95;--p600:#6d28d9;--p500:#7c3aed;
+  --p400:#a78bfa;--p200:#ddd6fe;--p150:#ede9fe;--p100:#f5f3ff;--p50:#faf8ff;
+  --ok:#059669;--okl:#ecfdf5;--okb:#a7f3d0;
+  --warn:#d97706;--warnl:#fffbeb;--warnb:#fde68a;
+  --err:#dc2626;--errl:#fef2f2;
+  --info:#0284c7;--infol:#e0f2fe;
+  --ink:#0f0520;--ink2:#3b1f6b;--ink3:#6b5b8e;--ink4:#a89cc8;
+  --bd:rgba(196,181,253,.2);
+  --sh:0 1px 3px rgba(76,29,149,.05),0 4px 14px rgba(76,29,149,.07);
+  --sb:212px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(109,40,217,.07),transparent 55%),
-             radial-gradient(ellipse 50% 60% at 100% 100%,rgba(124,58,237,.05),transparent 55%)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:#ede9fe;color:var(--ink);min-height:100vh;font-size:14px}
 
-/* ── LOGIN ── */
-.login-wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.login-card{background:var(--white);border:1px solid rgba(196,181,253,.3);border-radius:var(--rxl);box-shadow:0 8px 40px rgba(76,29,149,.12);overflow:hidden;width:100%;max-width:400px}
-.login-top{background:linear-gradient(135deg,var(--p900),var(--p700));padding:36px 32px;text-align:center}
-.login-logo{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;color:var(--white)}
-.login-title{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px}
-.login-sub{font-size:12px;color:var(--p300)}
-.login-body{padding:28px 32px}
-.login-label{display:block;font-size:11px;font-weight:500;letter-spacing:.07em;color:var(--ink2);margin-bottom:5px}
-.login-input{width:100%;padding:11px 13px;border:1.5px solid var(--p200);border-radius:var(--r);background:var(--p50);font-family:'Noto Sans JP',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:16px}
-.login-input:focus{border-color:var(--p500);box-shadow:0 0 0 3px rgba(124,58,237,.1);background:var(--white)}
-.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--p700),var(--p500));color:var(--white);border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s}
-.login-btn:hover{opacity:.9;transform:translateY(-1px)}
-.login-err{font-size:12px;color:var(--err);margin-top:10px;text-align:center;display:none}
-.login-err.show{display:block}
+/* ── Login ── */
+#loginPage{position:fixed;inset:0;z-index:999;
+  background:linear-gradient(135deg,#0d0520 0%,#2d1260 55%,#4c1d95 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.lcard{background:#fff;border-radius:20px;padding:38px 34px;width:330px;
+  box-shadow:0 24px 80px rgba(0,0,0,.4)}
+.lbrand{text-align:center;margin-bottom:24px}
+.lbrand-icon{width:50px;height:50px;background:linear-gradient(135deg,var(--p700),var(--p400));
+  border-radius:13px;margin:0 auto 10px;display:flex;align-items:center;
+  justify-content:center;font-size:20px;font-weight:800;color:#fff}
+.lbrand-name{font-size:16px;font-weight:800;color:var(--p900)}
+.lbrand-sub{font-size:11px;color:var(--ink3);margin-top:2px}
+.lfield{margin-bottom:12px}
+.lfield label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:4px}
+.lfield input{width:100%;padding:10px 12px;border:1.5px solid var(--p200);border-radius:8px;
+  font-size:14px;color:var(--ink);outline:none;background:var(--p50)}
+.lfield input:focus{border-color:var(--p500);box-shadow:0 0 0 3px rgba(109,40,217,.1)}
+.lerr{font-size:12px;color:var(--err);margin:6px 0 10px;display:none;
+  background:var(--errl);padding:8px 11px;border-radius:7px}
+.lbtn{width:100%;padding:12px;background:linear-gradient(135deg,var(--p700),var(--p500));
+  color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer}
+.lbtn:hover{opacity:.9}
+.lsaved{font-size:11px;color:var(--ink3);text-align:center;margin-top:10px}
 
-/* ── DASHBOARD ── */
-.dash{display:none;position:relative;z-index:1}
+/* ── App shell ── */
+#app{display:none;min-height:100vh}
+.sidebar{width:var(--sb);position:fixed;top:0;left:0;bottom:0;
+  background:var(--p900);display:flex;flex-direction:column;z-index:50;overflow:hidden}
+.sb-logo{padding:18px 15px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-logo-name{font-size:13px;font-weight:800;color:#fff}
+.sb-logo-sub{font-size:10px;color:var(--p400);margin-top:1px}
+.sb-nav{flex:1;padding:10px 7px;overflow-y:auto}
+.sb-sec{font-size:9px;font-weight:700;color:var(--p400);letter-spacing:.14em;
+  padding:10px 9px 4px;text-transform:uppercase}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;
+  cursor:pointer;color:rgba(255,255,255,.56);font-size:13px;font-weight:500;
+  transition:all .13s;margin-bottom:1px;border:none;background:transparent;width:100%;text-align:left}
+.nav-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.88)}
+.nav-btn.active{background:linear-gradient(90deg,var(--p600),var(--p500));
+  color:#fff;box-shadow:0 2px 8px rgba(109,40,217,.3)}
+.sb-footer{padding:12px 14px;border-top:1px solid rgba(255,255,255,.07);
+  font-size:10px;color:var(--p400)}
+.sb-footer strong{display:block;color:rgba(255,255,255,.7);margin-bottom:1px;font-size:11px}
 
-/* Sidebar */
-.layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
-.sidebar{background:var(--p900);padding:0;display:flex;flex-direction:column}
-.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
-.sidebar-brand{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:2px}
-.sidebar-sub{font-size:11px;color:var(--p400)}
-.sidebar-nav{padding:16px 0;flex:1}
-.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:13px;color:rgba(255,255,255,.65);cursor:pointer;transition:all .2s;border-left:3px solid transparent}
-.nav-item:hover{color:var(--white);background:rgba(255,255,255,.06)}
-.nav-item.active{color:var(--white);background:rgba(124,58,237,.25);border-left-color:var(--p400)}
-.nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:var(--p400)}
-.logout-btn{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:6px 12px;border-radius:var(--r);font-size:11px;cursor:pointer;transition:all .2s;font-family:'Noto Sans JP',sans-serif;margin-top:8px;width:100%}
-.logout-btn:hover{border-color:rgba(255,255,255,.5);color:var(--white)}
+/* ── Main ── */
+.main{margin-left:var(--sb);padding:22px 26px;min-height:100vh}
+@media(max-width:680px){.sidebar{display:none}.main{margin-left:0;padding:14px}}
 
-/* Main content */
-.main-content{background:var(--bg);overflow-y:auto}
-.topbar{background:var(--white);border-bottom:1px solid rgba(196,181,253,.2);padding:0 28px;height:52px;display:flex;align-items:center;justify-content:space-between}
-.topbar-title{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;color:var(--p800)}
-.topbar-meta{font-size:12px;color:var(--ink3)}
-.content-area{padding:24px 28px}
+/* ── Page top ── */
+.ptop{display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.ptitle{font-size:19px;font-weight:800;color:var(--p900)}
+.psub{font-size:12px;color:var(--ink3);margin-top:2px}
 
-/* ── OVERVIEW STATS ── */
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-.stat-card{background:var(--white);border:1px solid rgba(196,181,253,.25);border-radius:var(--rlg);padding:18px 20px;box-shadow:var(--sh)}
-.stat-label{font-size:11px;color:var(--ink3);font-weight:500;letter-spacing:.06em;margin-bottom:8px}
-.stat-value{font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;color:var(--p800)}
-.stat-sub{font-size:11px;color:var(--ink3);margin-top:4px}
-.stat-bar{height:3px;border-radius:2px;background:var(--p200);margin-top:10px;overflow:hidden}
-.stat-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--p600),var(--p400))}
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;
+  border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;
+  transition:all .13s;line-height:1;white-space:nowrap}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-p{background:linear-gradient(135deg,var(--p700),var(--p500));color:#fff;
+  box-shadow:0 2px 8px rgba(109,40,217,.22)}
+.btn-p:hover:not(:disabled){opacity:.9;transform:translateY(-1px)}
+.btn-o{background:#fff;border:1.5px solid var(--p200);color:var(--p700)}
+.btn-o:hover:not(:disabled){background:var(--p100)}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-err{background:var(--err);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
 
-/* ── STUDENT LIST ── */
-.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.section-title{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;color:var(--p800)}
-.filter-row{display:flex;gap:8px;flex-wrap:wrap}
-.filter-btn{padding:6px 14px;border:1px solid var(--p200);border-radius:100px;font-size:12px;color:var(--ink3);background:var(--white);cursor:pointer;transition:all .2s}
-.filter-btn:hover{border-color:var(--p400);color:var(--p600)}
-.filter-btn.active{border-color:var(--p500);background:var(--p150);color:var(--p700);font-weight:500}
-.search-box{padding:7px 12px;border:1px solid var(--p200);border-radius:var(--r);font-size:13px;color:var(--ink);background:var(--white);outline:none;width:200px;font-family:'Noto Sans JP',sans-serif}
-.search-box:focus{border-color:var(--p500);box-shadow:0 0 0 2px rgba(124,58,237,.08)}
+/* ── Stats ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:780px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:#fff;border-radius:13px;padding:16px;box-shadow:var(--sh);border:1px solid var(--bd)}
+.stat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:16px;margin-bottom:9px}
+.ic-p{background:var(--p100)} .ic-g{background:var(--okl)} .ic-o{background:var(--warnl)} .ic-b{background:var(--infol)}
+.stat-val{font-size:24px;font-weight:800;color:var(--p900)}
+.stat-lbl{font-size:11px;color:var(--ink3);margin-top:3px}
 
-.student-table{width:100%;background:var(--white);border:1px solid rgba(196,181,253,.2);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--sh);margin-bottom:24px}
-.st-head{display:grid;grid-template-columns:180px 160px 100px 100px 90px 120px 80px;padding:12px 16px;background:var(--p50);border-bottom:1px solid var(--p100);font-size:11px;font-weight:500;color:var(--ink3);letter-spacing:.06em;gap:8px}
-.st-row{display:grid;grid-template-columns:180px 160px 100px 100px 90px 120px 80px;padding:13px 16px;border-bottom:1px solid var(--p50);font-size:13px;gap:8px;cursor:pointer;transition:background .15s;align-items:center}
-.st-row:last-child{border-bottom:none}
-.st-row:hover{background:var(--p50)}
-.st-name{font-weight:500;color:var(--ink2)}
-.st-email{color:var(--ink3);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.status-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:500;white-space:nowrap}
-.status-new{background:#ede9fe;color:#4c1d95}
-.status-contacted{background:#d1fae5;color:#065f46}
-.status-scheduled{background:#fef3c7;color:#92400e}
-.status-active{background:#dbeafe;color:#1e40af}
+/* ── Card ── */
+.card{background:#fff;border-radius:13px;border:1px solid var(--bd);
+  box-shadow:var(--sh);overflow:hidden;margin-bottom:16px}
+.card-head{display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px;border-bottom:1px solid var(--p100)}
+.card-title{font-size:14px;font-weight:700;color:var(--p900)}
+.card-body{padding:16px 18px}
+.card-body-0{padding:0}
 
-/* ── STUDENT DETAIL MODAL ── */
-.modal-bg{position:fixed;inset:0;background:rgba(10,2,25,.6);backdrop-filter:blur(5px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
-.modal-bg.show{display:flex}
-.modal{background:var(--white);border-radius:var(--rxl);width:100%;max-width:700px;overflow:hidden;box-shadow:0 16px 60px rgba(76,29,149,.2);animation:mup .3s ease}
-@keyframes mup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.modal-top{background:linear-gradient(135deg,var(--p900),var(--p700));padding:28px 32px;display:flex;align-items:center;gap:16px}
-.modal-avatar{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;color:var(--white);flex-shrink:0}
-.modal-name{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;color:var(--white)}
-.modal-email{font-size:12px;color:var(--p300);margin-top:2px}
-.modal-close{margin-left:auto;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:var(--white);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .2s}
-.modal-close:hover{background:rgba(255,255,255,.2)}
-.modal-body{padding:24px 32px}
-.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
-.modal-field{background:var(--p50);border-radius:var(--r);padding:12px 14px}
-.modal-field-label{font-size:10px;font-weight:500;letter-spacing:.08em;color:var(--ink3);margin-bottom:4px}
-.modal-field-value{font-size:13px;color:var(--ink2);font-weight:500;line-height:1.5}
-.modal-field.full{grid-column:1/-1}
-.modal-field.full .modal-field-value{font-size:13px;font-weight:400;line-height:1.7}
+/* ── Table ── */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{padding:8px 12px;text-align:left;font-size:10px;font-weight:700;
+  color:var(--ink3);letter-spacing:.08em;border-bottom:1.5px solid var(--p150);
+  background:var(--p50);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--p100);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--p50)}
+td{padding:8px 12px;color:var(--ink2);vertical-align:middle}
+td.nw{white-space:nowrap}
 
-/* AI Analysis section */
-.ai-section{background:linear-gradient(135deg,var(--p100),var(--p50));border:1px solid var(--p200);border-radius:var(--rlg);padding:20px;margin-bottom:20px}
-.ai-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--p800);margin-bottom:14px}
-.ai-tag{display:inline-flex;align-items:center;gap:5px;background:var(--p600);color:var(--white);border-radius:100px;padding:2px 10px;font-size:10px;font-weight:500}
-.ai-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.ai-card{background:var(--white);border-radius:var(--r);padding:12px;text-align:center;border:1px solid var(--p200)}
-.ai-card-icon{font-size:20px;margin-bottom:6px}
-.ai-card-label{font-size:10px;color:var(--ink3);margin-bottom:4px}
-.ai-card-val{font-size:13px;font-weight:500;color:var(--p700)}
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;padding:2px 7px;
+  border-radius:20px;font-size:11px;font-weight:600}
+.b-ok{background:var(--okl);color:var(--ok)}
+.b-w{background:var(--warnl);color:var(--warn)}
+.b-e{background:var(--errl);color:var(--err)}
+.b-i{background:var(--infol);color:var(--info)}
+.b-p{background:var(--p100);color:var(--p700)}
 
-/* Status select */
-.modal-status-row{display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid var(--p100)}
-.status-select{padding:8px 12px;border:1px solid var(--p200);border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink);background:var(--white);outline:none;cursor:pointer}
-.status-select:focus{border-color:var(--p500)}
-.save-status-btn{padding:8px 18px;background:var(--p600);color:var(--white);border:none;border-radius:var(--r);font-family:'Noto Sans JP',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
-.save-status-btn:hover{background:var(--p700)}
+/* ── Toolbar ── */
+.tbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.search{flex:1;min-width:150px;padding:7px 11px;border:1.5px solid var(--p200);
+  border-radius:7px;font-size:13px;color:var(--ink);background:var(--p50);outline:none}
+.search:focus{border-color:var(--p500)}
+.fsel{padding:7px 10px;border:1.5px solid var(--p200);border-radius:7px;
+  font-size:13px;color:var(--ink2);background:var(--p50);outline:none;cursor:pointer}
 
-/* Loading */
-.loading-overlay{position:absolute;inset:0;background:rgba(250,248,255,.85);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:10}
-.sp{width:20px;height:20px;border:2px solid var(--p200);border-top-color:var(--p500);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle}
+/* ── Modal ── */
+.overlay{position:fixed;inset:0;background:rgba(10,2,25,.52);
+  backdrop-filter:blur(4px);z-index:200;display:none;
+  align-items:center;justify-content:center;padding:16px}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:520px;
+  max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.22)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--p150)}
+.modal-title{font-size:15px;font-weight:700;color:var(--p900)}
+.close-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--p200);
+  background:transparent;cursor:pointer;font-size:14px;color:var(--ink3)}
+.modal-body{padding:20px}
+.modal-foot{display:flex;gap:8px;justify-content:flex-end;
+  padding:13px 20px;border-top:1px solid var(--p150)}
+
+/* ── Form ── */
+.f-row{margin-bottom:12px}
+.f-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f-label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:4px}
+.f-input{width:100%;padding:8px 11px;border:1.5px solid var(--p200);border-radius:7px;
+  font-size:13px;color:var(--ink);background:var(--p50);outline:none}
+.f-input:focus{border-color:var(--p500);background:#fff}
+.f-select{width:100%;padding:8px 11px;border:1.5px solid var(--p200);border-radius:7px;
+  font-size:13px;color:var(--ink2);background:var(--p50);outline:none;appearance:none}
+.f-textarea{width:100%;padding:8px 11px;border:1.5px solid var(--p200);border-radius:7px;
+  font-size:13px;color:var(--ink);background:var(--p50);outline:none;
+  resize:vertical;min-height:70px;font-family:inherit}
+
+/* ── Charts ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:680px){.chart-grid{grid-template-columns:1fr}}
+.chart-card{background:#fff;border-radius:13px;border:1px solid var(--bd);
+  box-shadow:var(--sh);padding:16px}
+.chart-title{font-size:13px;font-weight:700;color:var(--p900);margin-bottom:12px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px}
+.chart-wrap{position:relative;height:220px}
+
+/* ── Finance ── */
+.fin-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:16px}
+@media(max-width:580px){.fin-sum{grid-template-columns:1fr}}
+.fb{background:var(--p50);border:1.5px solid var(--p200);border-radius:11px;padding:14px 15px}
+.fb-l{font-size:10px;font-weight:700;color:var(--ink3);margin-bottom:4px;letter-spacing:.07em}
+.fb-v{font-size:21px;font-weight:800;color:var(--p900)}
+.fb-s{font-size:10px;color:var(--ink4);margin-top:2px}
+.fb.inc .fb-v{color:var(--ok)} .fb.exp .fb-v{color:var(--err)}
+
+/* ── Teacher cards ── */
+.tc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:13px}
+.tc-card{background:#fff;border-radius:13px;border:1px solid var(--bd);box-shadow:var(--sh);padding:16px}
+.tc-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--p700),var(--p400));
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;margin-bottom:10px}
+.tc-name{font-size:14px;font-weight:700;color:var(--p900)}
+.tc-info{font-size:11px;color:var(--ink3);margin-top:2px;word-break:break-all}
+.slot-pill{display:inline-block;background:var(--p100);color:var(--p700);
+  font-size:10px;padding:2px 6px;border-radius:8px;margin:2px}
+
+/* ── Email page ── */
+.email-grid{display:grid;grid-template-columns:230px 1fr;gap:14px;align-items:start}
+@media(max-width:640px){.email-grid{grid-template-columns:1fr}}
+.tpl-list{display:flex;flex-direction:column;gap:6px}
+.tpl-item{padding:10px 12px;border-radius:8px;border:1.5px solid var(--p200);cursor:pointer;transition:all .13s}
+.tpl-item:hover{border-color:var(--p400);background:var(--p100)}
+.tpl-item.active{border-color:var(--p600);background:var(--p150)}
+.tpl-name{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:1px}
+.tpl-item.active .tpl-name{color:var(--p800)}
+.tpl-desc{font-size:11px;color:var(--ink3)}
+
+/* ── Auto email status bar ── */
+.auto-bar{display:flex;align-items:center;gap:10px;padding:11px 16px;
+  border-radius:10px;margin-bottom:14px;font-size:13px;flex-wrap:wrap;gap:10px}
+.auto-bar.idle{background:var(--okl);border:1px solid var(--okb)}
+.auto-bar.working{background:var(--warnl);border:1px solid var(--warnb)}
+.auto-bar.err{background:var(--errl);border:1px solid #fca5a5}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:var(--ok);animation:pulse 2s infinite;flex-shrink:0}
+.pulse.warn{background:var(--warn);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Misc ── */
+.pg{display:none} .pg.active{display:block}
+.empty{text-align:center;padding:32px;color:var(--ink4);font-size:13px}
+.loading{text-align:center;padding:24px;color:var(--ink3);font-size:13px}
+.sp{display:inline-block;width:14px;height:14px;border:2px solid var(--p200);
+  border-top-color:var(--p500);border-radius:50%;animation:spin .7s linear infinite;
+  margin-right:5px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Responsive */
-@media(max-width:900px){
-  .layout{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .stat-grid{grid-template-columns:1fr 1fr}
-  .st-head,.st-row{grid-template-columns:1fr 1fr 80px 90px}
-}
+.tag{display:inline-block;background:var(--p100);color:var(--p700);
+  font-size:11px;padding:2px 6px;border-radius:5px;font-weight:600}
+.tok{color:var(--ok)} .terr{color:var(--err)} .tsm{font-size:11px;color:var(--ink3)}
+.divider{height:1px;background:var(--p100);margin:12px 0}
+.ar{display:flex;gap:4px;flex-wrap:wrap}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.dash-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN ══ -->
-<div class="login-wrap" id="loginWrap">
-  <div class="login-card">
-    <div class="login-top">
-      <div class="login-logo">M</div>
-      <div class="login-title">管理者ダッシュボード</div>
-      <div class="login-sub">MandStar Chinese — 講師専用</div>
+<!-- ══ 登录页 ══ -->
+<div id="loginPage">
+  <div class="lcard">
+    <div class="lbrand">
+      <div class="lbrand-icon">M</div>
+      <div class="lbrand-name">MandStar Chinese</div>
+      <div class="lbrand-sub">管理后台 / 管理システム</div>
     </div>
-    <div class="login-body">
-      <label class="login-label">パスワード</label>
-      <input type="password" class="login-input" id="loginPw" placeholder="パスワードを入力"
-             onkeydown="if(event.key==='Enter')doLogin()">
-      <button class="login-btn" onclick="doLogin()">ログイン</button>
-      <div class="login-err" id="loginErr">パスワードが正しくありません</div>
+    <div class="lfield">
+      <label>Apps Script URL</label>
+      <input type="url" id="loginUrl"
+        placeholder="https://script.google.com/macros/s/…/exec"
+        onkeydown="if(event.key==='Enter')doLogin()">
     </div>
+    <div class="lfield">
+      <label>管理密码 / パスワード</label>
+      <input type="password" id="loginPw" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="lerr" id="loginErr"></div>
+    <button class="lbtn" onclick="doLogin()">登录 / ログイン →</button>
+    <div class="lsaved" id="loginSaved"></div>
   </div>
 </div>
 
-<!-- ══ DASHBOARD ══ -->
-<div class="dash" id="dashWrap">
-  <div class="layout">
+<!-- ══ 主应用 ══ -->
+<div id="app">
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="sidebar-logo">
-        <div class="sidebar-brand">MandStar Chinese</div>
-        <div class="sidebar-sub">管理者ダッシュボード</div>
-      </div>
-      <nav class="sidebar-nav">
-        <div class="nav-item active" onclick="switchView('overview')"><span class="nav-icon">◈</span>概要</div>
-        <div class="nav-item" onclick="switchView('students')"><span class="nav-icon">◉</span>学生一覧</div>
-        <div class="nav-item" onclick="switchView('analysis')"><span class="nav-icon">◎</span>分析</div>
-      </nav>
-      <div class="sidebar-footer">
-        <div id="loginInfo">ログイン中</div>
-        <button class="logout-btn" onclick="doLogout()">ログアウト</button>
-      </div>
+  <nav class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-name">MandStar Chinese</div>
+      <div class="sb-logo-sub">管理后台</div>
     </div>
+    <div class="sb-nav">
+      <div class="sb-sec">总览</div>
+      <button class="nav-btn active" data-page="dashboard" onclick="navTo(this)">📊 仪表盘</button>
+      <div class="sb-sec">学员 & 教师</div>
+      <button class="nav-btn" data-page="students"  onclick="navTo(this)">👨‍🎓 学员管理</button>
+      <button class="nav-btn" data-page="teachers"  onclick="navTo(this)">👩‍🏫 教师管理</button>
+      <button class="nav-btn" data-page="bookings"  onclick="navTo(this)">📅 预约记录</button>
+      <div class="sb-sec">运营</div>
+      <button class="nav-btn" data-page="email"   onclick="navTo(this)">✉️ 邮件中心</button>
+      <button class="nav-btn" data-page="finance" onclick="navTo(this)">💴 财务管理</button>
+    </div>
+    <div class="sb-footer">
+      <strong>mandstarchinese@gmail.com</strong>管理员
+    </div>
+  </nav>
 
-    <!-- Main -->
-    <div class="main-content">
-      <div class="topbar">
-        <div class="topbar-title" id="pageTitle">概要</div>
-        <div class="topbar-meta" id="lastUpdate">読み込み中…</div>
+  <div class="main">
+
+    <!-- ── 仪表盘 ── -->
+    <div class="pg active" id="pg-dashboard">
+      <div class="ptop">
+        <div><div class="ptitle">仪表盘</div><div class="psub">MandStar Chinese 管理后台</div></div>
+        <button class="btn btn-o btn-sm" onclick="loadAll()">🔄 刷新全部</button>
       </div>
-      <div class="content-area" id="contentArea" style="position:relative">
-        <div class="loading-overlay" id="loadingOverlay">
-          <span class="sp"></span>データを読み込み中…
+      <div class="stats">
+        <div class="stat"><div class="stat-icon ic-p">👨‍🎓</div><div class="stat-val" id="s-stu">—</div><div class="stat-lbl">学员总数</div></div>
+        <div class="stat"><div class="stat-icon ic-g">📅</div><div class="stat-val" id="s-bk">—</div><div class="stat-lbl">预约总数</div></div>
+        <div class="stat"><div class="stat-icon ic-o">💴</div><div class="stat-val" id="s-inc">—</div><div class="stat-lbl">本月收入（円）</div></div>
+        <div class="stat"><div class="stat-icon ic-b">✉️</div><div class="stat-val" id="s-email">—</div><div class="stat-lbl">待发送邮件</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head"><div class="card-title">最近预约</div>
+            <button class="btn btn-o btn-sm" onclick="navTo(document.querySelector('[data-page=bookings]'))">全部 →</button></div>
+          <div class="tw"><table>
+            <thead><tr><th>学员</th><th>教师</th><th>开始时间</th><th>状态</th></tr></thead>
+            <tbody id="dash-bk"><tr><td colspan="4" class="loading"><span class="sp"></span>加载中…</td></tr></tbody>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">待处理 — 自动配分</div></div>
+          <div class="tw"><table>
+            <thead><tr><th>学员</th><th>希望时间</th><th>状态</th></tr></thead>
+            <tbody id="dash-auto"><tr><td colspan="3" class="loading"><span class="sp"></span>加载中…</td></tr></tbody>
+          </table></div>
         </div>
       </div>
     </div>
 
+    <!-- ── 学员管理 ── -->
+    <div class="pg" id="pg-students">
+      <div class="ptop">
+        <div><div class="ptitle">学员管理</div><div class="psub">同步自「学生申込データ」</div></div>
+        <button class="btn btn-p btn-sm" onclick="loadStudents()">🔄 同步</button>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">学员档案</div><span class="tsm" id="stu-cnt"></span></div>
+        <div class="card-body">
+          <div class="tbar">
+            <input class="search" id="stu-q" placeholder="🔍 搜索姓名 / 邮箱…" oninput="filterStu()">
+            <select class="fsel" id="stu-tc" onchange="filterStu()"><option value="">全部教师</option></select>
+            <select class="fsel" id="stu-st" onchange="filterStu()">
+              <option value="">全部状态</option><option>新規</option><option>対応中</option><option>完了</option><option>キャンセル</option>
+            </select>
+          </div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>申込日</th><th>姓名</th><th>邮箱</th><th>级别</th><th>希望教师</th><th>目的</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody id="stu-tb"><tr><td colspan="8" class="loading"><span class="sp"></span>加载中…</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ── 教师管理 ── -->
+    <div class="pg" id="pg-teachers">
+      <div class="ptop">
+        <div><div class="ptitle">教师管理</div><div class="psub">教师档案 + 本周日历空闲</div></div>
+        <button class="btn btn-p btn-sm" onclick="loadTeachers()">🔄 读取日历</button>
+      </div>
+      <div class="tc-grid" id="tc-grid"><div class="loading"><span class="sp"></span>加载中…</div></div>
+    </div>
+
+    <!-- ── 预约记录 ── -->
+    <div class="pg" id="pg-bookings">
+      <div class="ptop">
+        <div><div class="ptitle">预约记录</div></div>
+        <button class="btn btn-p btn-sm" onclick="loadBookings()">🔄 同步</button>
+      </div>
+      <div style="display:flex;gap:7px;margin-bottom:12px">
+        <button class="btn btn-p btn-sm" id="tab-n" onclick="switchBkTab('n')">📅 指定教师</button>
+        <button class="btn btn-o btn-sm" id="tab-a" onclick="switchBkTab('a')">🤖 自动配分</button>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title" id="bk-title">指定教师预约</div></div>
+        <div class="card-body"><div class="tbar">
+          <input class="search" id="bk-q" placeholder="🔍 搜索…" oninput="filterBk()">
+        </div></div>
+        <div class="tw"><table>
+          <thead id="bk-thead"></thead>
+          <tbody id="bk-tb"><tr><td class="loading"><span class="sp"></span>加载中…</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ── 邮件中心 ── -->
+    <div class="pg" id="pg-email">
+      <div class="ptop">
+        <div><div class="ptitle">邮件中心</div><div class="psub">自动检测新预约 · 从 mandstarchinese@gmail.com 发出</div></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-p btn-sm" onclick="checkAndSend()">⚡ 立即检查并发送</button>
+        </div>
+      </div>
+
+      <!-- 自动发送状态栏 -->
+      <div class="auto-bar idle" id="auto-bar">
+        <span class="pulse" id="auto-pulse"></span>
+        <span id="auto-msg">正在初始化…</span>
+        <span class="tsm" id="auto-time"></span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer">
+            <input type="checkbox" id="auto-on" checked style="cursor:pointer">
+            自动发送（30秒轮询）
+          </label>
+        </div>
+      </div>
+
+      <!-- 待发送列表 -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-head">
+          <div class="card-title">📬 待发送预约邮件</div>
+          <span class="tsm" id="pending-cnt"></span>
+        </div>
+        <div id="pending-area">
+          <div class="empty tsm">✅ 暂无待发送邮件</div>
+        </div>
+      </div>
+
+      <!-- 发送记录 -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-head">
+          <div class="card-title">📋 本次会话发送记录</div>
+          <button class="btn btn-o btn-sm" onclick="clearLog()">清除</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>时间</th><th>收件人</th><th>邮件类型</th><th>状态</th></tr></thead>
+          <tbody id="email-log"></tbody>
+        </table></div>
+        <div id="email-log-empty" class="empty tsm">暂无发送记录</div>
+      </div>
+
+      <!-- 手动撰写 -->
+      <div class="email-grid">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--p900);margin-bottom:9px">📋 邮件模板</div>
+          <div class="tpl-list" id="tpl-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">✍️ 手动撰写邮件</div></div>
+          <div class="card-body">
+            <div class="f-row"><label class="f-label">收件人 *</label>
+              <input class="f-input" id="mail-to" placeholder="email@example.com"></div>
+            <div class="f-row"><label class="f-label">主题 *</label>
+              <input class="f-input" id="mail-subject"></div>
+            <div class="f-row"><label class="f-label">正文（支持 HTML）</label>
+              <textarea class="f-textarea" id="mail-body" style="min-height:140px"></textarea></div>
+            <div style="display:flex;gap:7px;justify-content:flex-end">
+              <button class="btn btn-o btn-sm" onclick="previewMail()">👁 预览</button>
+              <button class="btn btn-p btn-sm" onclick="sendManualMail()">📨 发送</button>
+            </div>
+            <div id="mail-st" style="margin-top:8px;font-size:12px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 财务管理 ── -->
+    <div class="pg" id="pg-finance">
+      <div class="ptop">
+        <div><div class="ptitle">财务管理</div><div class="psub">收支记录与统计</div></div>
+        <button class="btn btn-p btn-sm" onclick="openFinModal()">＋ 新增记录</button>
+      </div>
+      <div class="fin-sum">
+        <div class="fb inc"><div class="fb-l">本月收入</div><div class="fb-v" id="fin-i">¥0</div><div class="fb-s">学费合计</div></div>
+        <div class="fb exp"><div class="fb-l">本月支出</div><div class="fb-v" id="fin-e">¥0</div><div class="fb-s">工资+运营</div></div>
+        <div class="fb"><div class="fb-l">净利润</div><div class="fb-v" id="fin-p">¥0</div><div class="fb-s">收入−支出</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">收支分类（本月）</div><div class="chart-wrap"><canvas id="c-pie"></canvas></div></div>
+        <div class="chart-card">
+          <div class="chart-title">月度趋势
+            <select class="fsel" id="trend-m" style="font-size:11px;padding:3px 7px" onchange="drawLine()">
+              <option value="month">按月（近6个月）</option><option value="day">按日（本月）</option>
+            </select>
+          </div>
+          <div class="chart-wrap"><canvas id="c-line"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">收支明细</div>
+          <div style="display:flex;gap:6px">
+            <select class="fsel" id="fin-fc" onchange="filterFin()">
+              <option value="">全部分类</option><option>学費</option><option>教師給与</option>
+              <option>プラットフォーム費</option><option>その他収入</option><option>その他支出</option>
+            </select>
+            <select class="fsel" id="fin-ft" onchange="filterFin()">
+              <option value="">全部</option><option value="収入">収入</option><option value="支出">支出</option>
+            </select>
+          </div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>日期</th><th>分类</th><th>种别</th><th>金额（円）</th><th>相手先</th><th>摘要</th></tr></thead>
+          <tbody id="fin-tb"><tr><td colspan="6" class="loading"><span class="sp"></span>加载中…</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ MODALS ══ -->
+
+<!-- 学员详情 -->
+<div class="overlay" id="m-stu">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">🎓 学员档案</div>
+      <button class="close-btn" onclick="cm('m-stu')">✕</button></div>
+    <div class="modal-body" id="m-stu-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-o btn-sm" onclick="cm('m-stu')">关闭</button>
+      <button class="btn btn-p btn-sm" onclick="mailStu()">✉️ 发邮件</button>
+    </div>
   </div>
 </div>
 
-<!-- ══ STUDENT DETAIL MODAL ══ -->
-<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
-  <div class="modal" id="modal"></div>
+<!-- 自动配分 — 指定教师并发送 -->
+<div class="overlay" id="m-assign">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">👩‍🏫 指定教师并发送邮件</div>
+      <button class="close-btn" onclick="cm('m-assign')">✕</button></div>
+    <div class="modal-body">
+      <div style="background:var(--p100);border-radius:9px;padding:13px;margin-bottom:14px;font-size:13px;color:var(--p800);line-height:1.7">
+        系统将自动读取该学员的预约信息，<br>填入教师姓名和邮箱后即可一键发送确认邮件。
+      </div>
+      <div id="assign-info" style="background:var(--p50);border:1px solid var(--p200);border-radius:9px;padding:13px;margin-bottom:14px;font-size:13px"></div>
+      <div class="f-row">
+        <label class="f-label">教师姓名 *</label>
+        <input class="f-input" id="assign-name" placeholder="例：Vita先生">
+      </div>
+      <div class="f-row">
+        <label class="f-label">教师邮箱 *</label>
+        <input class="f-input" id="assign-email" type="email" placeholder="teacher@gmail.com">
+      </div>
+      <div id="assign-quick" style="margin:8px 0"></div>
+      <div id="assign-st" style="font-size:12px;margin-top:6px"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-o btn-sm" onclick="cm('m-assign')">取消</button>
+      <button class="btn btn-p btn-sm" onclick="doAssign()">📨 发送邮件</button>
+    </div>
+  </div>
+</div>
+
+<!-- 财务新增 -->
+<div class="overlay" id="m-fin">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">＋ 新增财务记录</div>
+      <button class="close-btn" onclick="cm('m-fin')">✕</button></div>
+    <div class="modal-body">
+      <div class="f-row-2">
+        <div class="f-row"><label class="f-label">日期 *</label><input type="date" class="f-input" id="fin-date"></div>
+        <div class="f-row"><label class="f-label">分类 *</label>
+          <select class="f-select" id="fin-cat">
+            <option value="学費">学費</option><option value="教師給与">教師給与</option>
+            <option value="プラットフォーム費">プラットフォーム費</option>
+            <option value="その他収入">その他収入</option><option value="その他支出">その他支出</option>
+          </select>
+        </div>
+      </div>
+      <div class="f-row-2">
+        <div class="f-row"><label class="f-label">种别 *</label>
+          <select class="f-select" id="fin-type"><option value="収入">収入</option><option value="支出">支出</option></select>
+        </div>
+        <div class="f-row"><label class="f-label">金额（円） *</label>
+          <input type="number" class="f-input" id="fin-amt" placeholder="5000"></div>
+      </div>
+      <div class="f-row"><label class="f-label">相手先</label>
+        <input class="f-input" id="fin-party" placeholder="田中 様 / Vita先生"></div>
+      <div class="f-row"><label class="f-label">摘要</label>
+        <textarea class="f-textarea" id="fin-note" style="min-height:60px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-o btn-sm" onclick="cm('m-fin')">取消</button>
+      <button class="btn btn-p btn-sm" onclick="submitFin()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 邮件预览 -->
+<div class="overlay" id="m-prev">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-head"><div class="modal-title">📧 邮件预览</div>
+      <button class="close-btn" onclick="cm('m-prev')">✕</button></div>
+    <div class="modal-body">
+      <iframe id="prev-frame" style="width:100%;height:400px;border:1px solid var(--p200);border-radius:7px"></iframe>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-o btn-sm" onclick="cm('m-prev')">关闭</button>
+      <button class="btn btn-p btn-sm" onclick="sendManualMail()">📨 发送</button>
+    </div>
+  </div>
 </div>
 
 <script>
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  ★ Apps Script URL をここに貼り付けてください ★
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const API_URL = 'https://script.google.com/macros/s/AKfycbz5mFR-XQJ5PbaazrFVTeg3KhF0iv5FiznQohIu6qCVN3B-_hz32LYOBP6tqcbbLNsD0Q/exec';  // 例: 'https://script.google.com/macros/s/xxx/exec'
+// ══════════════════════════════════════════════════════════════
+//  全局状态
+// ══════════════════════════════════════════════════════════════
+let API = '', PW = '';
+let D = { stu:[], bk:[], auto:[], fin:[], tc:[] };
+let curStu = null, assignIdx = -1;
+let bkTab  = 'n';
+let pollTimer  = null;
+let pendingList = [];
+let emailLog   = [];
+let pieC = null, lineC = null;
+const CFG_KEY = 'msc_admin_v2';
 
-let AUTH_PW  = '';
-let students = [];
-let currentView = 'overview';
-let filterTeacher = 'all';
-let searchQuery   = '';
+// ══════════════════════════════════════════════════════════════
+//  登录
+// ══════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const s = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
+  if (s.url) document.getElementById('loginUrl').value = s.url;
+  if (s.pw)  {
+    document.getElementById('loginPw').value = s.pw;
+    document.getElementById('loginSaved').textContent = '已记忆上次登录信息';
+  }
+});
 
-// ── LOGIN ─────────────────────────────────────────────────────
 async function doLogin() {
-  const pw = document.getElementById('loginPw').value.trim();
-  if (!pw) return;
-  if (!API_URL) {
-    // Fallback: direct password check (for demo / before API setup)
-    document.getElementById('loginErr').textContent = 'API URLが設定されていません。admin.htmlのAPI_URLを設定してください。';
-    document.getElementById('loginErr').classList.add('show');
-    return;
-  }
+  const url = document.getElementById('loginUrl').value.trim();
+  const pw  = document.getElementById('loginPw').value.trim();
+  const err = document.getElementById('loginErr');
+  err.style.display = 'none';
+  if (!url || !pw) { showErr('请填写 URL 和密码'); return; }
   try {
-    const res = await fetch(`${API_URL}?action=auth&pw=${encodeURIComponent(pw)}`);
-    const json = await res.json();
-    if (json.ok) {
-      AUTH_PW = pw;
-      document.getElementById('loginWrap').style.display = 'none';
-      document.getElementById('dashWrap').style.display  = 'block';
-      loadStudents();
-    } else {
-      document.getElementById('loginErr').classList.add('show');
+    const r = await fetch(url + '?action=auth&pw=' + encodeURIComponent(pw));
+    const d = await r.json();
+    if (!d.ok) { showErr('密码错误，请重试'); return; }
+    API = url; PW = pw;
+    localStorage.setItem(CFG_KEY, JSON.stringify({ url, pw }));
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadAll();
+    startAutoSend(); // ← 登录后立即开始自动轮询
+  } catch(e) { showErr('连接失败：' + e.message); }
+}
+function showErr(m) {
+  const e = document.getElementById('loginErr');
+  e.textContent = m; e.style.display = 'block';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  API
+// ══════════════════════════════════════════════════════════════
+async function apiGet(p) {
+  p.pw = PW;
+  const qs = Object.entries(p).map(([k,v]) => encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&');
+  const r  = await fetch(API + '?' + qs);
+  return r.json();
+}
+async function apiPost(action, data) {
+  const body = 'action=' + encodeURIComponent(action) +
+               '&data='   + encodeURIComponent(JSON.stringify(data));
+  await fetch(API, { method:'POST', mode:'no-cors',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'}, body });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  导航
+// ══════════════════════════════════════════════════════════════
+function navTo(btn) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pg-' + btn.dataset.page).classList.add('active');
+  const p = btn.dataset.page;
+  if (p === 'students') loadStudents();
+  else if (p === 'teachers') loadTeachers();
+  else if (p === 'bookings') loadBookings();
+  else if (p === 'finance')  loadFinance();
+  else if (p === 'email')    initEmailPage();
+  else if (p === 'dashboard') loadAll();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  自动发送邮件系统（核心逻辑）
+// ══════════════════════════════════════════════════════════════
+function startAutoSend() {
+  checkAndSend(); // 立即执行一次
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(() => {
+    if (document.getElementById('auto-on') && document.getElementById('auto-on').checked) {
+      checkAndSend();
     }
-  } catch(e) {
-    document.getElementById('loginErr').textContent = 'サーバーに接続できません。API URLを確認してください。';
-    document.getElementById('loginErr').classList.add('show');
-  }
+  }, 30000); // 每30秒检查一次
 }
 
-function doLogout() {
-  AUTH_PW = ''; students = [];
-  document.getElementById('dashWrap').style.display  = 'none';
-  document.getElementById('loginWrap').style.display = 'flex';
-  document.getElementById('loginPw').value = '';
-  document.getElementById('loginErr').classList.remove('show');
-}
-
-// ── LOAD DATA ─────────────────────────────────────────────────
-async function loadStudents() {
-  if (!API_URL) { renderDemoData(); return; }
-  document.getElementById('loadingOverlay').style.display = 'flex';
+async function checkAndSend() {
+  setAutoBar('working', '检查新预约中…');
   try {
-    const res = await fetch(`${API_URL}?action=students&pw=${encodeURIComponent(AUTH_PW)}`);
-    const json = await res.json();
-    if (json.error) { alert('データ取得エラー: ' + json.error); return; }
-    students = json.students || [];
-    document.getElementById('lastUpdate').textContent =
-      '最終更新: ' + new Date().toLocaleTimeString('ja-JP');
-    renderView(currentView);
+    // 先确保教师信息已加载（用于自动获取教师邮箱）
+    if (!D.tc.length) {
+      const tr = await apiGet({ action: 'teachers_info' });
+      D.tc = tr.teachers || [];
+    }
+
+    const r = await apiGet({ action: 'pending_emails' });
+    pendingList = r.pending || [];
+    renderPendingArea();
+    document.getElementById('s-email').textContent = pendingList.length;
+
+    if (!pendingList.length) {
+      setAutoBar('idle', '✅ 全部邮件已发送');
+      return;
+    }
+
+    // 分类处理
+    const normal = pendingList.filter(i => i._type === 'booking');
+    const autoB  = pendingList.filter(i => i._type === 'auto');
+
+    setAutoBar('working', '发现 ' + pendingList.length + ' 封待发送，处理中…');
+
+    // 指定教师预约：完全自动发送
+    for (const item of normal) {
+      // 从 TEACHERS 配置自动获取教师邮箱
+      const tc = D.tc.find(t => t.key === item.teacherName);
+      const teacherEmail = tc ? tc.email : '';
+      if (!teacherEmail) {
+        addLog(item.studentEmail, '预约确认', '⚠ 教师邮箱未配置（' + item.teacherName + '）');
+        continue;
+      }
+      const result = await sendOneBookingEmail(item, teacherEmail, item.teacherName);
+      addLog(item.studentEmail, '预约确认（学员+教师）', result ? '✓ 成功' : '✗ 失败');
+    }
+
+    // 自动配分：需要人工指定教师，在列表中显示操作按钮（不自动发送）
+    if (autoB.length) {
+      setAutoBar('working', '✅ 指定教师预约已自动发送 | ⚠ ' + autoB.length + ' 封自动配分需要手动指定教师');
+    } else {
+      setAutoBar('idle', '✅ 全部预约邮件发送完成');
+    }
+
+    // 刷新列表
+    const r2 = await apiGet({ action: 'pending_emails' });
+    pendingList = r2.pending || [];
+    renderPendingArea();
+    document.getElementById('s-email').textContent = pendingList.length;
+
+    const now = new Date();
+    document.getElementById('auto-time').textContent =
+      '最终时间：' + String(now.getHours()).padStart(2,'0') + ':' +
+      String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+
   } catch(e) {
-    alert('通信エラー: ' + e.message);
-  } finally {
-    document.getElementById('loadingOverlay').style.display = 'none';
+    setAutoBar('err', '检查失败：' + e.message);
+    console.error(e);
   }
 }
 
-// Demo data for when API_URL is not yet set
-function renderDemoData() {
-  students = [
-    { '申込日時':'2025/06/01 10:23', 'お名前':'山田 花子', 'メール':'hanako@example.com', '性別':'女性', '年齢':'30代', 'HSK':'なし', 'レベル':'完全初心者', '学習歴':'独学', '強化スキル':'会話力、発音矯正', '学習目的':'中国への旅行を楽しみたい', '理想ゴール':'3ヶ月で日常会話', 'レッスン言語':'中国語メイン、難しいところは日本語で', '学習ペース':'週2回', '担当講師':'Vita先生', '先生への期待':'発音をしっかり直してほしい', 'ステータス':'新規', 'メモ':'' },
-    { '申込日時':'2025/06/02 14:45', 'お名前':'田中 太郎', 'メール':'taro@example.com', '性別':'男性', '年齢':'40代', 'HSK':'HSK3級', 'レベル':'仕事で簡単な会話ができる', '学習歴':'オンラインレッスン', '強化スキル':'ビジネス中国語、商談・交渉', '学習目的':'中国のパートナーと直接交渉したい', '理想ゴール':'半年でビジネス会話マスター', 'レッスン言語':'日本語メインで少しずつ中国語を', '学習ペース':'週1回', '担当講師':'Tong先生', '先生への期待':'ビジネス表現を多く教えてほしい', 'ステータス':'連絡済', 'メモ':'来週体験レッスン予定' },
-  ];
-  document.getElementById('loadingOverlay').style.display = 'none';
-  document.getElementById('lastUpdate').textContent = 'デモデータ表示中（API URL未設定）';
-  renderView(currentView);
+// 发送单条预约邮件（学员确认 + 教师通知）
+async function sendOneBookingEmail(item, teacherEmail, teacherName) {
+  try {
+    const r = await apiGet({
+      action:       'send_booking_email',
+      sheet:        item._sheet,
+      row:          item._row,
+      teacherEmail: teacherEmail,
+      teacherName:  teacherName || item.teacherName
+    });
+    return r.status === 'ok' || r.status === 'partial';
+  } catch(e) {
+    console.error('sendOneBookingEmail error:', e);
+    return false;
+  }
 }
 
-// ── VIEWS ─────────────────────────────────────────────────────
-function switchView(view) {
-  currentView = view;
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  const titles = { overview:'概要', students:'学生一覧', analysis:'分析' };
-  document.getElementById('pageTitle').textContent = titles[view] || view;
-  renderView(view);
+function setAutoBar(state, msg) {
+  const bar  = document.getElementById('auto-bar');
+  const pulse= document.getElementById('auto-pulse');
+  const msgEl= document.getElementById('auto-msg');
+  bar.className   = 'auto-bar ' + state;
+  msgEl.textContent = msg;
+  if (state === 'idle')    { pulse.className = 'pulse'; pulse.style.background = 'var(--ok)'; }
+  if (state === 'working') { pulse.className = 'pulse warn'; pulse.style.background = 'var(--warn)'; }
+  if (state === 'err')     { pulse.className = 'pulse'; pulse.style.background = 'var(--err)'; }
 }
 
-function renderView(view) {
-  if (view === 'overview') renderOverview();
-  else if (view === 'students') renderStudents();
-  else if (view === 'analysis') renderAnalysis();
-}
-
-// ── OVERVIEW ──────────────────────────────────────────────────
-function renderOverview() {
-  const total = students.length;
-  const newCount = students.filter(s => s['ステータス'] === '新規').length;
-  const vitaCount = students.filter(s => (s['担当講師']||'').includes('Vita')).length;
-  const tongCount = students.filter(s => (s['担当講師']||'').includes('Tong')).length;
-
-  document.getElementById('contentArea').innerHTML = `
-    <div class="loading-overlay" id="loadingOverlay" style="display:none"><span class="sp"></span>データを読み込み中…</div>
-
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="stat-label">総申込数</div>
-        <div class="stat-value">${total}</div>
-        <div class="stat-sub">累計</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width:${Math.min(total*5,100)}%"></div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">新規（未対応）</div>
-        <div class="stat-value" style="color:var(--p600)">${newCount}</div>
-        <div class="stat-sub">要対応</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width:${total?Math.round(newCount/total*100):0}%;background:linear-gradient(90deg,var(--err),#f87171)"></div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Vita 先生希望</div>
-        <div class="stat-value">${vitaCount}</div>
-        <div class="stat-sub">${total?Math.round(vitaCount/total*100):0}%</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width:${total?Math.round(vitaCount/total*100):0}%"></div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Tong 先生希望</div>
-        <div class="stat-value">${tongCount}</div>
-        <div class="stat-sub">${total?Math.round(tongCount/total*100):0}%</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width:${total?Math.round(tongCount/total*100):0}%"></div></div>
-      </div>
-    </div>
-
-    <div class="section-head"><div class="section-title">最新申込（5件）</div>
-      <button style="padding:7px 16px;border:1px solid var(--p200);border-radius:var(--r);font-size:12px;color:var(--p600);background:var(--white);cursor:pointer" onclick="switchNavAndRender('students')">すべて見る →</button>
-    </div>
-    <div class="student-table">
-      <div class="st-head"><span>氏名</span><span>メール</span><span>講師希望</span><span>レベル</span><span>ペース</span><span>申込日時</span><span>ステータス</span></div>
-      ${students.slice(0,5).map(s => studentRow(s)).join('')}
-      ${students.length === 0 ? '<div style="padding:32px;text-align:center;color:var(--ink3)">申込データがありません</div>' : ''}
-    </div>
-
-    <button onclick="loadStudents()" style="padding:9px 20px;border:1px solid var(--p200);border-radius:var(--r);font-size:13px;color:var(--p600);background:var(--white);cursor:pointer">↻ データを更新</button>
-  `;
-}
-
-function switchNavAndRender(view) {
-  currentView = view;
-  document.querySelectorAll('.nav-item').forEach((n,i)=>{
-    n.classList.toggle('active', ['overview','students','analysis'][i] === view);
-  });
-  document.getElementById('pageTitle').textContent = {overview:'概要',students:'学生一覧',analysis:'分析'}[view];
-  renderView(view);
-}
-
-// ── STUDENTS LIST ──────────────────────────────────────────────
-function renderStudents() {
-  const filtered = filterStudents();
-  document.getElementById('contentArea').innerHTML = `
-    <div class="loading-overlay" id="loadingOverlay" style="display:none"><span class="sp"></span>データを読み込み中…</div>
-
-    <div class="section-head">
-      <div class="filter-row">
-        <span class="filter-btn ${filterTeacher==='all'?'active':''}" onclick="setFilter('all',this)">すべて</span>
-        <span class="filter-btn ${filterTeacher==='Vita'?'active':''}" onclick="setFilter('Vita',this)">Vita 先生</span>
-        <span class="filter-btn ${filterTeacher==='Tong'?'active':''}" onclick="setFilter('Tong',this)">Tong 先生</span>
-        <span class="filter-btn ${filterTeacher==='新規'?'active':''}" onclick="setFilter('新規',this)">新規のみ</span>
-      </div>
-      <input type="text" class="search-box" placeholder="名前・メールで検索" value="${searchQuery}"
-             oninput="searchQuery=this.value;renderStudents()">
-    </div>
-
-    <div class="student-table">
-      <div class="st-head"><span>氏名</span><span>メール</span><span>講師希望</span><span>レベル</span><span>ペース</span><span>申込日時</span><span>ステータス</span></div>
-      ${filtered.map(s => studentRow(s)).join('')}
-      ${filtered.length===0?'<div style="padding:32px;text-align:center;color:var(--ink3)">条件に一致する学生がいません</div>':''}
-    </div>
-    <div style="font-size:12px;color:var(--ink3)">${filtered.length} 件表示</div>
-  `;
-}
-
-function setFilter(val, el) {
-  filterTeacher = val;
-  renderStudents();
-}
-
-function filterStudents() {
-  return students.filter(s => {
-    const teacher = s['担当講師'] || '';
-    const status  = s['ステータス'] || '';
-    const name    = s['お名前'] || '';
-    const email   = s['メール'] || '';
-    const tMatch  = filterTeacher === 'all' ? true
-                  : filterTeacher === '新規' ? status === '新規'
-                  : teacher.includes(filterTeacher);
-    const qMatch  = !searchQuery || name.includes(searchQuery) || email.includes(searchQuery);
-    return tMatch && qMatch;
-  });
-}
-
-function studentRow(s) {
-  const statusColors = { '新規':'status-new','連絡済':'status-contacted','体験予定':'status-scheduled','受講中':'status-active' };
-  const cls = statusColors[s['ステータス']] || 'status-new';
-  return `<div class="st-row" onclick='openModal(${JSON.stringify(s).replace(/'/g,"&apos;")})'>
-    <span class="st-name">${s['お名前']||'—'}</span>
-    <span class="st-email">${s['メール']||'—'}</span>
-    <span>${s['担当講師']||'—'}</span>
-    <span style="font-size:12px;color:var(--ink3)">${s['レベル']||'—'}</span>
-    <span style="font-size:12px;color:var(--ink3)">${s['学習ペース']||'—'}</span>
-    <span style="font-size:12px;color:var(--ink3)">${s['申込日時']||'—'}</span>
-    <span><span class="status-badge ${cls}">${s['ステータス']||'新規'}</span></span>
-  </div>`;
-}
-
-// ── ANALYSIS ──────────────────────────────────────────────────
-function renderAnalysis() {
-  if (!students.length) {
-    document.getElementById('contentArea').innerHTML = '<div style="padding:48px;text-align:center;color:var(--ink3)">データがありません</div>';
+function renderPendingArea() {
+  const el = document.getElementById('pending-area');
+  const cnt = document.getElementById('pending-cnt');
+  if (!pendingList.length) {
+    cnt.textContent = '';
+    el.innerHTML = '<div class="empty tsm">✅ 暂无待发送邮件</div>';
     return;
   }
-  const count = (arr, key) => arr.reduce((m,s)=>{ const v=s[key]||'不明'; m[v]=(m[v]||0)+1; return m; },{});
-  const levelMap  = count(students,'レベル');
-  const paceMap   = count(students,'学習ペース');
-  const teacherMap= count(students,'担当講師');
+  cnt.textContent = pendingList.length + ' 封待发送';
+  el.innerHTML = '<div class="tw"><table>' +
+    '<thead><tr><th>类型</th><th>学员</th><th>邮箱</th><th>教师</th><th>预约时间(JST)</th><th>操作</th></tr></thead><tbody>' +
+    pendingList.map((item, idx) => {
+      const typeTag = item._type === 'auto'
+        ? '<span class="badge b-w">自动配分</span>'
+        : '<span class="badge b-p">指定教师</span>';
+      const time = (item.startTime || '').slice(0, 16).replace('T', ' ');
+      const tc   = D.tc.find(t => t.key === item.teacherName);
+      const tcLabel = item._type === 'auto'
+        ? '<span class="tsm">待分配</span>'
+        : (tc ? item.teacherName : '<span class="terr">⚠ 未在Code.gs中配置</span>');
+      const opBtn = item._type === 'auto'
+        ? `<button class="btn btn-p btn-sm" onclick="openAssign(${idx})">👩‍🏫 指定教师</button>`
+        : (tc
+            ? `<button class="btn btn-ok btn-sm" onclick="sendOne(${idx})">📨 立即发送</button>`
+            : `<button class="btn btn-err btn-sm" onclick="openAssign(${idx})">⚙ 手动配置</button>`);
+      return `<tr>
+        <td>${typeTag}</td>
+        <td><strong>${esc(item.studentName)}</strong></td>
+        <td class="tsm">${esc(item.studentEmail)}</td>
+        <td>${tcLabel}</td>
+        <td class="tsm nw">${time}</td>
+        <td><div class="ar">${opBtn}
+          <button class="btn btn-o btn-sm" onclick="skipOne(${idx})">跳过</button>
+          <span id="st-${idx}" style="font-size:11px"></span>
+        </div></td>
+      </tr>`;
+    }).join('') +
+    '</tbody></table></div>';
+}
 
-  // Skill analysis (multiple values per student)
-  const skillCount = {};
-  students.forEach(s => {
-    (s['強化スキル']||'').split('、').forEach(sk => { if(sk) skillCount[sk]=(skillCount[sk]||0)+1; });
+async function sendOne(idx) {
+  const item = pendingList[idx];
+  const stEl = document.getElementById('st-' + idx);
+  if (!item || !stEl) return;
+  const tc = D.tc.find(t => t.key === item.teacherName);
+  if (!tc) { stEl.innerHTML = '<span class="terr">找不到教师邮箱</span>'; return; }
+  stEl.innerHTML = '<span class="sp"></span>';
+  const ok = await sendOneBookingEmail(item, tc.email, item.teacherName);
+  stEl.innerHTML = ok ? '<span class="tok">✓</span>' : '<span class="terr">✗</span>';
+  addLog(item.studentEmail, '预约确认', ok ? '✓ 成功' : '✗ 失败');
+  if (ok) {
+    setTimeout(() => {
+      pendingList.splice(idx, 1);
+      renderPendingArea();
+    }, 1000);
+  }
+}
+
+async function skipOne(idx) {
+  const item = pendingList[idx];
+  if (!item || !confirm('确定跳过？此预约将标记为已发送，不再提示。')) return;
+  await apiGet({ action: 'mark_sent', sheet: item._sheet, row: item._row });
+  pendingList.splice(idx, 1);
+  renderPendingArea();
+}
+
+// ─── 自动配分：指定教师弹窗 ───────────────────────────────────
+function openAssign(idx) {
+  assignIdx = idx;
+  const item = pendingList[idx];
+  if (!item) return;
+  const time = (item.startTime || '').slice(0, 16).replace('T', ' ');
+  document.getElementById('assign-info').innerHTML =
+    '<strong style="color:var(--p700);display:block;margin-bottom:8px">学员预约信息</strong>' +
+    `<table style="font-size:12px;width:100%">
+      <tr><td style="color:var(--ink3);width:80px;padding:3px 0">姓名</td><td>${esc(item.studentName)}</td></tr>
+      <tr><td style="color:var(--ink3);padding:3px 0">邮箱</td><td>${esc(item.studentEmail)}</td></tr>
+      <tr><td style="color:var(--ink3);padding:3px 0">级别</td><td>${esc(item.level || '—')}</td></tr>
+      <tr><td style="color:var(--ink3);padding:3px 0">希望时间</td><td>${time} (JST)</td></tr>
+      <tr><td style="color:var(--ink3);padding:3px 0">备注</td><td>${esc(item.note || '—')}</td></tr>
+    </table>`;
+
+  // 快捷选择已注册教师
+  const quickBtns = D.tc.length
+    ? '<div class="tsm" style="margin-bottom:6px">快捷选择：</div>' +
+      D.tc.map(t =>
+        `<button class="btn btn-o btn-sm" style="margin:2px;font-size:11px"
+           onclick="setAssignTeacher('${esc(t.key)}','${esc(t.email)}')">${esc(t.key)}</button>`
+      ).join('')
+    : '';
+  document.getElementById('assign-quick').innerHTML = quickBtns;
+  document.getElementById('assign-name').value  = '';
+  document.getElementById('assign-email').value = '';
+  document.getElementById('assign-st').innerHTML = '';
+  document.getElementById('m-assign').classList.add('show');
+}
+
+function setAssignTeacher(name, email) {
+  document.getElementById('assign-name').value  = name;
+  document.getElementById('assign-email').value = email;
+}
+
+async function doAssign() {
+  const name  = document.getElementById('assign-name').value.trim();
+  const email = document.getElementById('assign-email').value.trim();
+  const stEl  = document.getElementById('assign-st');
+  if (!name || !email) { stEl.innerHTML = '<span class="terr">请填写教师姓名和邮箱</span>'; return; }
+  const item = pendingList[assignIdx];
+  if (!item) return;
+  stEl.innerHTML = '<span class="sp"></span>发送中…';
+  const ok = await sendOneBookingEmail(item, email, name);
+  if (ok) {
+    stEl.innerHTML = '<span class="tok">✓ 发送成功！</span>';
+    addLog(item.studentEmail, '预约确认（自动配分）', '✓ 成功 → ' + name);
+    setTimeout(() => {
+      cm('m-assign');
+      pendingList.splice(assignIdx, 1);
+      renderPendingArea();
+      assignIdx = -1;
+    }, 1200);
+  } else {
+    stEl.innerHTML = '<span class="terr">✗ 发送失败，请检查邮箱是否正确</span>';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  发送记录
+// ══════════════════════════════════════════════════════════════
+function addLog(to, type, status) {
+  const now = new Date();
+  const t   = String(now.getHours()).padStart(2,'0') + ':' +
+              String(now.getMinutes()).padStart(2,'0') + ':' +
+              String(now.getSeconds()).padStart(2,'0');
+  emailLog.unshift({ t, to, type, status });
+  renderLog();
+}
+function renderLog() {
+  const el = document.getElementById('email-log');
+  const ep = document.getElementById('email-log-empty');
+  if (!emailLog.length) { el.innerHTML = ''; ep.style.display = 'block'; return; }
+  ep.style.display = 'none';
+  el.innerHTML = emailLog.map(r =>
+    `<tr><td class="tsm nw">${r.t}</td><td class="tsm">${esc(r.to)}</td>
+     <td><span class="tag">${r.type}</span></td>
+     <td><span class="${r.status.includes('✓') ? 'tok' : 'terr'}">${r.status}</span></td></tr>`
+  ).join('');
+}
+function clearLog() { emailLog = []; renderLog(); }
+
+// ══════════════════════════════════════════════════════════════
+//  全量加载
+// ══════════════════════════════════════════════════════════════
+async function loadAll() {
+  const [sr, br, ar, fr] = await Promise.all([
+    apiGet({ action: 'students' }),
+    apiGet({ action: 'bookings' }),
+    apiGet({ action: 'auto_bookings' }),
+    apiGet({ action: 'finance' })
+  ]);
+  D.stu  = sr.students  || [];
+  D.bk   = br.bookings  || [];
+  D.auto = ar.bookings  || [];
+  D.fin  = fr.rows      || [];
+  renderDash();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  仪表盘
+// ══════════════════════════════════════════════════════════════
+function renderDash() {
+  document.getElementById('s-stu').textContent = D.stu.length;
+  document.getElementById('s-bk').textContent  = D.bk.length + D.auto.length;
+  const now = new Date();
+  const mi  = D.fin.filter(r => {
+    const d = new Date(r['日付']);
+    return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()&&r['種別']==='収入';
+  }).reduce((s,r) => s+(parseFloat(r['金額'])||0), 0);
+  document.getElementById('s-inc').textContent = '¥'+mi.toLocaleString();
+
+  document.getElementById('dash-bk').innerHTML = D.bk.slice(0,6).map(b =>
+    `<tr><td>${b['学生名']||'—'}</td><td>${b['担当講師']||'—'}</td>
+     <td class="tsm nw">${(b['開始(JST)']||'').slice(0,16)}</td>
+     <td><span class="badge b-ok">確定</span></td></tr>`
+  ).join('') || '<tr><td colspan="4" class="empty">暂无</td></tr>';
+
+  document.getElementById('dash-auto').innerHTML = D.auto.slice(0,6).map(b =>
+    `<tr><td>${b['学生名']||'—'}</td>
+     <td class="tsm nw">${(b['希望開始（JST）']||'').slice(0,16)}</td>
+     <td><span class="badge ${b['ステータス']==='未割当'?'b-w':'b-ok'}">${b['ステータス']||'—'}</span></td></tr>`
+  ).join('') || '<tr><td colspan="3" class="empty">暂无</td></tr>';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  学员管理
+// ══════════════════════════════════════════════════════════════
+async function loadStudents() {
+  document.getElementById('stu-tb').innerHTML = '<tr><td colspan="8" class="loading"><span class="sp"></span>同步中…</td></tr>';
+  const r = await apiGet({ action: 'students' });
+  D.stu = r.students || [];
+  document.getElementById('stu-cnt').textContent = '共 '+D.stu.length+' 名';
+  const tcs = [...new Set(D.stu.map(s=>s['担当講師']).filter(Boolean))];
+  document.getElementById('stu-tc').innerHTML = '<option value="">全部教师</option>'+tcs.map(t=>`<option>${t}</option>`).join('');
+  renderStu(D.stu);
+}
+function filterStu() {
+  const q=document.getElementById('stu-q').value.toLowerCase();
+  const tc=document.getElementById('stu-tc').value;
+  const st=document.getElementById('stu-st').value;
+  renderStu(D.stu.filter(s=>
+    (!q||(s['お名前']||'').toLowerCase().includes(q)||(s['メール']||'').toLowerCase().includes(q))&&
+    (!tc||s['担当講師']===tc)&&(!st||s['ステータス']===st)));
+}
+function renderStu(rows) {
+  document.getElementById('stu-tb').innerHTML = rows.length
+    ? rows.map(s => `<tr>
+        <td class="tsm nw">${(s['申込日時']||'').slice(0,10)}</td>
+        <td><strong>${s['お名前']||'—'}</strong></td>
+        <td class="tsm">${s['メール']||'—'}</td>
+        <td><span class="tag">${s['レベル']||'—'}</span></td>
+        <td>${s['担当講師']||'—'}</td>
+        <td class="tsm" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s['学習目的']||'—'}</td>
+        <td><span class="badge ${sba(s['ステータス'])}">${s['ステータス']||'新規'}</span></td>
+        <td><div class="ar">
+          <button class="btn btn-o btn-sm" onclick='openStu(${JSON.stringify(s).replace(/'/g,"&#39;")})'>详情</button>
+          <button class="btn btn-o btn-sm" onclick="qmail('${s['メール']}','${s['お名前']}')">✉</button>
+        </div></td>
+      </tr>`).join('')
+    : '<tr><td colspan="8" class="empty">暂无数据</td></tr>';
+}
+function sba(s){return s==='完了'?'b-ok':s==='対応中'?'b-i':s==='キャンセル'?'b-e':'b-p';}
+function openStu(s) {
+  curStu = s;
+  const flds = [['申込日時','申込日時'],['氏名','お名前'],['メール','メール'],['性別','性別'],
+    ['年齢','年齢'],['HSK','HSK'],['レベル','レベル'],['学習歴','学習歴'],['強化スキル','強化スキル'],
+    ['学習目的','学習目的'],['理想ゴール','理想ゴール'],['レッスン言語','レッスン言語'],
+    ['学習ペース','学習ペース'],['担当講師','担当講師'],['先生への期待','先生への期待'],
+    ['ステータス','ステータス'],['メモ','メモ']];
+  document.getElementById('m-stu-body').innerHTML =
+    '<table style="width:100%;font-size:13px">'+
+    flds.map(([l,k])=>`<tr style="border-bottom:1px solid var(--p100)"><td style="padding:7px 11px;color:var(--p600);font-weight:600;width:120px">${l}</td><td style="padding:7px 11px">${s[k]||'—'}</td></tr>`).join('')+
+    '</table><div class="divider"></div><label class="f-label">更新状态</label>'+
+    `<select class="f-select" id="est" onchange="updStu()">
+      <option ${s['ステータス']==='新規'?'selected':''} value="新規">新規</option>
+      <option ${s['ステータス']==='対応中'?'selected':''} value="対応中">対応中</option>
+      <option ${s['ステータス']==='完了'?'selected':''} value="完了">完了</option>
+      <option ${s['ステータス']==='キャンセル'?'selected':''} value="キャンセル">キャンセル</option>
+    </select>`;
+  document.getElementById('m-stu').classList.add('show');
+}
+async function updStu() {
+  if (!curStu) return;
+  const val = document.getElementById('est').value;
+  await apiPost('update_student', { _row: curStu._row, field: 'ステータス', value: val });
+  curStu['ステータス'] = val;
+  const i = D.stu.findIndex(s => s._row === curStu._row);
+  if (i >= 0) D.stu[i]['ステータス'] = val;
+  renderStu(D.stu);
+}
+function mailStu() { if (!curStu) return; cm('m-stu'); qmail(curStu['メール'], curStu['お名前']); }
+
+// ══════════════════════════════════════════════════════════════
+//  教师管理
+// ══════════════════════════════════════════════════════════════
+async function loadTeachers() {
+  document.getElementById('tc-grid').innerHTML = '<div class="loading"><span class="sp"></span>加载中…</div>';
+  try {
+    const r = await apiGet({ action: 'teachers_info' });
+    D.tc = r.teachers || [];
+    if (!D.tc.length) {
+      document.getElementById('tc-grid').innerHTML = '<div class="empty">暂无教师数据。请检查 Code.gs 的 TEACHERS 配置。</div>';
+      return;
+    }
+    const now = new Date(), mon = new Date(now);
+    mon.setHours(0,0,0,0);
+    mon.setDate(now.getDate()-((now.getDay()+6)%7));
+    const sa = await Promise.all(D.tc.map(tc =>
+      apiGet({ action:'teacher_slots', teacher:tc.key, weekStart:mon.toISOString() })
+        .then(r=>r.slots||[]).catch(()=>[])));
+    document.getElementById('tc-grid').innerHTML = D.tc.map((tc,i) => {
+      const slots = sa[i];
+      const sh = slots.length
+        ? slots.slice(0,10).map(s=>{const d=new Date(s.start);return`<span class="slot-pill">${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</span>`;}).join('')+(slots.length>10?`<span class="slot-pill">+${slots.length-10}</span>`:'')
+        : '<span class="tsm">本週は空き枠なし</span>';
+      return `<div class="tc-card">
+        <div class="tc-av">${tc.name.slice(0,1)}</div>
+        <div class="tc-name">${tc.key}</div>
+        <div class="tc-info">${tc.email}</div>
+        <div class="tc-info" style="font-size:10px">Cal: ${tc.calId}</div>
+        <div style="font-size:10px;font-weight:700;color:var(--ink3);margin:10px 0 5px;letter-spacing:.07em">本週空き</div>
+        ${sh}
+        <button class="btn btn-o btn-sm" style="margin-top:10px;width:100%"
+          onclick="qmail('${tc.email}','${tc.key}')">✉️ 发邮件</button>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('tc-grid').innerHTML = '<div class="empty">加载失败：'+e.message+'</div>';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  预约记录
+// ══════════════════════════════════════════════════════════════
+async function loadBookings() {
+  const [br,ar] = await Promise.all([apiGet({action:'bookings'}),apiGet({action:'auto_bookings'})]);
+  D.bk   = br.bookings || [];
+  D.auto = ar.bookings || [];
+  renderBk();
+}
+function switchBkTab(t) {
+  bkTab = t;
+  document.getElementById('tab-n').className='btn btn-sm '+(t==='n'?'btn-p':'btn-o');
+  document.getElementById('tab-a').className='btn btn-sm '+(t==='a'?'btn-p':'btn-o');
+  renderBk();
+}
+function filterBk() { renderBk(document.getElementById('bk-q').value.toLowerCase()); }
+function renderBk(q) {
+  if (bkTab === 'n') {
+    document.getElementById('bk-title').textContent = '指定教师预约（'+D.bk.length+'件）';
+    document.getElementById('bk-thead').innerHTML =
+      '<tr><th>预约时间</th><th>学员</th><th>邮箱</th><th>教师</th><th>开始(JST)</th><th>结束(JST)</th></tr>';
+    const rows = q ? D.bk.filter(b=>(b['学生名']||'').toLowerCase().includes(q)||(b['担当講師']||'').toLowerCase().includes(q)) : D.bk;
+    document.getElementById('bk-tb').innerHTML = rows.map(b=>
+      `<tr><td class="tsm nw">${(b['予約日時']||'').slice(0,16)}</td><td><strong>${b['学生名']||'—'}</strong></td>
+       <td class="tsm">${b['メール']||'—'}</td><td>${b['担当講師']||'—'}</td>
+       <td class="tsm nw">${(b['開始(JST)']||'').slice(0,16)}</td><td class="tsm nw">${(b['終了(JST)']||'').slice(0,16)}</td></tr>`
+    ).join('') || '<tr><td colspan="6" class="empty">暂无数据</td></tr>';
+  } else {
+    document.getElementById('bk-title').textContent = '自动配分预约（'+D.auto.length+'件）';
+    document.getElementById('bk-thead').innerHTML =
+      '<tr><th>申込时间</th><th>学员</th><th>邮箱</th><th>级别</th><th>希望开始</th><th>状态</th></tr>';
+    const rows = q ? D.auto.filter(b=>(b['学生名']||'').toLowerCase().includes(q)) : D.auto;
+    document.getElementById('bk-tb').innerHTML = rows.map(b=>
+      `<tr><td class="tsm nw">${(b['申込日時']||'').slice(0,16)}</td><td><strong>${b['学生名']||'—'}</strong></td>
+       <td class="tsm">${b['メール']||'—'}</td><td><span class="tag">${b['レベル']||'—'}</span></td>
+       <td class="tsm nw">${(b['希望開始（JST）']||'').slice(0,16)}</td>
+       <td><span class="badge ${b['ステータス']==='未割当'?'b-w':'b-ok'}">${b['ステータス']||'—'}</span></td></tr>`
+    ).join('') || '<tr><td colspan="6" class="empty">暂无数据</td></tr>';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  邮件中心 — 手动撰写部分
+// ══════════════════════════════════════════════════════════════
+const TPLS = [
+  { name:'📗 学员预约确认（日语）', desc:'→ 学员邮箱',
+    sub:'MandStar Chinese｜コース予約確認｜{姓名} 様',
+    body:`<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="background:#f0ebff;padding:28px 12px;font-family:Arial,sans-serif"><table width="540" align="center" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(76,29,149,.12)"><tr><td style="background:linear-gradient(135deg,#2e1065,#6d28d9);padding:34px;text-align:center"><div style="font-size:28px;margin-bottom:10px">✓</div><h1 style="color:#fff;margin:0 0 6px;font-size:22px;font-weight:800">コース予約確認</h1><p style="color:#ddd6fe;margin:0;font-size:13px">MandStar Chinese</p></td></tr><tr><td style="padding:26px 30px"><p style="font-size:15px;color:#1a0835;font-weight:700;margin-bottom:10px">{姓名} 様</p><p style="color:#4c3a7a;font-size:14px;line-height:1.85">この度はMandStar Chineseをご利用いただき、誠にありがとうございます。<br>以下の内容でご予約が確定しました。</p><table width="100%" style="border:1.5px solid #ddd6fe;border-radius:12px;overflow:hidden;margin-top:16px"><tr><td colspan="2" style="background:#6d28d9;padding:11px 18px"><span style="color:#fff;font-size:11px;font-weight:700">予約内容</span></td></tr><tr><td style="padding:12px 18px;color:#6d28d9;font-weight:600;font-size:13px;width:110px;border-bottom:1px solid #ede9fe">担当講師</td><td style="padding:12px 18px;font-size:14px;font-weight:700;color:#1a0835;border-bottom:1px solid #ede9fe">{教师}</td></tr><tr><td style="padding:12px 18px;color:#6d28d9;font-weight:600;font-size:13px;border-bottom:1px solid #ede9fe">日付</td><td style="padding:12px 18px;font-size:14px;font-weight:700;color:#1a0835;border-bottom:1px solid #ede9fe">{日期}</td></tr><tr><td style="padding:12px 18px;color:#6d28d9;font-weight:600;font-size:13px">時間</td><td style="padding:12px 18px;font-size:14px;font-weight:700;color:#1a0835">{时间}</td></tr></table><div style="background:#f5f3ff;border-left:4px solid #8b5cf6;border-radius:0 10px 10px 0;padding:13px 15px;margin-top:16px;font-size:13px;color:#4c3a7a;line-height:1.85">• コース開始前に腾讯会议のリンクをお送りします。<br>• 前日と1時間前にリマインダーをお送りします。<br>• ご不明な点はこのメールへご返信ください。</div></td></tr><tr><td style="padding:18px;text-align:center;background:#faf8ff;border-top:1px solid #ede9fe"><strong style="color:#4c1d95">MandStar Chinese</strong><br><span style="font-size:12px;color:#8b5cf6">mandstarchinese@gmail.com</span></td></tr></table></body></html>` },
+  { name:'📕 教师新预约提醒（中文）', desc:'→ 教师邮箱',
+    sub:'MandStar Chinese｜新课程预约提醒｜{姓名} 様',
+    body:`<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="background:#f0ebff;padding:28px 12px;font-family:Arial,sans-serif"><table width="540" align="center" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(76,29,149,.12)"><tr><td style="background:linear-gradient(135deg,#2e1065,#6d28d9);padding:30px;text-align:center"><div style="background:rgba(255,255,255,.15);border-radius:50px;display:inline-block;padding:7px 18px;margin-bottom:11px"><span style="color:#fff;font-size:13px;font-weight:600">📬 新课程预约提醒</span></div><h1 style="color:#fff;margin:0;font-size:21px;font-weight:800">您有一个新的课程预约</h1></td></tr><tr><td style="padding:24px 28px"><div style="background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:12px;padding:15px;margin-bottom:13px"><div style="font-size:11px;color:#6d28d9;font-weight:700;margin-bottom:10px">📅 课程信息（日本時間）</div><table width="100%"><tr><td style="color:#6d28d9;font-size:13px;font-weight:600;width:70px;padding:5px 0">日期</td><td style="font-size:14px;font-weight:800;color:#1a0835">{日期}</td></tr><tr><td style="color:#6d28d9;font-size:13px;font-weight:600;padding:5px 0">時間</td><td style="font-size:14px;font-weight:800;color:#1a0835">{时间}</td></tr></table></div><div style="background:#faf8ff;border:1.5px solid #ddd6fe;border-radius:12px;overflow:hidden"><div style="background:linear-gradient(90deg,#6d28d9,#8b5cf6);padding:10px 18px"><span style="color:#fff;font-size:11px;font-weight:700">👤 学员信息</span></div><table width="100%"><tr><td style="padding:10px 18px;color:#6d28d9;font-weight:600;font-size:13px;width:90px;border-bottom:1px solid #ede9fe">姓名</td><td style="padding:10px 18px;font-size:13px;font-weight:700;border-bottom:1px solid #ede9fe">{姓名}</td></tr><tr><td style="padding:10px 18px;color:#6d28d9;font-weight:600;font-size:13px;border-bottom:1px solid #ede9fe">邮箱</td><td style="padding:10px 18px;font-size:13px;border-bottom:1px solid #ede9fe">{邮箱}</td></tr><tr><td style="padding:10px 18px;color:#6d28d9;font-weight:600;font-size:13px;border-bottom:1px solid #ede9fe">水平</td><td style="padding:10px 18px;font-size:13px;border-bottom:1px solid #ede9fe">{水平}</td></tr><tr><td style="padding:10px 18px;color:#6d28d9;font-weight:600;font-size:13px">备注</td><td style="padding:10px 18px;font-size:13px">{备注}</td></tr></table></div><div style="background:#fdf4ff;border:1.5px solid #e9d5ff;border-radius:12px;padding:13px 17px;margin-top:13px;font-size:13px;color:#4c3a7a;line-height:1.85">⚠️ 请注意：<br>• 请在上课前通过腾讯会议发送会议链接给学员<br>• 如需调整时间请及时联系学员</div></td></tr><tr><td style="padding:16px;text-align:center;background:#faf8ff;border-top:1px solid #ede9fe"><strong style="color:#4c1d95">MandStar Chinese</strong><br><span style="font-size:12px;color:#8b5cf6">mandstarchinese@gmail.com</span></td></tr></table></body></html>` },
+  { name:'⏰ 前日リマインダー', desc:'→ 学员或教师', sub:'MandStar Chinese｜【前日リマインダー】{姓名} 様',
+    body:`<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="background:#f0ebff;padding:28px 12px;font-family:Arial,sans-serif"><table width="540" align="center" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(76,29,149,.12)"><tr><td style="background:linear-gradient(135deg,#2e1065,#6d28d9);padding:28px;text-align:center"><div style="font-size:36px;margin-bottom:10px">⏰</div><h1 style="color:#fff;margin:0;font-size:21px;font-weight:800">明日レッスンがあります</h1><p style="color:#ddd6fe;margin:6px 0 0;font-size:13px">前日リマインダー</p></td></tr><tr><td style="padding:24px 28px"><p style="font-size:14px;color:#1a0835;font-weight:700;margin-bottom:13px">{姓名} 様</p><table width="100%" style="border:1.5px solid #ddd6fe;border-radius:12px;overflow:hidden"><tr><td colspan="2" style="background:#6d28d9;padding:10px 18px"><span style="color:#fff;font-size:11px;font-weight:700">予約内容の確認</span></td></tr><tr><td style="padding:11px 18px;color:#6d28d9;font-weight:600;font-size:13px;width:110px;border-bottom:1px solid #ede9fe">担当講師</td><td style="padding:11px 18px;font-size:14px;font-weight:700;color:#1a0835;border-bottom:1px solid #ede9fe">{教师}</td></tr><tr><td style="padding:11px 18px;color:#6d28d9;font-weight:600;font-size:13px;border-bottom:1px solid #ede9fe">日付</td><td style="padding:11px 18px;font-size:14px;font-weight:700;color:#1a0835;border-bottom:1px solid #ede9fe">{日期}</td></tr><tr><td style="padding:11px 18px;color:#6d28d9;font-weight:600;font-size:13px">時間</td><td style="padding:11px 18px;font-size:14px;font-weight:700;color:#1a0835">{时间}</td></tr></table><div style="background:#fffbeb;border:1px solid #fde68a;border-radius:9px;padding:13px 15px;margin-top:13px;font-size:13px;color:#92400e;line-height:1.85">明日のレッスンに向けてご準備をお忘れなく。<br>腾讯会议リンクは講師より別途お送りします。</div></td></tr><tr><td style="padding:15px;text-align:center;background:#faf8ff;border-top:1px solid #ede9fe"><strong style="color:#4c1d95">MandStar Chinese</strong></td></tr></table></body></html>` },
+  { name:'✉️ 自由文本', desc:'完全自定义', sub:'MandStar Chinese｜{姓名} 様', body:'' }
+];
+
+function initEmailPage() {
+  const tl = document.getElementById('tpl-list');
+  tl.innerHTML = TPLS.map((t,i) =>
+    `<div class="tpl-item ${i===0?'active':''}" onclick="selTpl(${i},this)">
+      <div class="tpl-name">${t.name}</div><div class="tpl-desc">${t.desc}</div></div>`
+  ).join('');
+  selTpl(0, tl.querySelector('.tpl-item'));
+  checkAndSend(); // 切换到邮件页时立即检查
+}
+function selTpl(i, el) {
+  document.querySelectorAll('.tpl-item').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mail-subject').value = TPLS[i].sub;
+  document.getElementById('mail-body').value    = TPLS[i].body;
+}
+function previewMail() {
+  document.getElementById('prev-frame').srcdoc = document.getElementById('mail-body').value;
+  document.getElementById('m-prev').classList.add('show');
+}
+async function sendManualMail() {
+  const to  = document.getElementById('mail-to').value.trim();
+  const sub = document.getElementById('mail-subject').value.trim();
+  const body= document.getElementById('mail-body').value;
+  const st  = document.getElementById('mail-st');
+  if (!to||!sub) { st.innerHTML='<span class="terr">请填写收件人和主题</span>'; return; }
+  st.innerHTML='<span class="sp"></span>发送中…';
+  try {
+    await apiPost('send_email', { to, subject:sub, html:body, text:body.replace(/<[^>]+>/g,'') });
+    st.innerHTML='<span class="tok">✓ 已发送至 '+to+'</span>';
+    addLog(to, '手动邮件', '✓ 成功');
+    cm('m-prev');
+  } catch(e) { st.innerHTML='<span class="terr">失败：'+e.message+'</span>'; }
+}
+function qmail(email, name) {
+  navTo(document.querySelector('[data-page="email"]'));
+  setTimeout(() => {
+    document.getElementById('mail-to').value      = email || '';
+    document.getElementById('mail-subject').value = 'MandStar Chinese｜'+(name||'')+' 様';
+  }, 80);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  财务管理
+// ══════════════════════════════════════════════════════════════
+async function loadFinance() {
+  document.getElementById('fin-tb').innerHTML = '<tr><td colspan="6" class="loading"><span class="sp"></span>加载中…</td></tr>';
+  const r = await apiGet({ action:'finance' });
+  D.fin = r.rows || [];
+  renderFin(D.fin);
+  drawCharts();
+}
+function filterFin() {
+  const c=document.getElementById('fin-fc').value;
+  const t=document.getElementById('fin-ft').value;
+  renderFin(D.fin.filter(r=>(!c||r['カテゴリ']===c)&&(!t||r['種別']===t)));
+}
+function renderFin(rows) {
+  const now=new Date(); let inc=0,exp=0;
+  D.fin.forEach(r=>{
+    const d=new Date(r['日付']);
+    if(d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()){
+      const a=parseFloat(r['金額'])||0;
+      if(r['種別']==='収入') inc+=a; if(r['種別']==='支出') exp+=a;
+    }
   });
-
-  const renderBar = (map, color='var(--p500)') => {
-    const total = Object.values(map).reduce((a,b)=>a+b,0);
-    return Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
-      <div style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-          <span style="color:var(--ink2)">${k}</span>
-          <span style="color:var(--ink3)">${v}名 (${Math.round(v/total*100)}%)</span>
-        </div>
-        <div style="height:6px;border-radius:3px;background:var(--p100);overflow:hidden">
-          <div style="height:100%;border-radius:3px;background:${color};width:${Math.round(v/total*100)}%;transition:width .5s"></div>
-        </div>
-      </div>`).join('');
-  };
-
-  document.getElementById('contentArea').innerHTML = `
-    <div class="loading-overlay" id="loadingOverlay" style="display:none"></div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="student-table" style="border-radius:var(--rlg)">
-        <div style="padding:16px 20px;border-bottom:1px solid var(--p50)">
-          <div class="section-title">レベル分布</div>
-        </div>
-        <div style="padding:16px 20px">${renderBar(levelMap,'linear-gradient(90deg,var(--p600),var(--p400))')}</div>
-      </div>
-      <div class="student-table" style="border-radius:var(--rlg)">
-        <div style="padding:16px 20px;border-bottom:1px solid var(--p50)">
-          <div class="section-title">学習ペース希望</div>
-        </div>
-        <div style="padding:16px 20px">${renderBar(paceMap,'linear-gradient(90deg,#059669,#34d399)')}</div>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div class="student-table" style="border-radius:var(--rlg)">
-        <div style="padding:16px 20px;border-bottom:1px solid var(--p50)">
-          <div class="section-title">講師希望分布</div>
-        </div>
-        <div style="padding:16px 20px">${renderBar(teacherMap,'linear-gradient(90deg,#d97706,#fbbf24)')}</div>
-      </div>
-      <div class="student-table" style="border-radius:var(--rlg)">
-        <div style="padding:16px 20px;border-bottom:1px solid var(--p50)">
-          <div class="section-title">強化スキル人気ランキング</div>
-        </div>
-        <div style="padding:16px 20px">${renderBar(skillCount,'linear-gradient(90deg,#0891b2,#67e8f9)')}</div>
-      </div>
-    </div>
-  `;
+  document.getElementById('fin-i').textContent='¥'+inc.toLocaleString();
+  document.getElementById('fin-e').textContent='¥'+exp.toLocaleString();
+  const p=inc-exp;
+  const pe=document.getElementById('fin-p');
+  pe.textContent=(p>=0?'+':'')+'¥'+p.toLocaleString();
+  pe.style.color=p>=0?'var(--ok)':'var(--err)';
+  document.getElementById('fin-tb').innerHTML=rows.length
+    ?rows.map(r=>{const t=r['種別']||'';const a=parseFloat(r['金額'])||0;
+      return`<tr><td class="nw">${r['日付']||'—'}</td><td><span class="tag">${r['カテゴリ']||'—'}</span></td>
+      <td><span class="badge ${t==='収入'?'b-ok':'b-e'}">${t}</span></td>
+      <td style="font-weight:700;color:${t==='収入'?'var(--ok)':'var(--err)'}">${t==='収入'?'+':'−'}¥${a.toLocaleString()}</td>
+      <td>${r['相手先']||'—'}</td><td class="tsm">${r['摘要']||'—'}</td></tr>`;}).join('')
+    :'<tr><td colspan="6" class="empty">暂无财务记录</td></tr>';
+}
+function drawCharts() {
+  const now=new Date();
+  const mr=D.fin.filter(r=>{const d=new Date(r['日付']);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
+  const cm2={};
+  mr.forEach(r=>{const c=r['カテゴリ']||'未分類';cm2[c]=(cm2[c]||0)+(parseFloat(r['金額'])||0);});
+  const pc=document.getElementById('c-pie').getContext('2d');
+  if(pieC) pieC.destroy();
+  pieC=new Chart(pc,{type:'doughnut',data:{labels:Object.keys(cm2),datasets:[{data:Object.values(cm2),backgroundColor:['#6d28d9','#8b5cf6','#a78bfa','#c4b5fd','#059669','#34d399','#fbbf24'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8}}}}});
+  drawLine();
+}
+function drawLine() {
+  const mode=document.getElementById('trend-m').value;
+  const now=new Date();let labels=[],id=[],ed=[];
+  if(mode==='month'){for(let m=5;m>=0;m--){const t=new Date(now.getFullYear(),now.getMonth()-m,1);labels.push((t.getMonth()+1)+'月');let i=0,e=0;D.fin.forEach(r=>{const d=new Date(r['日付']);if(d.getMonth()===t.getMonth()&&d.getFullYear()===t.getFullYear()){const a=parseFloat(r['金額'])||0;if(r['種別']==='収入')i+=a;if(r['種別']==='支出')e+=a;}});id.push(i);ed.push(e);}}
+  else{const dim=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();for(let day=1;day<=dim;day++){labels.push(day+'日');let i=0,e=0;D.fin.forEach(r=>{const d=new Date(r['日付']);if(d.getDate()===day&&d.getMonth()===now.getMonth()){const a=parseFloat(r['金額'])||0;if(r['種別']==='収入')i+=a;if(r['種別']==='支出')e+=a;}});id.push(i);ed.push(e);}}
+  const lc=document.getElementById('c-line').getContext('2d');
+  if(lineC) lineC.destroy();
+  lineC=new Chart(lc,{type:'line',data:{labels,datasets:[{label:'収入',data:id,borderColor:'#059669',backgroundColor:'rgba(5,150,105,.08)',tension:.35,fill:true,pointRadius:3},{label:'支出',data:ed,borderColor:'#dc2626',backgroundColor:'rgba(220,38,38,.07)',tension:.35,fill:true,pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'¥'+v.toLocaleString(),font:{size:9}}},x:{ticks:{font:{size:9}}}}}});
+}
+function openFinModal() {
+  const t=new Date();
+  document.getElementById('fin-date').value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  document.getElementById('m-fin').classList.add('show');
+}
+async function submitFin() {
+  const d={date:document.getElementById('fin-date').value,category:document.getElementById('fin-cat').value,
+    type:document.getElementById('fin-type').value,amount:document.getElementById('fin-amt').value,
+    party:document.getElementById('fin-party').value,note:document.getElementById('fin-note').value};
+  if(!d.date||!d.amount){alert('请填写日期和金额');return;}
+  await apiPost('add_finance',d);
+  cm('m-fin');
+  D.fin.unshift({'日付':d.date,'カテゴリ':d.category,'種別':d.type,'金額':d.amount,'相手先':d.party,'摘要':d.note});
+  renderFin(D.fin);drawCharts();
+  document.getElementById('fin-amt').value='';document.getElementById('fin-party').value='';document.getElementById('fin-note').value='';
 }
 
-// ── MODAL ─────────────────────────────────────────────────────
-function openModal(s) {
-  const initials = (s['お名前']||'?').replace(/\s+/g,'').slice(0,2);
-  const level    = s['レベル'] || '未記入';
-  const pace     = s['学習ペース'] || '未記入';
-  const teacher  = s['担当講師'] || '未記入';
-
-  // Simple AI-like analysis based on data
-  const urgency  = s['ステータス']==='新規' ? '要対応' : '対応済';
-  const courseType = (level.includes('初心者')||level.includes('少し'))
-    ? '初心者コース推奨' : level.includes('仕事')||level.includes('ビジネス')
-    ? 'ビジネスコース推奨' : '中上級コース推奨';
-  const paceRec  = pace.includes('集中') ? '集中コース' : pace.includes('2') ? '週2回プラン' : '週1回プラン';
-
-  document.getElementById('modal').innerHTML = `
-    <div class="modal-top">
-      <div class="modal-avatar">${initials}</div>
-      <div>
-        <div class="modal-name">${s['お名前']||'—'}</div>
-        <div class="modal-email">${s['メール']||'—'} · ${s['申込日時']||'—'}</div>
-      </div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-body">
-
-      <div class="ai-section">
-        <div class="ai-title">
-          自動分析レポート <span class="ai-tag">✦ AI</span>
-        </div>
-        <div class="ai-cards">
-          <div class="ai-card"><div class="ai-card-icon">🎯</div><div class="ai-card-label">緊急度</div><div class="ai-card-val">${urgency}</div></div>
-          <div class="ai-card"><div class="ai-card-icon">📚</div><div class="ai-card-label">推奨コース</div><div class="ai-card-val" style="font-size:11px">${courseType}</div></div>
-          <div class="ai-card"><div class="ai-card-icon">⏱</div><div class="ai-card-label">ペースプラン</div><div class="ai-card-val" style="font-size:11px">${paceRec}</div></div>
-        </div>
-      </div>
-
-      <div class="modal-grid">
-        <div class="modal-field"><div class="modal-field-label">性別 / 年齢</div><div class="modal-field-value">${s['性別']||'—'} · ${s['年齢']||'—'}</div></div>
-        <div class="modal-field"><div class="modal-field-label">担当講師希望</div><div class="modal-field-value">${teacher}</div></div>
-        <div class="modal-field"><div class="modal-field-label">現在のレベル</div><div class="modal-field-value">${level}</div></div>
-        <div class="modal-field"><div class="modal-field-label">HSK</div><div class="modal-field-value">${s['HSK']||'—'}</div></div>
-        <div class="modal-field"><div class="modal-field-label">学習歴</div><div class="modal-field-value">${s['学習歴']||'—'}</div></div>
-        <div class="modal-field"><div class="modal-field-label">希望ペース</div><div class="modal-field-value">${pace}</div></div>
-        <div class="modal-field"><div class="modal-field-label">強化スキル</div><div class="modal-field-value">${s['強化スキル']||'—'}</div></div>
-        <div class="modal-field"><div class="modal-field-label">レッスン言語</div><div class="modal-field-value">${s['レッスン言語']||'—'}</div></div>
-        <div class="modal-field full"><div class="modal-field-label">学習目的</div><div class="modal-field-value">${s['学習目的']||'—'}</div></div>
-        <div class="modal-field full"><div class="modal-field-label">理想のゴール</div><div class="modal-field-value">${s['理想ゴール']||'—'}</div></div>
-        <div class="modal-field full"><div class="modal-field-label">先生への期待</div><div class="modal-field-value">${s['先生への期待']||'—'}</div></div>
-      </div>
-
-      <div class="modal-status-row">
-        <span style="font-size:13px;color:var(--ink2);font-weight:500">ステータス：</span>
-        <select class="status-select" id="statusSel">
-          ${['新規','連絡済','体験予定','受講中','終了'].map(v=>`<option ${s['ステータス']===v?'selected':''}>${v}</option>`).join('')}
-        </select>
-        <button class="save-status-btn" onclick="alert('ステータス更新機能はGoogle Sheets上で直接編集してください。\\nシートのステータス列を変更後、このページを更新すると反映されます。')">保存</button>
-        <a href="mailto:${s['メール']}" style="margin-left:auto;padding:8px 16px;background:var(--p50);border:1px solid var(--p200);border-radius:var(--r);font-size:12px;color:var(--p600);text-decoration:none;transition:all .2s">✉ メールを送る</a>
-      </div>
-    </div>
-  `;
-  document.getElementById('modalBg').classList.add('show');
-}
-function closeModal() { document.getElementById('modalBg').classList.remove('show'); }
-
-// ── INIT ─────────────────────────────────────────────────────
-document.getElementById('loginPw').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-if (!API_URL) {
-  // Show notice in login card
-  document.querySelector('.login-sub').textContent = 'API URL未設定 — デモモードで動作';
+// ══════════════════════════════════════════════════════════════
+//  工具函数
+// ══════════════════════════════════════════════════════════════
+function cm(id) { document.getElementById(id).classList.remove('show'); }
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
 </body>
