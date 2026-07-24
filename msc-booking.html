@@ -225,13 +225,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .proc-step.wait::before{content:'○';color:var(--ink4)}
 
 
-/* ═══════════════════════════════════════
-   ADMIN PANEL STYLES
-   アクセス: msc-booking.html?admin
-   ═══════════════════════════════════════ */
-#adminWrap { display:none; }
-#adminWrap.active { display:block; }
-
+/* ADMIN PANEL STYLES */
+#adminWrap{display:none;}
+#adminWrap.active{display:block;}
 
 :root {
   --p900:#1a0835;--p700:#4c1d95;--p600:#6d28d9;--p500:#7c3aed;
@@ -1179,11 +1175,6 @@ boot();
 
 
 </script>
-
-<!-- ═══════════════════════════════════════
-     ADMIN PANEL
-     表示条件: URLに ?admin を含む場合のみ
-     ═══════════════════════════════════════ -->
 <div id="adminWrap">
 <!-- ══ 登录页 ══ -->
 <div id="loginPage">
@@ -2193,10 +2184,8 @@ function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-
-// ═══════════════════════════════════════════════
-//  ADMIN PANEL — URLパラメータ ?admin で起動
-// ═══════════════════════════════════════════════
+(function() {
+'use strict';
 // ══════════════════════════════════════════════════════════════
 //  全局状态
 // ══════════════════════════════════════════════════════════════
@@ -2858,31 +2847,18 @@ function cm(id) { document.getElementById(id).classList.remove('show'); }
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-// URLに ?admin または #admin が含まれる場合に管理画面を起動
-(function() {
-  var isAdmin = window.location.search.indexOf('admin') >= 0 ||
-                window.location.hash === '#admin';
-  if (!isAdmin) return;
-
-  // 予約UI要素を全て非表示
-  var hide = ['mainWrap','succWrap','processing'];
-  hide.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.style.display = 'none';
+var _isAdmin = window.location.search.indexOf('admin') >= 0 || window.location.hash === '#admin';
+if (_isAdmin) {
+  ['mainWrap','succWrap','processing'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.style.display='none';
   });
-  var hdr = document.querySelector('.hdr');
-  if (hdr) hdr.style.display = 'none';
-
-  // 管理画面を表示
-  var adminWrap = document.getElementById('adminWrap');
-  if (adminWrap) adminWrap.classList.add('active');
-
-  document.title = 'MandStar Chinese — 管理后台';
+  var hdr=document.querySelector('.hdr'); if(hdr) hdr.style.display='none';
+  var aw=document.getElementById('adminWrap'); if(aw) aw.classList.add('active');
+  document.title='MandStar Chinese — 管理后台';
+}
 })();
 
 </script>
 </div>
-
 </body>
 </html>
