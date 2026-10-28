@@ -314,13 +314,17 @@ body::before {
 }
 
 /* ── 体験レッスン希望日時 / 完了画面 ── */
+.dt-panel { background:#fff; border:1px solid var(--p200); border-radius:14px; padding:16px 16px 6px; box-shadow:0 2px 10px rgba(124,58,237,.06); }
 .notice-box {
-  background:var(--p50); border:1.5px solid var(--p200); border-radius:var(--r);
-  padding:16px 18px; margin-bottom:18px; font-size:13px; line-height:1.9; color:var(--ink2,#4b4560);
+  margin-top:18px; padding:16px 18px 14px 20px; border-radius:4px 12px 12px 4px;
+  background:#f6f4fb; border:1px dashed var(--p300,#c4b5fd); border-left:4px solid var(--p500,#8b5cf6);
+  font-size:12.5px; line-height:1.95; color:var(--ink2,#3b1f6b);
 }
-.notice-box p { margin:0 0 8px; }
-.notice-box p:last-child { margin-bottom:0; }
-.notice-box strong { color:var(--p700,#6d28d9); font-weight:600; }
+.notice-head { font-size:11px; letter-spacing:.18em; color:var(--p500,#8b5cf6); font-weight:600; margin-bottom:6px; }
+.notice-list { list-style:none; margin:0; padding:0; }
+.notice-list li { position:relative; padding-left:1.3em; margin-bottom:4px; }
+.notice-list li::before { content:'※'; position:absolute; left:0; color:var(--p500,#8b5cf6); }
+.notice-list strong { color:var(--p700,#4c1d95); font-weight:600; }
 .dt-row { display:grid; grid-template-columns:auto 1fr 1fr; gap:10px; align-items:center; margin-bottom:10px; }
 .dt-badge {
   font-size:12px; color:var(--p700,#6d28d9); background:var(--p100); border:1px solid var(--p200);
@@ -351,7 +355,7 @@ body::before {
   <div class="hero-badge">✦ MandStar Chinese</div>
   <h1 class="hero-title">中国語レッスン<span>お申し込み</span>フォーム</h1>
   <p class="hero-desc">
-    Mandstar Chineseの中国語レッスンにご興味をお持ちいただき、ありがとうございます。<br>
+    Vita先生・Tong先生の中国語レッスンにご興味をお持ちいただき、ありがとうございます。<br>
     いただいたご回答をもとに、最適な学習プランをご提案いたします。
   </p>
   <div class="hero-meta">
@@ -622,17 +626,24 @@ body::before {
     <!-- ② レッスンのご希望日時 -->
     <div class="q-block">
       <div class="q-label">レッスンのご希望日時 <span class="q-req">*</span></div>
-      <div class="notice-box">
-        <p>レッスンの予約は、<strong>原則として5営業日以上前</strong>までにご予約をお願いしております。</p>
-        <p>講師は、できる限りご希望の日時に合わせて調整いたします。</p>
-        <p>ご指名の講師がいる場合は上記欄にご記入ください。優先して手配いたします。</p>
-        <p>担当講師の調整が生じる場合、公式 LINE よりご連絡いたしますので、ご了承ください。</p>
-      </div>
       <div class="q-hint">日本時間（JST）でご選択ください。第1希望は必須、第2・第3希望は任意です。<br><span id="earliestNote"></span></div>
-      <div class="dt-row"><span class="dt-badge">第1希望</span><select class="q-input" id="dt1_date"></select><select class="q-input" id="dt1_time"></select></div>
-      <div class="dt-row"><span class="dt-badge">第2希望</span><select class="q-input" id="dt2_date"></select><select class="q-input" id="dt2_time"></select></div>
-      <div class="dt-row"><span class="dt-badge">第3希望</span><select class="q-input" id="dt3_date"></select><select class="q-input" id="dt3_time"></select></div>
+
+      <div class="dt-panel">
+        <div class="dt-row"><span class="dt-badge">第1希望</span><select class="q-input" id="dt1_date"></select><select class="q-input" id="dt1_time"></select></div>
+        <div class="dt-row"><span class="dt-badge">第2希望</span><select class="q-input" id="dt2_date"></select><select class="q-input" id="dt2_time"></select></div>
+        <div class="dt-row"><span class="dt-badge">第3希望</span><select class="q-input" id="dt3_date"></select><select class="q-input" id="dt3_time"></select></div>
+      </div>
       <div class="q-err" id="err_dt">第1希望の日付と時間を、5営業日以降の日程でご選択ください</div>
+
+      <div class="notice-box">
+        <div class="notice-head">ご案内</div>
+        <ul class="notice-list">
+          <li>レッスンのご予約は原則 <strong>5 営業日以上前</strong>にお願いいたします。</li>
+          <li>可能な限りご希望の日時に合わせて講師を調整いたします。</li>
+          <li>ご指名の講師がいらっしゃる場合は上の項目にご記入ください。優先的に手配いたします。</li>
+          <li>講師の調整が発生する場合は公式 LINE よりご連絡いたしますので、ご了承ください。</li>
+        </ul>
+      </div>
     </div>
 
     <div class="nav-row">
