@@ -312,6 +312,36 @@ body::before {
   .teacher-cards { grid-template-columns:1fr; }
   .hero { padding:48px 20px 36px; }
 }
+
+/* ── 体験レッスン希望日時 / 完了画面 ── */
+.notice-box {
+  background:var(--p50); border:1.5px solid var(--p200); border-radius:var(--r);
+  padding:16px 18px; margin-bottom:18px; font-size:13px; line-height:1.9; color:var(--ink2,#4b4560);
+}
+.notice-box p { margin:0 0 8px; }
+.notice-box p:last-child { margin-bottom:0; }
+.notice-box strong { color:var(--p700,#6d28d9); font-weight:600; }
+.dt-row { display:grid; grid-template-columns:auto 1fr 1fr; gap:10px; align-items:center; margin-bottom:10px; }
+.dt-badge {
+  font-size:12px; color:var(--p700,#6d28d9); background:var(--p100); border:1px solid var(--p200);
+  border-radius:999px; padding:6px 12px; white-space:nowrap; font-weight:500;
+}
+.dt-row .q-input { padding:10px 12px; }
+.btn-back { white-space:nowrap; }
+.done-card { text-align:center; padding:56px 24px 48px; }
+.done-mark {
+  width:64px; height:64px; border-radius:50%; margin:0 auto 22px;
+  background:linear-gradient(135deg,var(--p500),var(--p400)); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:30px;
+  box-shadow:0 10px 28px rgba(124,58,237,.25);
+}
+.done-title { font-family:'Noto Serif JP',serif; font-size:22px; color:var(--p900,#4c1d95); margin-bottom:18px; letter-spacing:.04em; }
+.done-text { font-size:14px; line-height:2.1; color:var(--ink2,#4b4560); }
+.done-line-btn {
+  display:inline-block; margin-top:26px; padding:13px 30px; border-radius:999px;
+  background:#06c755; color:#fff; text-decoration:none; font-size:14px; font-weight:500;
+}
+@media (max-width:560px) { .dt-row { grid-template-columns:1fr 1fr; } .dt-badge { grid-column:1 / -1; justify-self:start; } }
 </style>
 </head>
 <body>
@@ -574,33 +604,11 @@ body::before {
       <div class="q-err" id="err_pace">学習ペースを選択してください</div>
     </div>
 
-    <!-- 担当講師 -->
+    <!-- ① 先生のご希望 -->
     <div class="q-block">
-      <div class="q-label">担当講師 <span class="q-req">*</span></div>
-      <div class="teacher-cards" id="teacherCards" style="grid-template-columns:1fr 1fr 1fr;">
-        <label class="teacher-card">
-          <input type="radio" name="q_teacher" value="Vita先生">
-          <div class="tc-avatar">V</div>
-          <div class="tc-name">Vita 先生</div>
-          <div class="tc-role">MandStar Chinese 講師</div>
-          <div class="tc-check">✓</div>
-        </label>
-        <label class="teacher-card">
-          <input type="radio" name="q_teacher" value="Tong先生">
-          <div class="tc-avatar">T</div>
-          <div class="tc-name">Tong 先生</div>
-          <div class="tc-role">MandStar Chinese 講師</div>
-          <div class="tc-check">✓</div>
-        </label>
-        <label class="teacher-card" id="tc-auto">
-          <input type="radio" name="q_teacher" value="システムにお任せ">
-          <div class="tc-avatar" style="background:linear-gradient(135deg,#059669,#34d399);font-size:13px;">AI</div>
-          <div class="tc-name" style="font-size:13px;">中国語レベルで自動配分</div>
-          <div class="tc-role">おすすめオプション</div>
-          <div class="tc-check">✓</div>
-        </label>
-      </div>
-      <div class="q-err" id="err_teacher">担当講師を選択してください</div>
+      <div class="q-label">どのような先生とレッスンを受けたいですか？</div>
+      <div class="q-hint">例：優しく丁寧に教えてくれる先生 / 明るく話しやすい先生 / 発音を重視してくれる先生 など、お気軽にご記入ください（任意）</div>
+      <textarea class="q-textarea" id="q_teacher_wish" placeholder="例：初心者でも安心できる、優しく丁寧な先生がいいです"></textarea>
     </div>
 
     <!-- 期待すること -->
@@ -611,15 +619,45 @@ body::before {
       <div class="q-err" id="err_expect">ご記入ください</div>
     </div>
 
+    <!-- ② 体験レッスンのご希望日時 -->
+    <div class="q-block">
+      <div class="q-label">体験レッスンのご希望日時 <span class="q-req">*</span></div>
+      <div class="notice-box">
+        <p>体験レッスンは、<strong>原則として5営業日以上前</strong>までにご予約をお願いしております。</p>
+        <p>講師は、できる限りご希望の日時に合わせて調整いたします。</p>
+        <p>ご一緒にレッスンを受けてみたい講師がいらっしゃいましたら、上の欄にお知らせください。可能な限り優先して手配いたします。</p>
+        <p>ただし、レッスン日時や体験レッスンの担当講師について、調整が必要となる場合がございます。その際は、公式LINEよりご連絡いたしますので、ご了承ください。</p>
+      </div>
+      <div class="q-hint">日本時間（JST）でご選択ください。第1希望は必須、第2・第3希望は任意です。<br><span id="earliestNote"></span></div>
+      <div class="dt-row"><span class="dt-badge">第1希望</span><select class="q-input" id="dt1_date"></select><select class="q-input" id="dt1_time"></select></div>
+      <div class="dt-row"><span class="dt-badge">第2希望</span><select class="q-input" id="dt2_date"></select><select class="q-input" id="dt2_time"></select></div>
+      <div class="dt-row"><span class="dt-badge">第3希望</span><select class="q-input" id="dt3_date"></select><select class="q-input" id="dt3_time"></select></div>
+      <div class="q-err" id="err_dt">第1希望の日付と時間を、5営業日以降の日程でご選択ください</div>
+    </div>
+
     <div class="nav-row">
       <button class="btn-back" onclick="goBack(3)">← 戻る</button>
       <button class="btn-submit" id="submitBtn" onclick="submitForm()">
-        アンケートを送信して予約へ進む →
+        送信する
       </button>
     </div>
   </div>
 
 </div><!-- /form-wrap -->
+
+<div class="form-wrap" id="doneWrap" style="display:none">
+  <div class="done-card">
+    <div class="done-mark">✓</div>
+    <div class="done-title">送信が完了いたしました</div>
+    <div class="done-text">
+      このたびはお申し込みをいただき、誠にありがとうございます。<br>
+      内容を確認のうえ、スタッフより公式LINEアカウントから<br>
+      あらためてご連絡させていただきますので、<br>
+      今しばらくお待ちくださいませ。
+    </div>
+    <div id="lineBtnWrap"></div>
+  </div>
+</div>
 
 <script>
 // ── State ─────────────────────────────────────────────────────
@@ -703,13 +741,19 @@ function validateSection(n) {
   if (n === 3) {
     const lang    = document.querySelector('input[name=q_lang]:checked');
     const pace    = document.querySelector('input[name=q_pace]:checked');
-    const teacher = document.querySelector('input[name=q_teacher]:checked');
     const expect  = document.getElementById('q_expect').value.trim();
     if (!lang)    { show('err_lang',    true);  ok = false; } else show('err_lang',    false);
     if (!pace)    { show('err_pace',    true);  ok = false; } else show('err_pace',    false);
-    if (!teacher) { show('err_teacher', true);  ok = false; } else show('err_teacher', false);
     if (!expect)  { show('err_expect',  true);  mark('q_expect', true);  ok = false; }
     else          { show('err_expect',  false); mark('q_expect', false); }
+    const d1 = document.getElementById('dt1_date').value, t1 = document.getElementById('dt1_time').value;
+    const min = earliestDate();
+    let dtOk = !!(d1 && t1 && d1 >= min);
+    ['2','3'].forEach(k => {
+      const d = document.getElementById('dt'+k+'_date').value, t = document.getElementById('dt'+k+'_time').value;
+      if (d || t) { if (!d || !t || d < min) dtOk = false; }
+    });
+    show('err_dt', !dtOk); if (!dtOk) ok = false;
   }
   return ok;
 }
@@ -727,14 +771,6 @@ function initAllOptions() {
       label.classList.add('selected');
       const other = label.querySelector('.opt-other-input');
       if (other) setTimeout(() => other.focus(), 50);
-    });
-  });
-
-  // Teacher cards (radio)
-  document.querySelectorAll('.teacher-card input[type=radio]').forEach(inp => {
-    inp.addEventListener('change', function() {
-      document.querySelectorAll('.teacher-card').forEach(c => c.classList.remove('selected'));
-      this.closest('.teacher-card').classList.add('selected');
     });
   });
 
@@ -791,15 +827,19 @@ function collectData() {
     goal:    get('q_goal').trim(),
     lang:    getRadio('q_lang'),
     pace:    getRadio('q_pace'),
-    teacher: getRadio('q_teacher'),
+    teacherWish: get('q_teacher_wish').trim(),
     expect:  get('q_expect').trim(),
+    trial1:  dtVal(1),
+    trial2:  dtVal(2),
+    trial3:  dtVal(3),
+    timezone: '日本時間（JST）',
   };
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 //  ★ Apps Script URL（管理者が設定）
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const SCRIPT_URL_INDEX = 'https://script.google.com/macros/s/AKfycbzyF-7ySGA0xDou03-9g9S4lEeY0Eaxmo2AQPdX15keg55GMykBr5cliW9YNIroEfoNWw/exec';  // ← Apps Script の Web App URL を貼り付け
+const SCRIPT_URL_INDEX = 'https://script.google.com/macros/s/AKfycbwE7GETZzH-RwBldjl4GoIiYxRcdePwB4PgZtujB_R2MWa7A9yO7eemh_aY90gIKhS97g/exec';  // ← Apps Script の Web App URL を貼り付け
 
 function getScriptUrl() {
   if (SCRIPT_URL_INDEX) return SCRIPT_URL_INDEX;
@@ -809,86 +849,93 @@ function getScriptUrl() {
   } catch(e) { return ''; }
 }
 
+// ── 体験レッスン日時（JST・5営業日ルール） ─────────────────────
+function earliestDate() {
+  // 日本時間の「今日」を基準に、5営業日後（土日を除く）を求める
+  const jst = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Tokyo' }).slice(0, 10);
+  const [y, m, d] = jst.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  let n = 0;
+  while (n < 5) {
+    dt.setUTCDate(dt.getUTCDate() + 1);
+    const w = dt.getUTCDay();
+    if (w !== 0 && w !== 6) n++;
+  }
+  return dt.toISOString().slice(0, 10);
+}
+function dtVal(i) {
+  const d = document.getElementById('dt' + i + '_date').value;
+  const t = document.getElementById('dt' + i + '_time').value;
+  return (d && t) ? d + ' ' + t : '';
+}
+function initTrialPickers() {
+  const min = earliestDate();
+  const wd = ['日','月','火','水','木','金','土'];
+  let dopts = '<option value="">日付を選択</option>';
+  const base = new Date(min + 'T00:00:00Z');
+  for (let k = 0; k < 90; k++) {
+    const d = new Date(base.getTime() + k * 86400000);
+    const v = d.toISOString().slice(0, 10);
+    dopts += '<option value="' + v + '">' + (d.getUTCMonth() + 1) + '月' + d.getUTCDate() + '日（' + wd[d.getUTCDay()] + '）</option>';
+  }
+  let topts = '<option value="">時間を選択</option>';
+  for (let h = 9; h <= 22; h++) for (const m of ['00', '30']) {
+    if (h === 22 && m === '30') continue;
+    const t = String(h).padStart(2, '0') + ':' + m;
+    topts += '<option value="' + t + '">' + t + '</option>';
+  }
+  [1, 2, 3].forEach(i => {
+    document.getElementById('dt' + i + '_date').innerHTML = dopts;
+    document.getElementById('dt' + i + '_time').innerHTML = topts;
+  });
+  const [yy, mm, dd] = min.split('-');
+  document.getElementById('earliestNote').textContent =
+    'ご選択いただけるのは ' + yy + '年' + Number(mm) + '月' + Number(dd) + '日 以降です。';
+}
+
+// ━━ 任意：公式LINEのURLを入れると、完了画面にボタンが表示されます ━━
+const LINE_URL = 'https://lin.ee/VLbPneo';
+
 // ── Submit ────────────────────────────────────────────────────
 async function submitForm() {
   if (!validateSection(3)) return;
   const btn = document.getElementById('submitBtn');
+  if (btn.disabled) return;           // 二重送信防止
   btn.disabled = true;
   btn.textContent = '送信中…';
   const data = collectData();
-
-  sessionStorage.setItem('mandstar_form', JSON.stringify(data));
-  // バックアップ: msc-booking.htmlがsessionStorageを読めない場合のため
-  localStorage.setItem('mandstar_form_backup', JSON.stringify(data));
-
   const url = getScriptUrl();
-  if (url) {
-    // 方法1: fetch CORS で試みる
-    let sent = false;
-    try {
+  try {
+    if (url) {
+      // no-cors + text/plain：プリフライト不要で確実に届く（1回のみ送信）
       await fetch(url, {
         method:  'POST',
-        mode:    'cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body:    'action=survey&data=' + encodeURIComponent(JSON.stringify(data))
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body:    JSON.stringify({ action: 'survey', data: data })
       });
-      sent = true;
-    } catch(e) {
-      console.warn('fetch failed, trying form POST:', e.message);
     }
-
-    // 方法2: hidden form POST（必ず届く）
-    if (!sent) {
-      await sendViaHiddenForm(url, 'survey', JSON.stringify(data));
-    }
+  } catch (e) {
+    console.warn('send error:', e.message);
   }
-
-  window.location.href = 'msc-booking.html';
+  showDone();
 }
 
-// ── Hidden form POST helper ───────────────────────────────────
-function sendViaHiddenForm(url, action, jsonData) {
-  return new Promise(function(resolve) {
-    const iframeId = 'hf-' + Date.now();
-    const iframe = document.createElement('iframe');
-    iframe.name = iframeId;
-    iframe.style.cssText = 'display:none;position:absolute;left:-9999px';
-    document.body.appendChild(iframe);
-
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = url;
-    form.target = iframeId;
-    form.style.display = 'none';
-
-    const fa = document.createElement('input');
-    fa.type = 'hidden'; fa.name = 'action'; fa.value = action;
-    form.appendChild(fa);
-
-    const fd = document.createElement('input');
-    fd.type = 'hidden'; fd.name = 'data'; fd.value = jsonData;
-    form.appendChild(fd);
-
-    document.body.appendChild(form);
-
-    iframe.onload = function() {
-      setTimeout(function() {
-        try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e) {}
-      }, 2000);
-      resolve();
-    };
-    setTimeout(function() {
-      try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e) {}
-      resolve();
-    }, 5000);
-
-    form.submit();
-  });
+function showDone() {
+  document.querySelector('.form-wrap').style.display = 'none';
+  document.querySelector('.progress-wrap').style.display = 'none';
+  if (LINE_URL) {
+    document.getElementById('lineBtnWrap').innerHTML =
+      '<a class="done-line-btn" href="' + LINE_URL + '" target="_blank" rel="noopener">公式LINEを開く</a>';
+  }
+  document.getElementById('doneWrap').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 // ── Init ──────────────────────────────────────────────────────
 updateProgress(1);
 initAllOptions();
+initTrialPickers();
 </script>
 </body>
 </html>
